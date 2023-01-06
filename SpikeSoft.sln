@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft", "SpikeSoft\SpikeSoft.csproj", "{D35974EB-7C1C-4873-8805-E0202FF328D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875} = {4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZS3Editor.CharaInfo", "SpikeSoft.ZS3Editor.CharaInfo\SpikeSoft.ZS3Editor.CharaInfo.csproj", "{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D35974EB-7C1C-4873-8805-E0202FF328D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35974EB-7C1C-4873-8805-E0202FF328D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35974EB-7C1C-4873-8805-E0202FF328D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35974EB-7C1C-4873-8805-E0202FF328D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
