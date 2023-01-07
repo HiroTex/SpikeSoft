@@ -31,6 +31,7 @@ namespace SpikeSoft.DataTypes
         /// <returns></returns>
         public static object DataToStruct(byte[] data, Type type)
         {
+            data = ParseStructEndianness(data, type);
             object str = Activator.CreateInstance(type);
             int size = Marshal.SizeOf(str);
             IntPtr ptr = IntPtr.Zero;
@@ -67,6 +68,39 @@ namespace SpikeSoft.DataTypes
             {
                 Marshal.FreeHGlobal(ptr);
             }
+
+            return ParseStructEndianness(data, str.GetType());
+        }
+
+        /// <summary>
+        /// Parses Data as Big Endian if Wii Mode is Enabled or if System's Endianness is reversed
+        /// </summary>
+        /// <param name="data">Data belonging to a particular struct</param>
+        /// <param name="type">Struct Type</param>
+        /// <returns></returns>
+        public static byte[] ParseStructEndianness(byte[] data, Type type)
+        {
+            if (Properties.Settings.Default.WIIMODE || (!BitConverter.IsLittleEndian))
+            {
+                foreach (var field in type.GetFields())
+                {
+                    if (field.IsStatic)
+                    {
+                        // Do not Swap Static Values
+                        continue;
+                    }
+
+                    var fieldType = field.FieldType;
+                    var offset = Marshal.OffsetOf(type, field.Name);
+                    if (fieldType.IsEnum)
+                    {
+                        fieldType = Enum.GetUnderlyingType(fieldType);
+                    }
+
+                    Array.Reverse(data, (int)offset, Marshal.SizeOf(fieldType));
+                }
+            }
+
             return data;
         }
     }

@@ -1,25 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SpikeSoft.FileManager
 {
     public static class BinMan
     {
-        public static int GetInt32(string filePath, int index)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException();
-            }
-
-            using (var f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            using (var b = new BinaryReader(f))
-            {
-                f.Seek(index, SeekOrigin.Begin);
-                return b.ReadInt32(); 
-            }
-        }
-
         static public byte[] GetBytes(string filePath, int objSize, int index)
         {
             byte[] obj = new byte[objSize];
@@ -45,6 +31,15 @@ namespace SpikeSoft.FileManager
                 f.Seek(index, SeekOrigin.Begin);
                 b.Write(source);
             }
+        }
+
+        public static byte[] ParseEndianness(byte[] data)
+        {
+            if (Properties.Settings.Default.WIIMODE)
+            {
+                Array.Reverse(data);
+            }
+            return data;
         }
     }
 }

@@ -67,7 +67,14 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
             Values[0] = Data[SelectedChar].Initial_HP / 10000;
             Values[1] = Data[SelectedChar].Initial_KI / 20000;
             Values[2] = Data[SelectedChar].Max_Blast_Units;
-            Editor.SetDataValues(Values);
+            try
+            {
+                Editor.SetDataValues(Values);
+            }
+            catch (Exception)
+            {
+                ExceptionMan.ThrowMessage(0x2001);
+            }
         }
 
         private void ValueChanged(object sender, EventArgs e)

@@ -14,7 +14,7 @@ namespace SpikeSoft.GUI
         {
             foreach (var FileType in SpikeSoft.DataTypes.SupportedTypes.FileExtensions)
             {
-                if (!Path.GetExtension(filePath).Contains(FileType.Key) || FileType.Value == null)
+                if (Path.GetExtension(filePath) != (FileType.Key) || FileType.Value == null)
                 {
                     continue;
                 }

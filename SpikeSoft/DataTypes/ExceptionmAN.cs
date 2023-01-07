@@ -18,7 +18,9 @@ namespace SpikeSoft.DataTypes
         {
             { 0x1000, "Invalid File Path" },
             { 0x1001, "File Not Supported" },
-            { 0x1002, "File Not Found" }
+            { 0x1002, "File Not Found" },
+            { 0x2000, "Unknown or Invalid Data" },
+            { 0x2001, "Invalid Data, Try changing Console Mode" }
         };
 
         public static void ThrowMessage(int exMsg)

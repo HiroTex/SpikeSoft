@@ -56,7 +56,7 @@ namespace SpikeSoft.UserSettings
 
         public static void SetCharaChip()
         {
-            var folderPath = Path.Combine(Properties.Settings.Default.CommonIMGPath, Properties.Settings.Default.CommonGAMEPath, "chara_chips");
+            var folderPath = Path.Combine(Properties.Settings.Default.CommonIMGPath, Properties.Settings.Default.CommonGAMEPath, "chara_chip");
 
             if (!FileManager.FileMan.ValidateFilePath(Path.Combine(folderPath, "0.png")))
             {
