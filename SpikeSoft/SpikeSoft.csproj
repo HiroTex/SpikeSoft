@@ -68,12 +68,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\Common\ANM.cs" />
+    <Compile Include="DataTypes\Common\BPE.cs" />
+    <Compile Include="DataTypes\Common\DBT.cs" />
+    <Compile Include="DataTypes\Common\PAK.cs" />
+    <Compile Include="DataTypes\Common\PCK.cs" />
+    <Compile Include="DataTypes\PakMan.cs" />
     <Compile Include="DataTypes\DataMan.cs" />
     <Compile Include="DataTypes\ExceptionMan.cs" />
+    <Compile Include="DataTypes\IFunType.cs" />
     <Compile Include="DataTypes\SupportedTypes.cs" />
     <Compile Include="DataTypes\ZS3\CharacterInfoTable.cs" />
+    <Compile Include="FileManager\AnalysisMan.cs" />
     <Compile Include="FileManager\BinMan.cs" />
     <Compile Include="FileManager\FileMan.cs" />
+    <Compile Include="FileManager\FunMan.cs" />
     <Compile Include="FileManager\TmpMan.cs" />
     <Compile Include="GUI\DarkMode.cs" />
     <Compile Include="GUI\IEditor.cs" />
@@ -126,6 +135,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\txt\ZS3\paklist.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\folder.png" />
     <None Include="resources\diskette.png" />
     <Content Include="resources\audio\confirmation.wav" />

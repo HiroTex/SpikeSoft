@@ -73,6 +73,15 @@ namespace SpikeSoft
             UIMan UI = new UIMan();
             Control MainEditor = new Control();
 
+            // Search and Execute File Specific Functionality
+            FunMan Fun = new FunMan();
+            if (Fun.ExecuteFileFunction(filePath))
+            {
+                MessageBox.Show("The Task was Completed", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // If File does not have a Functionality, try to get a File Editor
             // Get Main Editor Window
             MainEditor = UI.GetEditorUI(filePath);
             if (MainEditor == null)

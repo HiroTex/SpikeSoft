@@ -19,7 +19,7 @@ namespace SpikeSoft.DataTypes
             {"Model Data", "*.mdl" },
             {"Animation Data", "*.anm;*.canm" },
             {"Script Data", "*.gsc"},
-            {"Package", "*.pak;*.cpak;*.pck;*.idx" }
+            {"Package", "*.pak;*.zpak;*.pck;*.idx" }
         };
 
         // Dictionary that contains:
@@ -28,15 +28,18 @@ namespace SpikeSoft.DataTypes
         public static readonly Dictionary<string, Func<string, Type>> FileExtensions = new Dictionary<string, Func<string, Type>>
         {
             { ".dat", ParseByFileName },
+            { ".pmdl", null },
             { ".mdl", null },
-            { ".pck", null },
-            { ".pak", null },
-            { ".cpak", null },
+            { ".pck", Package},
+            { ".pak", Package },
+            { ".zpak", Package },
+            { ".idx", Package },
             { ".dbt", null },
-            { ".cdbt", null },
+            { ".zdbt", null },
             { ".anm", null },
-            { ".canm", null },
+            { ".zanm", null },
             { ".gsc", null },
+            { ".fod", null },
             { ".bin", null }
         };
 
@@ -58,6 +61,11 @@ namespace SpikeSoft.DataTypes
                 }
             }
             return null;
+        }
+
+        public static Type Package(string filePath)
+        {
+            return typeof(PakMan);
         }
     }
 }

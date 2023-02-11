@@ -34,10 +34,10 @@ namespace SpikeSoft.FileManager
             {
                 // If Default Tmp Path has not been Initialized, set new Associated Path to Default Temp File
                 InitializeMainTmpFile(filePath);
-                return;
             }
 
             TmpFilePaths.Add(Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), filePath);
+            File.Copy(filePath, Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), true);
         }
 
         public static void CleanAllTmpFiles()
@@ -49,10 +49,11 @@ namespace SpikeSoft.FileManager
                     // No Tmp file was Initialized or all are already erased
                     return;
                 }
+
                 string[] TmpPaths = TmpFilePaths.Keys.ToArray();
                 foreach (var p in TmpPaths)
                 {
-                    CleanTmpFile(p);
+                    CleanTmpFile(Path.GetFileNameWithoutExtension(p));
                 }
             }
             catch (UnauthorizedAccessException)
@@ -62,8 +63,10 @@ namespace SpikeSoft.FileManager
             }
         }
 
-        public static void CleanTmpFile(string tmpPath)
+        public static void CleanTmpFile(string fileName)
         {
+            string tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(fileName) + ".tmp");
+
             if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(tmpPath))
             {
                 // No Tmp file was Initialized or all are already erased, or there is no Tmp Path that matches 
@@ -125,6 +128,19 @@ namespace SpikeSoft.FileManager
             }
 
             return TmpFilePaths.Values.ElementAt(n);
+        }
+
+        public static string GetTmpFilePath(string fileName)
+        {
+            string tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(fileName) + ".tmp");
+
+            if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(tmpPath))
+            {
+                // No Tmp file was Initialized, or there is no Tmp Path that matches 
+                return "";
+            }
+
+            return tmpPath;
         }
 
         private static bool ValidateTmpNull(int n)
