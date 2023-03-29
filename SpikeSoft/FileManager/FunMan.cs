@@ -18,27 +18,7 @@ namespace SpikeSoft.FileManager
                     continue;
                 }
 
-                Type T = FileType.Value.Invoke(filePath);
-
-                if (T == null)
-                {
-                    // No Editor Implemented for this File (Yet)
-                    return false;
-                }
-
-                if (!typeof(SpikeSoft.DataTypes.IFunType).IsAssignableFrom(T))
-                {
-                    throw new Exception($"Class {T} is not Functionality Interface Assignable");
-                }
-
-                SpikeSoft.DataTypes.IFunType Interface = (SpikeSoft.DataTypes.IFunType)Activator.CreateInstance(T);
-
-                if (Interface == null)
-                {
-                    throw new Exception($"Could not Create Instance of Class {T}");
-                }
-
-                Interface.InitializeHandler(filePath);
+                (DataTypes.CommonMan.GetInterfaceObject(typeof(DataTypes.IFunType), FileType.Value.Invoke(filePath)) as DataTypes.IFunType).InitializeHandler(filePath);
 
                 return true;
             }

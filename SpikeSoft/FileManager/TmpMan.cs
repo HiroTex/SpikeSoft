@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpikeSoft.DataTypes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,13 +19,13 @@ namespace SpikeSoft.FileManager
         /// <param name="filePath">Complete File Path to Current Working File</param>
         public static void InitializeMainTmpFile(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException();
-            }
-
             TmpFilePaths = new Dictionary<string, string>();
             TmpFilePaths.Add(Path.Combine(Path.GetTempPath(), "Temp.ss"), filePath);
+            if (!File.Exists(filePath))
+            {
+                return;
+            }
+
             File.Copy(filePath, GetDefaultTmpFile(), true);
         }
 
@@ -35,8 +36,16 @@ namespace SpikeSoft.FileManager
                 // If Default Tmp Path has not been Initialized, set new Associated Path to Default Temp File
                 InitializeMainTmpFile(filePath);
             }
+            try
+            {
+                TmpFilePaths.Add(Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), filePath);
+            }
+            catch (ArgumentException)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { $"Temp File was not cleaned!\nFile: {filePath}" });
+            }
 
-            TmpFilePaths.Add(Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), filePath);
+            if (!File.Exists(filePath)) return;
             File.Copy(filePath, Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), true);
         }
 

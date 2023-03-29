@@ -28,7 +28,8 @@ namespace SpikeSoft.FileManager
             {"LIPS", "cv_vic.lps"},
             {"DBES", ".dbe"},
             {"pmdl", ".pmdl"},
-            {"mdl3", ".mdl3"}
+            {"mdl3", ".mdl3"},
+            {"EPCK", ".pck" }
         };
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace SpikeSoft.FileManager
 
             // Get Sub File Count
             int fCount = FileManager.BinMan.GetBinaryData_Int32(source, 0);
-            if (fCount < 1)
+            if (fCount < 1 || (fCount * 4 + 4) > source.Length || fCount > short.MaxValue)
             {
                 return string.Empty;
             }

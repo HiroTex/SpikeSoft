@@ -19,26 +19,7 @@ namespace SpikeSoft.GUI
                     continue;
                 }
 
-                Type UIEditor = FileType.Value.Invoke(filePath);
-
-                if (UIEditor == null)
-                {
-                    // No Editor Implemented for this File (Yet)
-                    return null;
-                }
-
-                if (!typeof(IEditor).IsAssignableFrom(UIEditor))
-                {
-                    throw new Exception($"Class {UIEditor} is not UI Interface Assignable");
-                }
-
-                Interface = (IEditor)Activator.CreateInstance(UIEditor);
-
-                if (Interface == null)
-                {
-                    throw new Exception($"Could not Create Instance of Class {UIEditor}");
-                }
-
+                Interface = (DataTypes.CommonMan.GetInterfaceObject(typeof(IEditor), FileType.Value.Invoke(filePath)) as IEditor);
                 Interface.InitializeComponent(filePath);
                 return Interface.UIEditor;
             }

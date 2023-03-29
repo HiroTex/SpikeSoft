@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpikeSoft.FileManager;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SpikeSoft.DataTypes.Common
 {
-    class PAK
+    class PAK : IPak
     {
         public string FilePath { get; set; }
         public string UnpackedDir { get; set; }
@@ -94,6 +95,127 @@ namespace SpikeSoft.DataTypes.Common
 
         public virtual bool Repack()
         {
+            #region Exceptions
+            // Check for Invalid File Path
+            if (!FileManager.FileMan.ValidateFilePath(FilePath))
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { "Unspecified or Invalid File Path" });
+                return false;
+            }
+
+            // Check File Count to avoid null pak files or invalid console mode.
+            if (FileCount < 1)
+            {
+                ExceptionMan.ThrowMessage(0x2001, new string[] { "File Count is Negative" });
+                return false;
+            }
+            #endregion
+
+            string NewFile_NAME = Path.GetFileName(Path.GetDirectoryName(FilePath));
+            string NewFile_PATH = Path.GetDirectoryName(Path.GetDirectoryName(FilePath));
+            NewFile_PATH = Path.Combine(NewFile_PATH, NewFile_NAME + ".pak");
+            TmpMan.SetNewAssociatedPath(NewFile_PATH);
+            string tmpPath = FileManager.TmpMan.GetTmpFilePath(Path.GetFileNameWithoutExtension(NewFile_PATH));
+
+            using (var newPak = new FileStream(tmpPath, FileMode.Create, FileAccess.ReadWrite))
+            {
+                BinaryWriter binMan = new BinaryWriter(newPak);
+                byte[] FileCountArray = BitConverter.GetBytes(FileCount);
+                if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileCountArray);
+                binMan.Write(FileCountArray); // Write File Count
+                uint HeaderEnd = (uint)((FileCount * 4) + 8);
+                if (HeaderEnd % 64 != 0) { HeaderEnd = HeaderEnd - (HeaderEnd % 64) + 64; };
+                byte[] FileOffset = BitConverter.GetBytes(HeaderEnd);
+                if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                binMan.Write(FileOffset); // Write First File Offset Always as End of Header
+                binMan.BaseStream.SetLength(HeaderEnd);
+
+                // Iterate through all files that will be packed
+                uint Current_FID = 0;
+                uint New_FID = 0;
+                foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(FilePath)))
+                {
+                    // Skip Files without ID
+                    if (Path.GetFileNameWithoutExtension(file).Split('_').Length < 2) continue;
+
+                    // Get Sub File ID
+                    try
+                    {
+                        New_FID = uint.Parse(Path.GetFileNameWithoutExtension(file).Split('_')[0]);
+                    }
+                    catch (FormatException)
+                    {
+                        ExceptionMan.ThrowMessage(0x2000, new string[] { $"Invalid File Name: {file}" });
+                        continue;
+                    }
+
+                    // If ID is above File Count, break iteration (Only numbers above that one after this ID).
+                    if (New_FID > FileCount) break;
+
+                    New_FID -= 1;
+
+                    // If Negative ID, skip to avoid Header Corruption
+                    if (New_FID < 0) continue;
+
+                    // If ID skipped Sub Files ID in between, Fill Header with Dummy Info
+                    if (New_FID > Current_FID + 1)
+                    {
+                        uint EmptyFiles = New_FID - Current_FID;
+                        for (int i = 0; i <= EmptyFiles; i++)
+                        {
+                            uint CurrentFileLength = (uint)binMan.BaseStream.Length;
+                            binMan.BaseStream.Seek(0x4 + (Current_FID * 4) + (4 * i) + 0x4, SeekOrigin.Begin);
+
+                            FileOffset = BitConverter.GetBytes(CurrentFileLength);
+                            if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                            binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
+                        }
+                    }
+
+                    using (var SubFile = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    {
+                        binMan.BaseStream.Seek(0, SeekOrigin.End);
+                        SubFile.CopyTo(newPak);
+                        binMan.BaseStream.Seek(0x4 + (New_FID * 4) + 0x4, SeekOrigin.Begin);
+                        FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
+                        if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                        binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
+                    }
+
+                    Current_FID = New_FID;
+                }
+
+                // If ID skipped Sub Files ID in between, Fill Header with Dummy Info
+                if (FileCount > Current_FID + 1)
+                {
+                    uint EmptyFiles = (uint)(FileCount - Current_FID);
+                    for (int i = 0; i <= EmptyFiles; i++)
+                    {
+                        uint CurrentFileLength = (uint)binMan.BaseStream.Length;
+                        binMan.BaseStream.Seek(0x4 + (Current_FID * 4) + (4 * i) + 0x4, SeekOrigin.Begin);
+
+                        FileOffset = BitConverter.GetBytes(CurrentFileLength);
+                        if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                        binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
+                    }
+                }
+
+                binMan.BaseStream.Seek(0x4 + (FileCount * 4), SeekOrigin.Begin);
+                FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
+                if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
+            }
+
+            if (!ZBPE)
+            {
+                File.Copy(tmpPath, NewFile_PATH, true);
+                TmpMan.CleanTmpFile(NewFile_PATH);
+                return true;
+            }
+
+            byte[] CompressedFile = BPE.compress(File.ReadAllBytes(tmpPath));
+            File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(NewFile_PATH), NewFile_NAME + ".zpak"), CompressedFile);
+            TmpMan.CleanTmpFile(NewFile_PATH);
             return true;
         }
 
@@ -161,7 +283,7 @@ namespace SpikeSoft.DataTypes.Common
                     linePos++;
 
                     // If File name does not contain identifier word, and Idenfitier Word is not Wild Card, Skip File Name Lines.
-                    if (!Path.GetFileName(filePath).Contains(id[1]) && id[1] != "*")
+                    if (!Path.GetFileName(filePath).ToLowerInvariant().Contains(id[1].ToLowerInvariant()) && id[1] != "*")
                     {
                         for (int i = 0; i < int.Parse(id[2]); i++)
                         {

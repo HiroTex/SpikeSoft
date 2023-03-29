@@ -68,9 +68,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\CommonMan.cs" />
     <Compile Include="DataTypes\Common\ANM.cs" />
     <Compile Include="DataTypes\Common\BPE.cs" />
     <Compile Include="DataTypes\Common\DBT.cs" />
+    <Compile Include="DataTypes\Common\IPak.cs" />
     <Compile Include="DataTypes\Common\PAK.cs" />
     <Compile Include="DataTypes\Common\PCK.cs" />
     <Compile Include="DataTypes\PakMan.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="FileManager\FileMan.cs" />
     <Compile Include="FileManager\FunMan.cs" />
     <Compile Include="FileManager\TmpMan.cs" />
+    <Compile Include="GUI\BWorkerMan.cs" />
     <Compile Include="GUI\DarkMode.cs" />
     <Compile Include="GUI\IEditor.cs" />
     <Compile Include="GUI\SettingsWindow.cs">

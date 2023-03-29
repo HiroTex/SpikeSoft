@@ -219,7 +219,30 @@ namespace SpikeSoft.DataTypes.Common
             bs = 0x2710;     // best value in my tests
             hs = 0x10000;     // best value in my tests
 
-            return compress(in0, 0, in0.Length, out0, 0, out0.Length, bs, hs, mc, th, false);
+            byte[] compressed = compress(in0, 0, in0.Length, out0, 0, out0.Length, bs, hs, mc, th, false);
+
+            if (compressed == null || compressed.Length == 0)
+            {
+                return null;
+            }
+
+            byte[] result = new byte[compressed.Length + 8];
+            byte[] osize = BitConverter.GetBytes(in0.Length);
+            byte[] zsize = BitConverter.GetBytes(compressed.Length);
+            if (Properties.Settings.Default.WIIMODE) Array.Reverse(osize);
+            if (Properties.Settings.Default.WIIMODE) Array.Reverse(zsize);
+            Array.Copy(osize, 0, result, 0, 0x4);
+            Array.Copy(zsize, 0, result, 0x4, 0x4);
+            Array.Copy(compressed, 0, result, 0x8, compressed.Length);
+
+            if (result.Length % 32 != 0)
+            {
+                byte[] tmp = new byte[result.Length - (result.Length % 32) + 32];
+                Array.Copy(result, tmp, result.Length);
+                result = tmp;
+            }
+
+            return result;
         }
         public static byte[] decompress(byte[] in0)
         {

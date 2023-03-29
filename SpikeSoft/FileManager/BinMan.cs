@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpikeSoft.DataTypes;
+using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -61,10 +62,19 @@ namespace SpikeSoft.FileManager
         /// <returns></returns>
         public static int GetBinaryData_Int32(byte[] source, int dataOffset)
         {
-            var tmp = new byte[4];
-            Array.Copy(source, dataOffset, tmp, 0, 4);
-            if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
-            return BitConverter.ToInt32(tmp, 0);
+            try
+            {
+                var tmp = new byte[4];
+                Array.Copy(source, dataOffset, tmp, 0, 4);
+                if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
+                return BitConverter.ToInt32(tmp, 0);
+            }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+            }
+
+            return 0;
         }
 
         /// <summary>
@@ -83,7 +93,7 @@ namespace SpikeSoft.FileManager
             }
 
             var tmp = new byte[sLenght];
-            Array.Copy(source, dataOffset, tmp, 0, tmp.Length);
+            if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
             return Encoding.ASCII.GetString(tmp);
         }
     }

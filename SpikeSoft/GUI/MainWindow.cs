@@ -25,10 +25,10 @@ namespace SpikeSoft
             SettingsMan.Instance.SetDefaultResources();
         }
 
-        private void EnableSave()
+        private void SetSaveBtn(bool set)
         {
-            quickSaveFileBtn.Enabled = true;
-            toolBtnSaveAs.Enabled = true;
+            quickSaveFileBtn.Enabled = set;
+            toolBtnSaveAs.Enabled = set;
         }
 
         private void TryDragDrop(object sender, DragEventArgs e)
@@ -45,13 +45,15 @@ namespace SpikeSoft
 
         private void ExecuteDragDrop(object sender, DragEventArgs e)
         {
-            string[] FilePath = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            if (!FileMan.ValidateFilePath(FilePath[0]))
+            foreach (var filepath in (string[])e.Data.GetData(DataFormats.FileDrop, false))
             {
-                ExceptionMan.ThrowMessage(0x1000); return;
-            }
+                if (!FileMan.ValidateFilePath(filepath))
+                {
+                    ExceptionMan.ThrowMessage(0x1000, new string[] { filepath }); continue;
+                }
 
-            SetEditorUI(FilePath[0]);
+                SetEditorUI(filepath);
+            }
         }
 
         private void OpenFile(object sender, EventArgs e)
@@ -102,7 +104,7 @@ namespace SpikeSoft
             mainPanel.Controls.Add(MainEditor);
 
             // Enable File Saving
-            EnableSave();
+            SetSaveBtn(true);
         }
 
         private void QuickSave(object sender, EventArgs e)
