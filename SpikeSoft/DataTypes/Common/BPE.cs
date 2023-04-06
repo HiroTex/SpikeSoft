@@ -209,7 +209,7 @@ namespace SpikeSoft.DataTypes.Common
         /// </summary>
         /// <param name="in0"></param>
         /// <returns></returns>
-        public static byte[] compress(byte[] in0)
+        public byte[] compress(byte[] in0)
         {
             // UZ File
             byte[] out0 = new byte[in0.Length];
@@ -244,7 +244,7 @@ namespace SpikeSoft.DataTypes.Common
 
             return result;
         }
-        public static byte[] decompress(byte[] in0)
+        public byte[] decompress(byte[] in0)
         {
             // UZ Size
             int outsz = FileManager.BinMan.GetBinaryData_Int32(in0, 0);
@@ -263,7 +263,7 @@ namespace SpikeSoft.DataTypes.Common
         #endregion
 
         #region Algorithm Methods
-        public static byte[] compress(byte[] infile, int inOff, int zs, byte[] outfile, int outOff, int outsz, int bs, int hs, int mc, int th, bool yuke)
+        public byte[] compress(byte[] infile, int inOff, int zs, byte[] outfile, int outOff, int outsz, int bs, int hs, int mc, int th, bool yuke)
         {
             reset();
             zs += inOff;
@@ -368,7 +368,7 @@ namespace SpikeSoft.DataTypes.Common
             Array.Copy(outfile, _outputf, _outputf.Length);
             return _outputf;
         }
-        public static byte[] decompress(byte[] in0, int pi, int insz, byte[] out0, int po, int outsz, bool yuke)
+        public byte[] decompress(byte[] in0, int pi, int insz, byte[] out0, int po, int outsz, bool yuke)
         {
             reset();
             int c, count, i, size, n;

@@ -98,7 +98,8 @@ namespace SpikeSoft.FileManager
             }
 
             // Decompress File and re-analyze again to determine which kind of compressed file is.
-            string ZType = RunFileAnalysis(DataTypes.Common.BPE.decompress(source));
+            var BPEMan = new DataTypes.Common.BPE();
+            string ZType = RunFileAnalysis(BPEMan.decompress(source));
             string Result = "compressed.z";
             switch (ZType)
             {
@@ -116,7 +117,7 @@ namespace SpikeSoft.FileManager
 
             // Get Sub File Count
             int fCount = FileManager.BinMan.GetBinaryData_Int32(source, 0);
-            if (fCount < 1 || (fCount * 4 + 4) > source.Length || fCount > short.MaxValue)
+            if (fCount < 1 || (fCount * 4 + 4) >= source.Length || fCount >= short.MaxValue)
             {
                 return string.Empty;
             }

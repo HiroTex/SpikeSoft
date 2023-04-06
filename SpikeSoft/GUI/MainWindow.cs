@@ -4,8 +4,11 @@ using SpikeSoft.GUI;
 using SpikeSoft.UserSettings;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpikeSoft
@@ -79,7 +82,6 @@ namespace SpikeSoft
             FunMan Fun = new FunMan();
             if (Fun.ExecuteFileFunction(filePath))
             {
-                MessageBox.Show("The Task was Completed", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -147,5 +149,111 @@ namespace SpikeSoft
             SettingsWindow sw = new SettingsWindow();
             sw.ShowDialog();
         }
+
+        #region Packaging
+
+        private async void toolBtnUnpackSingle_Click(object sender, EventArgs e)
+        {
+            List<string> FilterNames = new List<string>();
+            List<string> FilterExt = new List<string>();
+
+            FilterNames.Add("Package");
+            FilterExt.Add("*.pak;*.zpak;*.pck");
+
+            string FilePath = FileMan.GetFilePath("Select an appropriate Package File", FilterNames, FilterExt);
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                return;
+            }
+
+            DataTypes.PakMan worker = new PakMan();
+            await worker.InitializeHandler(FilePath);
+        }
+
+        private async void toolBtnUnpackAll_Click(object sender, EventArgs e)
+        {
+            string FilePath = FileMan.GetDirectoryPath("Select a Folder containing Package Files");
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                return;
+            }
+
+            FileManager.FunMan FUN = new FileManager.FunMan();
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnUnpackAll_Click_DoWork), new object[] { FilePath }, false);
+        }
+
+        private void toolBtnUnpackAll_Click_DoWork(object[] fpath, IProgress<int> progress)
+        {
+            string filePath = fpath[0] as string;
+            string[] args = new string[] { "*.pak", "*.zpak", "*.pck" };
+
+            if (!Directory.Exists(filePath)) return;
+
+            foreach (var arg in args)
+            {
+                int ID = 1;
+                float maxValue = Directory.GetFiles(filePath, arg).Length;
+
+                foreach (var file in Directory.EnumerateFiles(filePath, arg))
+                {
+                    progress.Report((int)((ID++ / maxValue) * 100));
+                    DataTypes.PakMan pak = new PakMan();
+                    pak.ShowProgressWindow = false;
+                    var t = Task.Run(async () => pak.InitializeHandler(file));
+                    t.Wait();
+                }
+            }
+        }
+
+        private async void toolBtnRepackSingle_Click(object sender, EventArgs e)
+        {
+            List<string> FilterNames = new List<string>();
+            List<string> FilterExt = new List<string>();
+
+            FilterNames.Add("Package Info");
+            FilterExt.Add("*.idx");
+
+            string FilePath = FileMan.GetFilePath("Select an appropriate Info.Idx File", FilterNames, FilterExt);
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                return;
+            }
+
+            DataTypes.PakMan worker = new PakMan();
+            await worker.InitializeHandler(FilePath);
+        }
+
+        private async void toolBtnRepackAll_Click(object sender, EventArgs e)
+        {
+            string FilePath = FileMan.GetDirectoryPath("Select a Folder with Packages");
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                return;
+            }
+
+            FileManager.FunMan FUN = new FileManager.FunMan();
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnRepackAll_Click_DoWork), new object[] { FilePath }, false);
+        }
+
+        private void toolBtnRepackAll_Click_DoWork(object[] fpath, IProgress<int> progress)
+        {
+            string filePath = fpath[0] as string;
+            if (!Directory.Exists(filePath)) return;
+
+            int ID = 1;
+            foreach (var dir in Directory.EnumerateDirectories(filePath))
+            {
+                progress.Report((int)((ID++ / (float)Directory.GetDirectories(filePath).Length) * 100));
+                foreach (var file in Directory.EnumerateFiles(dir, "*.idx"))
+                {
+                    DataTypes.PakMan pak = new PakMan();
+                    pak.ShowProgressWindow = false;
+                    var t = Task.Run(async () => pak.InitializeHandler(file));
+                    t.Wait();
+                }
+            }
+        }
+
+        #endregion
     }
 }

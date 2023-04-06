@@ -9,8 +9,8 @@ namespace SpikeSoft.FileManager
 {
     public static class TmpMan
     {
-        // Key: Temp File Path
-        // Value: Original File Path
+        // Key: Original File Path 
+        // Value: Temp File Path
         private static Dictionary<string, string> TmpFilePaths;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace SpikeSoft.FileManager
         public static void InitializeMainTmpFile(string filePath)
         {
             TmpFilePaths = new Dictionary<string, string>();
-            TmpFilePaths.Add(Path.Combine(Path.GetTempPath(), "Temp.ss"), filePath);
+            TmpFilePaths.Add(filePath, Path.Combine(Path.GetTempPath(), "Temp.ss"));
             if (!File.Exists(filePath))
             {
                 return;
@@ -31,22 +31,32 @@ namespace SpikeSoft.FileManager
 
         public static void SetNewAssociatedPath(string filePath)
         {
+            string tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp");
+            int i = 0;
+
+            while (File.Exists(tmpPath))
+            {
+                tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + $"_{i++.ToString()}" + ".tmp");
+            }
+
             if (!ValidateTmpNull(0))
             {
                 // If Default Tmp Path has not been Initialized, set new Associated Path to Default Temp File
                 InitializeMainTmpFile(filePath);
             }
-            try
+            else
             {
-                TmpFilePaths.Add(Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), filePath);
+                try
+                {
+                    TmpFilePaths.Add(filePath, tmpPath);
+                    if (!File.Exists(filePath)) return;
+                    File.Copy(filePath, tmpPath, true);
+                }
+                catch (ArgumentException)
+                {
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { $"Temp File was not cleaned!\nFile: {filePath}" });
+                }
             }
-            catch (ArgumentException)
-            {
-                ExceptionMan.ThrowMessage(0x2000, new string[] { $"Temp File was not cleaned!\nFile: {filePath}" });
-            }
-
-            if (!File.Exists(filePath)) return;
-            File.Copy(filePath, Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp"), true);
         }
 
         public static void CleanAllTmpFiles()
@@ -59,10 +69,16 @@ namespace SpikeSoft.FileManager
                     return;
                 }
 
-                string[] TmpPaths = TmpFilePaths.Keys.ToArray();
+                string[] TmpPaths = TmpFilePaths.Values.ToArray();
                 foreach (var p in TmpPaths)
                 {
-                    CleanTmpFile(Path.GetFileNameWithoutExtension(p));
+                    string key = TmpFilePaths.FirstOrDefault(x => x.Value == p).Key;
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        continue;
+                    }
+
+                    CleanTmpFile(key);
                 }
             }
             catch (UnauthorizedAccessException)
@@ -72,15 +88,15 @@ namespace SpikeSoft.FileManager
             }
         }
 
-        public static void CleanTmpFile(string fileName)
+        public static void CleanTmpFile(string filePath)
         {
-            string tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(fileName) + ".tmp");
-
-            if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(tmpPath))
+            if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(filePath))
             {
                 // No Tmp file was Initialized or all are already erased, or there is no Tmp Path that matches 
                 return;
             }
+
+            string tmpPath = TmpFilePaths[filePath];
 
             if (!File.Exists(tmpPath))
             {
@@ -104,7 +120,7 @@ namespace SpikeSoft.FileManager
             }
 
             CleanDirectoryItem:
-            TmpFilePaths.Remove(tmpPath);
+            TmpFilePaths.Remove(filePath);
         }
 
         public static string GetDefaultTmpFile()
@@ -125,7 +141,7 @@ namespace SpikeSoft.FileManager
                 return "";
             }
 
-            return TmpFilePaths.Keys.ElementAt(n);
+            return TmpFilePaths.Values.ElementAt(n);
         }
 
         public static string GetWrkFile(int n)
@@ -136,18 +152,18 @@ namespace SpikeSoft.FileManager
                 return "";
             }
 
-            return TmpFilePaths.Values.ElementAt(n);
+            return TmpFilePaths.Keys.ElementAt(n);
         }
 
-        public static string GetTmpFilePath(string fileName)
+        public static string GetTmpFilePath(string filePath)
         {
-            string tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(fileName) + ".tmp");
-
-            if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(tmpPath))
+            if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(filePath))
             {
                 // No Tmp file was Initialized, or there is no Tmp Path that matches 
                 return "";
             }
+
+            string tmpPath = TmpFilePaths[filePath];
 
             return tmpPath;
         }

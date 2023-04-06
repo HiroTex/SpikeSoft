@@ -6,52 +6,69 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace SpikeSoft.DataTypes
 {
     public class PakMan : IFunType
     {
-        public void InitializeHandler(string filePath)
+        public bool ShowProgressWindow = true;
+        public GUI.BWorkWindow Worker;
+
+        public async Task InitializeHandler(string filePath)
         {
+            FileManager.FunMan FUN = new FileManager.FunMan();
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(Work_Handler), new object[] { filePath }, !ShowProgressWindow);
+        }
+
+        public void Work_Handler(object[] args, IProgress<int> progress)
+        {
+            string filePath = args[0] as string;
             switch (Path.GetExtension(filePath))
             {
                 case ".idx":
-                    // Recursively Check All Sub Folders for Paks to Repack
-                    foreach (var dir in Directory.EnumerateDirectories(Path.GetDirectoryName(filePath)))
-                    {
-                        foreach (var file in Directory.EnumerateFiles(dir, "info.idx"))
-                        {
-                            InitializeHandler(file);
-                        }
-                    }
                     // Create Repack Folder Handler.
-                    Repack_Handler(filePath);
+                    Repack_Handler(filePath, progress);
                     return;
                 case ".zpak":
                     // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
+                    var BPEMan = new Common.BPE();
                     FileManager.TmpMan.SetNewAssociatedPath(filePath);
-                    string tmpPath = FileManager.TmpMan.GetTmpFilePath(Path.GetFileNameWithoutExtension(filePath));
-                    byte[] zfile = DataTypes.Common.BPE.decompress(File.ReadAllBytes(filePath));
+                    string tmpPath = FileManager.TmpMan.GetTmpFilePath(filePath);
+                    byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath));
+
+                    if (string.IsNullOrEmpty(tmpPath))
+                    {
+                        ExceptionMan.ThrowMessage(0x2000, new string[] { "tmpPath is Empty!\nTemp File was not created" });
+                        return;
+                    }
+                    if (zfile == null)
+                    {
+                        ExceptionMan.ThrowMessage(0x2000, new string[] { $"Decompression Error on File: {filePath}" });
+                        return;
+                    }
+
                     File.WriteAllBytes(tmpPath, zfile);
 
                     // Then Create PAK File Handler.
-                    Unpack_Handler(typeof(Common.PAK), tmpPath, Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath)), true);
+                    Unpack_Handler(typeof(Common.PAK), tmpPath, filePath, true, progress);
 
                     // Then Delete Temporary File Created.
-                    FileManager.TmpMan.CleanTmpFile(Path.GetFileNameWithoutExtension(filePath));
+                    FileManager.TmpMan.CleanTmpFile(filePath);
                     break;
                 case ".pak":
                     // Create PAK File Handler.
-                    Unpack_Handler(typeof(Common.PAK), filePath, Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath)), false);
+                    Unpack_Handler(typeof(Common.PAK), filePath, filePath, false, progress);
                     break;
                 case ".pck":
-                    // Create PCK File Handler.
+                    // Identify Pck as EPCK file
                     if (!FileManager.BinMan.GetBinaryData_String(File.ReadAllBytes(filePath), 0).Contains("EPCK"))
                     {
-                        break;
+                        return;
                     }
 
-                    Unpack_Handler(typeof(Common.PCK), filePath, Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath)), false);
+                    // Create PCK File Handler.
+                    Unpack_Handler(typeof(Common.PCK), filePath, filePath, false, progress);
                     break;
             }
 
@@ -72,44 +89,52 @@ namespace SpikeSoft.DataTypes
             }
 
             // Unpack sub Paks, Compressed Paks and PCKs
-            RecursiveUnpacking(filePath, new string[] { "*.pak", "*.zpak", "*.pck" });
+            RecursiveUnpacking(filePath, new string[] { "*.pak", "*.zpak", "*.pck" }, progress);
         }
 
-        public void Unpack_Handler(Type T, string filePath, string UnpackDir, bool ZBPE)
-        {
-            var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), T) as Common.IPak);
-            Package.FilePath = filePath;
-            Package.UnpackedDir = UnpackDir;
-            Package.ZBPE = ZBPE;
-            Package.InitializeSubFileCount(filePath);
-            Package.InitializeFilePointersList(filePath);
-            Package.InitializeEndOfFilePointer(filePath);
-            Package.InitializeFilenamesList(filePath, Package.FileCount);
-            Package.Unpack();
-        }
-
-        public void Repack_Handler(string filePath)
-        {
-            var idxFile = new StreamReader(filePath);
-            Type PackageType = Type.GetType("SpikeSoft.DataTypes.Common." + idxFile.ReadLine());
-            var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), PackageType) as Common.IPak);
-            Package.FileCount = int.Parse(idxFile.ReadLine());
-            Package.ZBPE = bool.Parse(idxFile.ReadLine().ToLowerInvariant());
-            idxFile.Close();
-
-            Package.FilePath = filePath;
-            Package.Repack();
-        }
-
-        public void RecursiveUnpacking(string filePath, string[] args)
+        public void RecursiveUnpacking(string filePath, string[] args, IProgress<int> progress)
         {
             foreach (var arg in args)
             {
                 foreach (var subFile in Directory.EnumerateFiles(Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath)), arg))
                 {
-                    InitializeHandler(subFile);
+                    Work_Handler(new object[] { subFile }, progress);
                 }
             }
+        }
+
+        public void Unpack_Handler(Type T, string filePath, string originalPath, bool ZBPE, IProgress<int> progress)
+        {
+            var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), T) as Common.IPak);
+            Package.FilePath = filePath;
+            Package.UnpackedDir = Path.Combine(Path.GetDirectoryName(originalPath), Path.GetFileNameWithoutExtension(originalPath));
+            Package.ZBPE = ZBPE;
+            Package.InitializeSubFileCount(filePath);
+            Package.InitializeFilePointersList(filePath);
+            Package.InitializeEndOfFilePointer(filePath);
+            Package.InitializeFilenamesList(originalPath, Package.FileCount);
+            Package.Unpack(progress);
+        }
+
+        public void Repack_Handler(string filePath, IProgress<int> progress)
+        {
+            // Recursively Check All Sub Folders for Paks to Repack
+            foreach (var dir in Directory.EnumerateDirectories(Path.GetDirectoryName(filePath)))
+            {
+                foreach (var file in Directory.EnumerateFiles(dir, "info.idx"))
+                {
+                    Repack_Handler(file, progress);
+                }
+            }
+
+            var idxFile = new StreamReader(filePath);
+            var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), Type.GetType("SpikeSoft.DataTypes.Common." + idxFile.ReadLine())) as Common.IPak);
+            Package.FileCount = int.Parse(idxFile.ReadLine());
+            Package.ZBPE = bool.Parse(idxFile.ReadLine().ToLowerInvariant());
+            idxFile.Close();
+
+            Package.FilePath = filePath;
+            Package.Repack(progress);
         }
     }
 }

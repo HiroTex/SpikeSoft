@@ -2949,9 +2949,9 @@
 210_damage_35.zanm
 211_damage_lying_paralyzed_in.zanm
 212_damage_lying_paralyzed_loop.zanm
-213_damage_lying_tired_in.zanm
-214_damage_lying_tired_loop.zanm
-215_damage_lying_tired_out.zanm
+212_fatigue_in.zanm
+213_fatigue_loop.zanm
+214_fatigue_out.zanm
 216_damage_floating_on_water_in.zanm
 217_damage_floating_on_water_loop.zanm
 218_damage_fall_after_die.zanm

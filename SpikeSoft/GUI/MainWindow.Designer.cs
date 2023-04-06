@@ -38,6 +38,11 @@
             this.toolBtnSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.packagingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnUnpackSingle = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnUnpackAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnRepackSingle = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnRepackAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStrip.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +85,8 @@
             this.mainMenuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.mainMenuStrip.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.packagingToolStripMenuItem});
             this.mainMenuStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
@@ -141,6 +147,55 @@
             this.mainPanel.Size = new System.Drawing.Size(466, 160);
             this.mainPanel.TabIndex = 1;
             // 
+            // packagingToolStripMenuItem
+            // 
+            this.packagingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.packagingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolBtnUnpackSingle,
+            this.toolBtnUnpackAll,
+            this.toolBtnRepackSingle,
+            this.toolBtnRepackAll});
+            this.packagingToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.packagingToolStripMenuItem.Name = "packagingToolStripMenuItem";
+            this.packagingToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.packagingToolStripMenuItem.Text = "Packaging";
+            // 
+            // toolBtnUnpackSingle
+            // 
+            this.toolBtnUnpackSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnUnpackSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnUnpackSingle.Name = "toolBtnUnpackSingle";
+            this.toolBtnUnpackSingle.Size = new System.Drawing.Size(180, 22);
+            this.toolBtnUnpackSingle.Text = "Unpack File";
+            this.toolBtnUnpackSingle.Click += new System.EventHandler(this.toolBtnUnpackSingle_Click);
+            // 
+            // toolBtnUnpackAll
+            // 
+            this.toolBtnUnpackAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnUnpackAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnUnpackAll.Name = "toolBtnUnpackAll";
+            this.toolBtnUnpackAll.Size = new System.Drawing.Size(180, 22);
+            this.toolBtnUnpackAll.Text = "Unpack All in Folder";
+            this.toolBtnUnpackAll.Click += new System.EventHandler(this.toolBtnUnpackAll_Click);
+            // 
+            // toolBtnRepackSingle
+            // 
+            this.toolBtnRepackSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnRepackSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnRepackSingle.Name = "toolBtnRepackSingle";
+            this.toolBtnRepackSingle.Size = new System.Drawing.Size(180, 22);
+            this.toolBtnRepackSingle.Text = "Repack";
+            this.toolBtnRepackSingle.Click += new System.EventHandler(this.toolBtnRepackSingle_Click);
+            // 
+            // toolBtnRepackAll
+            // 
+            this.toolBtnRepackAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnRepackAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnRepackAll.Name = "toolBtnRepackAll";
+            this.toolBtnRepackAll.Size = new System.Drawing.Size(180, 22);
+            this.toolBtnRepackAll.Text = "Repack All in Folder";
+            this.toolBtnRepackAll.Click += new System.EventHandler(this.toolBtnRepackAll_Click);
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -177,6 +232,11 @@
         private System.Windows.Forms.ToolStripMenuItem toolBtnOpen;
         private System.Windows.Forms.ToolStripMenuItem toolBtnSaveAs;
         private System.Windows.Forms.ToolStripMenuItem toolBtnSettings;
+        private System.Windows.Forms.ToolStripMenuItem packagingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnUnpackSingle;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnUnpackAll;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnRepackSingle;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnRepackAll;
     }
 }
 

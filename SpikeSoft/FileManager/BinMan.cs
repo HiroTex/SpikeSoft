@@ -93,6 +93,7 @@ namespace SpikeSoft.FileManager
             }
 
             var tmp = new byte[sLenght];
+            Array.Copy(source, tmp, sLenght);
             if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
             return Encoding.ASCII.GetString(tmp);
         }

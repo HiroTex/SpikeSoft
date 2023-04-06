@@ -8,6 +8,6 @@ namespace SpikeSoft.DataTypes
 {
     public interface IFunType
     {
-        void InitializeHandler(string filePath);
+        Task InitializeHandler(string filePath);
     }
 }

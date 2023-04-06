@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,9 @@ namespace SpikeSoft.DataTypes.Common
         int EOF { get; set; }
         bool ZBPE { get; set; }
 
-        bool Unpack();
+        bool Unpack(IProgress<int> progress);
 
-        bool Repack();
+        bool Repack(IProgress<int> progress);
 
         void WriteInfo(string dir, string type);
 

@@ -107,6 +107,7 @@ namespace SpikeSoft.FileManager
             // Assign Params
             var FolderSearch = new CommonOpenFileDialog();
             FolderSearch.Title = topText;
+            FolderSearch.IsFolderPicker = true;
 
             // User Search File
             if (FolderSearch.ShowDialog() == CommonFileDialogResult.Ok)

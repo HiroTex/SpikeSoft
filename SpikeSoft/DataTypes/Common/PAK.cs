@@ -1,6 +1,7 @@
 ﻿using SpikeSoft.FileManager;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -19,7 +20,7 @@ namespace SpikeSoft.DataTypes.Common
         public int EOF { get; set; }
         public bool ZBPE { get; set; }
 
-        public virtual bool Unpack()
+        public virtual bool Unpack(IProgress<int> progress)
         {
             #region Exceptions
             // Check for Invalid File Path
@@ -58,6 +59,11 @@ namespace SpikeSoft.DataTypes.Common
             // Loop through all the File Pointers to Extract Each Byte Array into a Separate File.
             for (int i = 0; i < FileCount; i++)
             {
+                if (progress != null)
+                {
+                    progress.Report((int)(((i + 1) / (float)FileCount) * 100));
+                }
+
                 int fSize;
 
                 // If File is Last File, use End of File to Determine Size.
@@ -93,7 +99,7 @@ namespace SpikeSoft.DataTypes.Common
             return true;
         }
 
-        public virtual bool Repack()
+        public virtual bool Repack(IProgress<int> progress)
         {
             #region Exceptions
             // Check for Invalid File Path
@@ -115,7 +121,7 @@ namespace SpikeSoft.DataTypes.Common
             string NewFile_PATH = Path.GetDirectoryName(Path.GetDirectoryName(FilePath));
             NewFile_PATH = Path.Combine(NewFile_PATH, NewFile_NAME + ".pak");
             TmpMan.SetNewAssociatedPath(NewFile_PATH);
-            string tmpPath = FileManager.TmpMan.GetTmpFilePath(Path.GetFileNameWithoutExtension(NewFile_PATH));
+            string tmpPath = FileManager.TmpMan.GetTmpFilePath(NewFile_PATH);
 
             using (var newPak = new FileStream(tmpPath, FileMode.Create, FileAccess.ReadWrite))
             {
@@ -135,6 +141,11 @@ namespace SpikeSoft.DataTypes.Common
                 uint New_FID = 0;
                 foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(FilePath)))
                 {
+                    if (progress != null)
+                    {
+                        progress.Report((int)(((Current_FID + 1) / (float)FileCount) * 100));
+                    }
+
                     // Skip Files without ID
                     if (Path.GetFileNameWithoutExtension(file).Split('_').Length < 2) continue;
 
@@ -206,14 +217,20 @@ namespace SpikeSoft.DataTypes.Common
                 binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
             }
 
+            if (string.IsNullOrEmpty(tmpPath))
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { "tmpPath is Empty!\nTemp File was not created" });
+                return false;
+            }
+
             if (!ZBPE)
             {
                 File.Copy(tmpPath, NewFile_PATH, true);
                 TmpMan.CleanTmpFile(NewFile_PATH);
                 return true;
             }
-
-            byte[] CompressedFile = BPE.compress(File.ReadAllBytes(tmpPath));
+            BPE BPEMan = new BPE();
+            byte[] CompressedFile = BPEMan.compress(File.ReadAllBytes(tmpPath));
             File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(NewFile_PATH), NewFile_NAME + ".zpak"), CompressedFile);
             TmpMan.CleanTmpFile(NewFile_PATH);
             return true;

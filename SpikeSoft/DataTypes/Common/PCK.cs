@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace SpikeSoft.DataTypes.Common
     {
         public int VERSION { get; set; }
 
-        public override bool Repack()
+        public override bool Repack(IProgress<int> progress)
         {
             return true;
         }
