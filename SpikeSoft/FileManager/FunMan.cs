@@ -20,8 +20,14 @@ namespace SpikeSoft.FileManager
                     continue;
                 }
 
-                (DataTypes.CommonMan.GetInterfaceObject(typeof(DataTypes.IFunType), FileType.Value.Invoke(filePath)) as DataTypes.IFunType).InitializeHandler(filePath);
+                var ResultType = FileType.Value.Invoke(filePath);
 
+                if (!typeof(DataTypes.IFunType).IsAssignableFrom(ResultType))
+                {
+                    continue;
+                }
+                
+                (DataTypes.CommonMan.GetInterfaceObject(typeof(DataTypes.IFunType), ResultType) as DataTypes.IFunType).InitializeHandler(filePath);
                 return true;
             }
 

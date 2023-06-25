@@ -1,6 +1,7 @@
 ﻿using SpikeSoft.FileManager;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,6 +11,69 @@ namespace SpikeSoft.DataTypes
 {
     static public class DataMan
     {
+
+        /// <summary>
+        /// Updates Object in List with current stored Temporal Data
+        /// </summary>
+        /// <typeparam name="T">Type of Object</typeparam>
+        /// <param name="n">Object Index</param>
+        /// <param name="list">Object List</param>
+        public static void UpdateTableItemFromTmp<T>(int n, List<T> list)
+        {
+            ValidateIndex(n, list);
+            int Index = n * Marshal.SizeOf(typeof(T));
+            list[n] = (T)GetStructFromFile(TmpMan.GetDefaultTmpFile(), Index, typeof(T));
+        }
+
+        /// <summary>
+        /// Validates Index supplied for List of Objects and Throws an exception if wrong parameter or index
+        /// </summary>
+        /// <typeparam name="T">Type of Objects on List</typeparam>
+        /// <param name="n">Object Index</param>
+        /// <param name="list">List of Objects</param>
+        public static void ValidateIndex<T>(int n, List<T> list)
+        {
+            if (list == null)
+            {
+                throw new ArgumentNullException($"{list}");
+            }
+            if (n >= list.Count || n < 0)
+            {
+                throw new IndexOutOfRangeException("Character ID out of Bounds");
+            }
+        }
+        
+        /// <summary>
+        /// Get List of Objects of a specified Struct Type from a File
+        /// </summary>
+        /// <typeparam name="T">Type of Struct Object</typeparam>
+        /// <param name="filePath">Full Path to File</param>
+        /// <param name="StartIndex">Byte Position where Objects are located</param>
+        /// <returns></returns>
+        public static List<T> GetStructListFromFile<T>(string filePath, int StartIndex)
+        {
+            // Initialize List
+            var ObjectTable = new List<T>();
+
+            // Structure Byte Array Size
+            int ObjSize = Marshal.SizeOf(typeof(T));
+
+            // Total File Length
+            int FileLength = File.ReadAllBytes(filePath).Length;
+
+            // Iterate through File to Obtain all Character Info Structs
+            for (var CurrentIndex = StartIndex; FileLength > CurrentIndex; CurrentIndex = StartIndex + (ObjectTable.Count * ObjSize))
+            {
+                if (FileLength <= CurrentIndex + ObjSize)
+                {
+                    break;
+                }
+
+                ObjectTable.Add((T)GetStructFromFile(filePath, CurrentIndex, typeof(T)));
+            }
+
+            return ObjectTable;
+        }
 
         /// <summary>
         /// Get Struct Object from specific Index on File

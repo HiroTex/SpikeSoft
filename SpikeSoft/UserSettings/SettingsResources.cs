@@ -8,21 +8,27 @@ namespace SpikeSoft.UserSettings
 {
     public static class SettingsResources
     {
-        public static readonly List<Action> TXTResourceInitializers = new List<Action>
+        public static readonly Dictionary<string, string> TXTResourceInitializers = new Dictionary<string, string>
         {
-            SetNamesList
+            {"characters.txt", "CharaList" },
+            {"items.txt", "ZitemList" },
+            {"maps.txt", "MapList" },
+            {"songs.txt", "BgmList" }
         };
         public static readonly List<Action> IMGResourceInitializers = new List<Action>
         {
             SetCharaChip
         };
-
+        
+        public static List<string> ZitemList { get; set; }
+        public static List<string> MapList { get; set; }
+        public static List<string> BgmList { get; set; }
         public static List<string> CharaList { get; set; }
         public static ImageList CharaChip { get; set; }
 
-        public static void SetNamesList()
+        public static List<string> SetNamesList(string txtName)
         {
-            var txt_path = Path.Combine(Properties.Settings.Default.CommonTXTPath, Properties.Settings.Default.CommonGAMEPath, "characters.txt");
+            var txt_path = Path.Combine(Properties.Settings.Default.CommonTXTPath, Properties.Settings.Default.CommonGAMEPath, txtName);
 
             if (!FileManager.FileMan.ValidateFilePath(txt_path))
             {
@@ -34,10 +40,10 @@ namespace SpikeSoft.UserSettings
                 // File Not Found Message
                 DataTypes.ExceptionMan.ThrowMessage(0x1002, new string[] { txt_path });
                 string defaultTXTPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "txt");
-                string defaultCharTXTPath = Path.Combine(defaultTXTPath, Properties.Settings.Default.CommonGAMEPath, "characters.txt");
+                string defaultCharTXTPath = Path.Combine(defaultTXTPath, Properties.Settings.Default.CommonGAMEPath, txtName);
 
                 // Asks User if Wants to Create Default Character.txt Here
-                if (MessageBox.Show("Do you want to create a characters.txt\nFile at this location?", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Do you want to create a {txtName}\nFile at this location?", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     // Create Default characters.txt file on Specified Path
                     File.Copy(defaultCharTXTPath, txt_path, true);
@@ -50,8 +56,9 @@ namespace SpikeSoft.UserSettings
                 }
             }
 
-            CharaList = new List<string>();
-            CharaList.AddRange(File.ReadAllLines(txt_path));
+            List<string> list = new List<string>();
+            list.AddRange(File.ReadAllLines(txt_path));
+            return list;
         }
 
         public static void SetCharaChip()
@@ -65,7 +72,7 @@ namespace SpikeSoft.UserSettings
 
             if (CharaList == null)
             {
-                SetNamesList();
+                CharaList = SetNamesList("characters.txt");
             }
 
             CharaChip = new ImageList();

@@ -71,7 +71,7 @@
             0});
             this.hpBarNumeric.Name = "hpBarNumeric";
             this.hpBarNumeric.Size = new System.Drawing.Size(80, 26);
-            this.hpBarNumeric.TabIndex = 2;
+            this.hpBarNumeric.TabIndex = 1;
             this.hpBarNumeric.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.hpBarNumeric.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.hpBarNumeric.ValueChanged += new System.EventHandler(this.UpdateHUDImage);
@@ -128,7 +128,7 @@
             0});
             this.kiBarNumeric.Name = "kiBarNumeric";
             this.kiBarNumeric.Size = new System.Drawing.Size(80, 26);
-            this.kiBarNumeric.TabIndex = 8;
+            this.kiBarNumeric.TabIndex = 2;
             this.kiBarNumeric.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.kiBarNumeric.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.kiBarNumeric.ValueChanged += new System.EventHandler(this.UpdateHUDImage);
@@ -149,7 +149,7 @@
             0});
             this.blastNumeric.Name = "blastNumeric";
             this.blastNumeric.Size = new System.Drawing.Size(80, 26);
-            this.blastNumeric.TabIndex = 9;
+            this.blastNumeric.TabIndex = 3;
             this.blastNumeric.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.blastNumeric.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.blastNumeric.ValueChanged += new System.EventHandler(this.UpdateHUDImage);
@@ -170,7 +170,7 @@
             this.charaList.MultiSelect = false;
             this.charaList.Name = "charaList";
             this.charaList.Size = new System.Drawing.Size(362, 251);
-            this.charaList.TabIndex = 10;
+            this.charaList.TabIndex = 0;
             this.charaList.UseCompatibleStateImageBehavior = false;
             this.charaList.View = System.Windows.Forms.View.Details;
             this.charaList.SelectedIndexChanged += new System.EventHandler(this.CharaListIndexChanged);
@@ -184,7 +184,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.Controls.Add(this.charaList);
             this.Controls.Add(this.blastNumeric);
             this.Controls.Add(this.kiBarNumeric);

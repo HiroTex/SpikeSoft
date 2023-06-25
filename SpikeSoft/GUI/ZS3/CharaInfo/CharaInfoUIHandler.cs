@@ -3,6 +3,7 @@ using SpikeSoft.DataTypes.ZS3;
 using SpikeSoft.FileManager;
 using SpikeSoft.ZS3Editor.CharaInfo;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -23,8 +24,7 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
 
         public void InitializeComponent(string filePath)
         {
-            Data = new CharaInfoDataHandler();
-            Data.InitializeTable(filePath);
+            Data = new CharaInfoDataHandler(filePath);
             Editor = new ZS3EditorCharaInfo();
             Editor.Location = new System.Drawing.Point(0, 0);
             Editor.Dock = DockStyle.Fill;
@@ -32,7 +32,6 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
             Editor.Visible = true;
             Editor.SetCharaItemList(UserSettings.SettingsResources.CharaList.ToArray(), UserSettings.SettingsResources.CharaChip);
             Editor.ValidateCharaListItems(Data.GetTotalItems());
-            Editor.SetCharaListDefault();
             Editor.ItemSelectedChanged += new EventHandler(ItemSelectedChanged);
             Editor.ValueChanged += new EventHandler(ValueChanged);
         }
@@ -52,7 +51,7 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
             {
                 if (File.Exists(TmpMan.GetDefaultTmpFile()))
                 {
-                    Data.UpdateTableItemFromTmp(SelectedChar);
+                    Data.IUpdateTableItemFromTmp(SelectedChar);
                 }
             }
             catch (IndexOutOfRangeException)
@@ -63,10 +62,8 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
             }
 
             // Sets Data Values on NumericUpDown Controls
-            object[] Values = new object[3];
-            Values[0] = Data[SelectedChar].Initial_HP / 10000;
-            Values[1] = Data[SelectedChar].Initial_KI / 20000;
-            Values[2] = Data[SelectedChar].Max_Blast_Units;
+            object[] Values = GetValuesFromData(SelectedChar);
+
             try
             {
                 Editor.SetDataValues(Values);
@@ -77,8 +74,25 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
             }
         }
 
+        private object[] GetValuesFromData(int SelectedChar)
+        {
+            object[] values = new object[]
+            {
+                Data[SelectedChar].Initial_HP / 10000,
+                Data[SelectedChar].Initial_KI / 20000,
+                Data[SelectedChar].Max_Blast_Units
+            };
+
+            return values;
+        }
+
         private void ValueChanged(object sender, EventArgs e)
         {
+            if (TmpMan.GetDefaultTmpFile() == string.Empty || !(sender is NumericUpDown))
+            {
+                return;
+            }
+
             int n = Editor.GetCharaListSelectedIndex();
             CharacterInfoTable.CharacterInfo CharInfo = new CharacterInfoTable.CharacterInfo();
 
@@ -95,25 +109,38 @@ namespace SpikeSoft.GUI.ZS3.CharaInfo
             }
 
             // Update Item Data
-            var Sender = sender as NumericUpDown;
-            switch (Sender.Name)
-            {
-                case "hpBarNumeric":
-                    CharInfo.Initial_HP = (int)Sender.Value * 10000;
-                    break;
-                case "kiBarNumeric":
-                    CharInfo.Initial_KI = (int)Sender.Value * 20000;
-                    break;
-                case "blastNumeric":
-                    CharInfo.Max_Blast_Units = (int)Sender.Value;
-                    break;
-            }
+            UpdateCharacterData(sender as NumericUpDown, CharInfo);
 
             // Update Item Data on List
             Data[n] = CharInfo;
 
             // Update Binary File
-            BinMan.SetBytes(TmpMan.GetDefaultTmpFile(), DataMan.StructToData(CharInfo), n * Marshal.SizeOf(typeof(CharacterInfoTable.CharacterInfo)));
+            UpdateBinaryFile(n, CharInfo);
+        }
+
+        private void UpdateCharacterData(NumericUpDown numericUpDown, CharacterInfoTable.CharacterInfo charInfo)
+        {
+            int newValue = (int)numericUpDown.Value;
+            string controlName = numericUpDown.Name;
+
+            Dictionary<string, Action> numericActions = new Dictionary<string, Action>
+            {
+                { "hpBarNumeric", () => charInfo.Initial_HP = newValue * 10000 },
+                { "kiBarNumeric", () => charInfo.Initial_KI = newValue * 20000 },
+                { "blastNumeric", () => charInfo.Max_Blast_Units = newValue },
+            };
+
+            if (numericActions.ContainsKey(controlName))
+            {
+                numericActions[controlName].Invoke();
+            }
+        }
+
+        private void UpdateBinaryFile(int index, CharacterInfoTable.CharacterInfo charInfo)
+        {
+            var charInfoData = DataMan.StructToData(charInfo);
+            int offset = index * Marshal.SizeOf(typeof(CharacterInfoTable.CharacterInfo));
+            BinMan.SetBytes(TmpMan.GetDefaultTmpFile(), charInfoData, offset);
         }
     }
 }

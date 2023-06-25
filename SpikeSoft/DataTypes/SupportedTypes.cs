@@ -48,7 +48,8 @@ namespace SpikeSoft.DataTypes
         // Value: Type of UI Editor that Edits that File
         public static readonly Dictionary<string, Type> FileNameIds = new Dictionary<string, Type>
         {
-            { "007_common_character_info", typeof(SpikeSoft.GUI.ZS3.CharaInfo.CharaInfoUIHandler) }
+            { "common_character_info", typeof(SpikeSoft.GUI.ZS3.CharaInfo.CharaInfoUIHandler) },
+            { "unlock_item_param", typeof(SpikeSoft.GUI.ZS3.TourUnlockables.TourUnlockablesUIHandler) }
         };
 
         public static Type ParseByFileName(string filePath)

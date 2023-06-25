@@ -781,7 +781,7 @@
 39_announcer_lips.pak
 40_font_zitem_name.pak
 41_unlock_item_param.dat
-42_unlock_item.pak
+42_get_window.pak
 43_announcer.dbt
 44_announcer_special.dbt
 45_yamcha.dbt

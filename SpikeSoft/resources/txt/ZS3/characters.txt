@@ -1,165 +1,165 @@
-000_Goku_0
-001_Goku_1
-002_Goku_2
-003_Goku_3
-004_Goku_4
-005_Goku_5
-006_Goku_6
-007_GT_Goku_0
-008_GT_Goku_1
-009_GT_Goku_2
-010_GT_Goku_3
-011_Goku_7
-012_Oozaru_0
-013_Gohan_0
-014_Gohan_1
-015_Gohan_2
-016_Gohan_3
-017_Gohan_4
-018_Gohan_5
-019_Gohan_6
-020_Great_Saiyaman
-021_Gohan_7
-022_Piccolo_0
-023_Piccolo_1
-024_Nail
-025_Krillin
-026_Yamcha
-027_Tien
-028_Chiaotzu
-029_Vegeta_5
-030_Oozaru_1
-031_Vegeta_0
-032_Vegeta_1
-033_Vegeta_2
-034_Vegeta_6
-035_Vegeta_7
-036_Vegeta_3
-037_Majin_Vegeta
-038_Vegeta_4
-039_Trunks_0
-040_Trunks_1
-041_Trunks_5
-042_Trunks_6
-043_Trunks_2
-044_Trunks_3
-045_Trunks_4
-046_Goten_0
-047_Goten_1
-048_Gotenks_0
-049_Gotenks_1
-050_Gotenks_2
-051_Vegito_0
-052_Vegito_1
-053_Gogeta_1
-054_Gogeta_2
-055_Mr_Satan
-056_Videl
-057_Great_Saiyaman_2
-058_Supreme_Kai
-059_Kibito_Kai
-060_Yajirobe
-061_Paikuhan
-062_Tapion
-063_Pan
-064_Uub_0
-065_Uub_1
-066_Master_Roshi_0
-067_Master_Roshi_1
-068_Grandpa
-069_Namu
-070_Hatchan
-071_King_Vegeta_0
-072_King_Vegeta_1
-073_Bardock_0
-074_Bardock_1
-075_Celipa_0
-076_Celipa_1
-077_Raditz_0
-078_Raditz_1
-079_Saibamen
-080_Nappa_0
-081_Nappa_1
-082_Zarbon_0
-083_Zarbon_1
-084_Dodoria
-085_Cui
-086_Ginyu
-087_Recoome
-088_Burter
-089_Jeice
-090_Guldo
-091_Frieza_1
-092_Frieza_2
-093_Frieza_3
-094_Frieza_4
-095_Frieza_5
-096_Frieza_6
-097_King_Cold
-098_Appule
-099_Frieza_Soldier
-100_Android_16
-101_Android_17
-102_Android_18
-103_Android_19
-104_Android_20
-105_Cell_0
-106_Cell_1
-107_Cell_2
-108_Cell_3
-109_Cell_Jr
-110_Babidi
-111_Dabura
-112_Buu_0
-113_Buu_1
-114_Buu_2
-115_Buu_A
-116_Buu_B
-117_Buu_3
-118_Garlic_0
-119_Garlic_1
-120_Wheelo
-121_Turles_0
-122_Turles_1
-123_Slug_0
-124_Slug_1
-125_Sauza
-126_Cooler_0
-127_Cooler_1
-128_Metal_Cooler
-129_Android_13_0
-130_Android_13_1
-131_Brolly_0
-132_Brolly_1
-133_Brolly_2
-134_Zangya
-135_Bojack_0
-136_Bojack_1
-137_Janemba_0
-138_Janemba_1
-139_Hildegarn
-140_Baby_Vegeta_0
-141_Baby_Vegeta_1
-142_Baby_Vegeta_2
-143_Baby_Vegeta_3
-144_Super_17
-145_Suu_Shenron
-146_II_Shenron_0
-147_II_Shenron_1
-148_Taopaipai_0
-149_Taopaipai_1
-150_Blue
-151_Akuman
-152_Pilaf_0
-153_Pilaf_1
-154_Tambourine
-155_Piccolo_2
-156_Arale
-157_Chichi
-158_Supopovich
-159_Future_Gohan_0
-160_Future_Gohan_1
-161_Random
-162_Not_Selectable
-163_Password
-164_Null
+Goku (Early)
+Goku (Med)
+Goku (Med) Super Saiyan
+Goku (End)
+Goku (End) Super Saiyan
+Goku (End) Super Saiyan 2
+Goku (End) Super Saiyan 3
+Goku (GT)
+Goku (GT) Super Saiyan
+Goku (GT) Super Saiyan 3
+Goku (GT) Super Saiyan 4
+Kid Goku
+Great Ape
+Kid Gohan
+Teen Gohan
+Teen Gohan Super Saiyan
+Teen Gohan Super Saiyan 2
+Gohan 
+Gohan Super Saiyan
+Gohan Super Saiyan 2
+Great Saiyaman
+Ultimate Gohan
+Piccolo (Early)
+Piccolo (End)
+Nail
+Krillin
+Yamcha
+Tien
+Chiaotzu
+Vegeta (Scouter)
+Vegeta (Scouter) Great Ape
+Vegeta
+Vegeta Super Saiyan
+Super Vegeta
+Vegeta (2nd Form)
+Vegeta (2nd Form) Super Saiyan
+Vegeta (2nd Form) Super Saiyan 2
+Majin Vegeta
+Vegeta (2nd Form) Super Saiyan 4
+Trunks (Sword)
+Trunks (Sword) Super Saiyan
+Trunks
+Trunks Super Saiyan
+Super Trunks
+Kid Trunks
+Kid Trunks Super Saiyan
+Goten
+Goten Super Saiyan
+Gotenks
+Gotenks Super Saiyan
+Gotenks Super Saiyan 3
+Vegito
+Super Vegito
+Super Gogeta
+Gogeta Super Saiyan 4
+Mr Satan
+Videl
+Great Saiyaman 2
+Supreme Kai
+Kibito Kai
+Yajirobe
+Paikuhan
+Tapion
+Pan
+Uub
+Majuub
+Master Roshi
+Master Roshi Full Power
+Grandpa Gohan
+Namu
+Hatchan
+King Vegeta
+King Vegeta Great Ape
+Bardock
+Bardock Great Ape
+Celipa
+Celipa Great Ape
+Raditz
+Raditz Great Ape
+Saibamen
+Nappa
+Nappa Great Ape
+Zarbon 
+Zarbon Transformed
+Dodoria
+Cui
+Ginyu
+Recoome
+Burter
+Jeice
+Guldo
+Frieza 1st Form
+Frieza 2nd Form
+Frieza 3rd Form
+Frieza Final Form
+Frieza 100% Power
+Mecha Frieza
+King Cold
+Appule
+Frieza Soldier
+Android 16
+Android 17
+Android 18
+Android 19
+Android 2
+Cell 1st Form
+Cell 2nd Form
+Perfect Cell
+Super Perfect Cell
+Cell Jr
+Babidi
+Dabura
+Majin Buu 
+Evil Buu
+Super Buu
+Super Buu Gotenks Absorbed
+Super Buu Gohan Absorbed
+Kid Buu
+Garlic Jr
+Super Garlic Jr
+Wheelo
+Turles 
+Turles Great Ape
+Slug 
+Slug Giant
+Sauza
+Cooler 
+Cooler Final Form
+Metal Cooler
+Android 13 
+Android 13 Fusion
+Broly 
+Broly Super Saiyan
+Broly Legendary Super Saiyan
+Zangya
+Bojack 
+Bojack 100% Power
+Janemba 
+Super Janemba
+Hildegarn
+Baby Vegeta 
+Super Baby 1
+Super Baby 2
+Super Baby Great Ape
+Super 17
+Nuova Shenron
+Shin Shenron 
+Omega Shenron
+Taopaipai 
+Cyborg Tao
+General Blue
+Akuman
+Pilaf Machine
+Pilaf Machine Fusion
+Tambourine
+Demon King Piccolo
+Arale
+Chichi
+Spopovich
+Future Gohan 
+Future Gohan Super Saiyan
+Random
+Not Selectable
+Password
+Null

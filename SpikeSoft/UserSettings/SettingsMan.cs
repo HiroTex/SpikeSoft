@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace SpikeSoft.UserSettings
@@ -49,7 +50,9 @@ namespace SpikeSoft.UserSettings
         {
             foreach (var resourceInitializer in SettingsResources.TXTResourceInitializers)
             {
-                resourceInitializer();
+                List<string> result = SettingsResources.SetNamesList(resourceInitializer.Key);
+                var resource = typeof(SettingsResources).GetProperty(resourceInitializer.Value);
+                resource.SetValue(null, result);
             }
             foreach (var resourceInitializer in SettingsResources.IMGResourceInitializers)
             {

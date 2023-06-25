@@ -19,7 +19,14 @@ namespace SpikeSoft.GUI
                     continue;
                 }
 
-                Interface = (DataTypes.CommonMan.GetInterfaceObject(typeof(IEditor), FileType.Value.Invoke(filePath)) as IEditor);
+                var ResultType = FileType.Value.Invoke(filePath);
+
+                if (!typeof(IEditor).IsAssignableFrom(ResultType))
+                {
+                    continue;
+                }
+
+                Interface = (DataTypes.CommonMan.GetInterfaceObject(typeof(IEditor), ResultType) as IEditor);
                 Interface.InitializeComponent(filePath);
                 return Interface.UIEditor;
             }
