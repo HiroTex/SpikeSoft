@@ -49,16 +49,6 @@
       <HintPath>resources\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SpikeSoft.ZS3Editor.CharaInfo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>resources\lib\SpikeSoft.ZS3Editor.CharaInfo.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SpikeSoft.ZS3Editor.TourUnlockables, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>resources\lib\SpikeSoft.ZS3Editor.TourUnlockables.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
@@ -73,7 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes\CommonMan.cs" />
     <Compile Include="DataTypes\Common\ANM.cs" />
     <Compile Include="DataTypes\Common\BPE.cs" />
     <Compile Include="DataTypes\Common\DBT.cs" />
@@ -81,17 +70,10 @@
     <Compile Include="DataTypes\Common\PAK.cs" />
     <Compile Include="DataTypes\Common\PCK.cs" />
     <Compile Include="DataTypes\PakMan.cs" />
-    <Compile Include="DataTypes\DataMan.cs" />
-    <Compile Include="DataTypes\ExceptionMan.cs" />
     <Compile Include="DataTypes\IFunType.cs" />
     <Compile Include="DataTypes\SupportedTypes.cs" />
-    <Compile Include="DataTypes\ZS3\CharacterInfoTable.cs" />
-    <Compile Include="DataTypes\ZS3\TourUnlockablesTable.cs" />
     <Compile Include="FileManager\AnalysisMan.cs" />
-    <Compile Include="FileManager\BinMan.cs" />
-    <Compile Include="FileManager\FileMan.cs" />
     <Compile Include="FileManager\FunMan.cs" />
-    <Compile Include="FileManager\TmpMan.cs" />
     <Compile Include="GUI\BWorkWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,7 +81,6 @@
       <DependentUpon>BWorkWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\DarkMode.cs" />
-    <Compile Include="GUI\IEditor.cs" />
     <Compile Include="GUI\SettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,20 +88,14 @@
       <DependentUpon>SettingsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\UIMan.cs" />
-    <Compile Include="GUI\ZS3\CharaInfo\CharaInfoDataHandler.cs" />
-    <Compile Include="GUI\ZS3\CharaInfo\CharaInfoUIHandler.cs" />
     <Compile Include="GUI\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GUI\MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\ZS3\TourUnlockables\TourUnlockablesDataHandler.cs" />
-    <Compile Include="GUI\ZS3\TourUnlockables\TourUnlockablesUIHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserSettings\SettingsMan.cs" />
-    <Compile Include="UserSettings\SettingsResources.cs" />
     <EmbeddedResource Include="GUI\BWorkWindow.resx">
       <DependentUpon>BWorkWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -140,20 +115,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Libs.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\lib\SpikeSoft.UtilityManager.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\lib\SpikeSoft.ZS3Editor.TourUnlockables.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -167,6 +136,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\txt\ZS3\songs.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SupportedTypes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="resources\folder.png" />
@@ -687,14 +659,17 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataTypes\ZS1\" />
-    <Folder Include="DataTypes\ZS2\" />
-    <Folder Include="GUI\ZS1\" />
-    <Folder Include="GUI\ZS2\" />
     <Folder Include="resources\images\ZS1\" />
     <Folder Include="resources\images\ZS2\" />
     <Folder Include="resources\txt\ZS1\" />
     <Folder Include="resources\txt\ZS2\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataMan\SpikeSoft.UtilityManager.csproj">
+      <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
+      <Name>SpikeSoft.UtilityManager</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

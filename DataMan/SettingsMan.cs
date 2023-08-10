@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
 
-namespace SpikeSoft.UserSettings
+namespace SpikeSoft.UtilityManager
 {
-    class SettingsMan
+    public class SettingsMan
     {
         public static SettingsMan Instance = new SettingsMan();
 

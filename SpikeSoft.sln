@@ -5,13 +5,20 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft", "SpikeSoft\SpikeSoft.csproj", "{D35974EB-7C1C-4873-8805-E0202FF328D2}"
 	ProjectSection(ProjectDependencies) = postProject
-		{6384986F-BCF7-4FE9-AFCB-38709686E6AD} = {6384986F-BCF7-4FE9-AFCB-38709686E6AD}
-		{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875} = {4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA} = {C131EE68-4C2B-45E5-922D-E85710DF51DA}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZS3Editor.CharaInfo", "SpikeSoft.ZS3Editor.CharaInfo\SpikeSoft.ZS3Editor.CharaInfo.csproj", "{4CD6DBEE-E6F6-42FA-8DAD-A1ED9BB72875}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA} = {C131EE68-4C2B-45E5-922D-E85710DF51DA}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZS3Editor.TourUnlockables", "SpikeSoft.ZS3Editor.TourUnlockables\SpikeSoft.ZS3Editor.TourUnlockables.csproj", "{6384986F-BCF7-4FE9-AFCB-38709686E6AD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA} = {C131EE68-4C2B-45E5-922D-E85710DF51DA}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.UtilityManager", "DataMan\SpikeSoft.UtilityManager.csproj", "{C131EE68-4C2B-45E5-922D-E85710DF51DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +38,10 @@ Global
 		{6384986F-BCF7-4FE9-AFCB-38709686E6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6384986F-BCF7-4FE9-AFCB-38709686E6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6384986F-BCF7-4FE9-AFCB-38709686E6AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

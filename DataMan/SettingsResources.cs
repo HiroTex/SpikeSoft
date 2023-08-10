@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace SpikeSoft.UserSettings
+namespace SpikeSoft.UtilityManager
 {
     public static class SettingsResources
     {
@@ -28,17 +28,17 @@ namespace SpikeSoft.UserSettings
 
         public static List<string> SetNamesList(string txtName)
         {
-            var txt_path = Path.Combine(Properties.Settings.Default.CommonTXTPath, Properties.Settings.Default.CommonGAMEPath, txtName);
+            var txt_path = Path.Combine(SpikeSoft.UtilityManager.Properties.Settings.Default.CommonTXTPath, Properties.Settings.Default.CommonGAMEPath, txtName);
 
-            if (!FileManager.FileMan.ValidateFilePath(txt_path))
+            if (!FileMan.ValidateFilePath(txt_path))
             {
-                DataTypes.ExceptionMan.ThrowMessage(0x1000);
+                ExceptionMan.ThrowMessage(0x1000);
             }
 
             if (!File.Exists(txt_path))
             {
                 // File Not Found Message
-                DataTypes.ExceptionMan.ThrowMessage(0x1002, new string[] { txt_path });
+                ExceptionMan.ThrowMessage(0x1002, new string[] { txt_path });
                 string defaultTXTPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "txt");
                 string defaultCharTXTPath = Path.Combine(defaultTXTPath, Properties.Settings.Default.CommonGAMEPath, txtName);
 
@@ -63,11 +63,11 @@ namespace SpikeSoft.UserSettings
 
         public static void SetCharaChip()
         {
-            var folderPath = Path.Combine(Properties.Settings.Default.CommonIMGPath, Properties.Settings.Default.CommonGAMEPath, "chara_chip");
+            var folderPath = Path.Combine(SpikeSoft.UtilityManager.Properties.Settings.Default.CommonIMGPath, SpikeSoft.UtilityManager.Properties.Settings.Default.CommonGAMEPath, "chara_chip");
 
-            if (!FileManager.FileMan.ValidateFilePath(Path.Combine(folderPath, "0.png")))
+            if (!FileMan.ValidateFilePath(Path.Combine(folderPath, "0.png")))
             {
-                DataTypes.ExceptionMan.ThrowMessage(0x1000);
+                ExceptionMan.ThrowMessage(0x1000);
             }
 
             if (CharaList == null)

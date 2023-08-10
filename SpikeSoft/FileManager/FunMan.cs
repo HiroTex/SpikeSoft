@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.FileManager
 {
@@ -13,7 +11,7 @@ namespace SpikeSoft.FileManager
     {
         public bool ExecuteFileFunction(string filePath)
         {
-            foreach (var FileType in SpikeSoft.DataTypes.SupportedTypes.FileExtensions)
+            foreach (var FileType in DataTypes.SupportedTypes.FileExtensions)
             {
                 if (Path.GetExtension(filePath) != (FileType.Key) || FileType.Value == null)
                 {
@@ -22,13 +20,24 @@ namespace SpikeSoft.FileManager
 
                 var ResultType = FileType.Value.Invoke(filePath);
 
-                if (!typeof(DataTypes.IFunType).IsAssignableFrom(ResultType))
+                try
+                {
+                    DataTypes.IFunType Interface = (CommonMan.GetInterfaceObject(typeof(DataTypes.IFunType), ResultType) as DataTypes.IFunType);
+                    Interface.InitializeHandler(filePath);
+                    return true;
+                }
+                catch(TypeLoadException)
                 {
                     continue;
                 }
-                
-                (DataTypes.CommonMan.GetInterfaceObject(typeof(DataTypes.IFunType), ResultType) as DataTypes.IFunType).InitializeHandler(filePath);
-                return true;
+                catch (ArgumentNullException)
+                {
+                    continue;
+                }
+                catch (Exception ex)
+                {
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+                }
             }
 
             return false;

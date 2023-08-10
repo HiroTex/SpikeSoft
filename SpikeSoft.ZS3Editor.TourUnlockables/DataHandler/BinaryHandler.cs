@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SpikeSoft.DataTypes;
-using SpikeSoft.DataTypes.ZS3;
-using SpikeSoft.FileManager;
-using System.Runtime.InteropServices;
-using System.IO;
+﻿using System.Collections.Generic;
+using SpikeSoft.UtilityManager;
 
-namespace SpikeSoft.GUI.ZS3.TourUnlockables
+namespace SpikeSoft.ZS3Editor.TourUnlockables.DataHandler
 {
-    class TourUnlockablesDataHandler
+    class BinaryHandler
     {
         private List<TourUnlockablesTable.TourUnlockables> TourUnlockablesTable;
-        public TourUnlockablesDataHandler(string filePath)
+        public BinaryHandler(string filePath)
         {
             TourUnlockablesTable = DataMan.GetStructListFromFile<TourUnlockablesTable.TourUnlockables>(filePath, 0);
         }

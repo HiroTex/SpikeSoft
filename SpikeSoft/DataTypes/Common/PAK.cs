@@ -1,12 +1,8 @@
-﻿using SpikeSoft.FileManager;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.DataTypes.Common
 {
@@ -24,7 +20,7 @@ namespace SpikeSoft.DataTypes.Common
         {
             #region Exceptions
             // Check for Invalid File Path
-            if (!FileManager.FileMan.ValidateFilePath(FilePath))
+            if (!FileMan.ValidateFilePath(FilePath))
             {
                 ExceptionMan.ThrowMessage(0x2000, new string[] { "Unspecified or Invalid File Path" });
                 return false;
@@ -51,6 +47,13 @@ namespace SpikeSoft.DataTypes.Common
             if (FileCount != FilePointers.Count)
             {
                 ExceptionMan.ThrowMessage(0x2000, new string[] { "Unmatching File Count and Pointers" });
+                return false;
+            }
+
+            // Check Enough File Names for Files
+            if (FileCount > FileNames.Count)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { "Not Enough File Names for this File" });
                 return false;
             }
             #endregion
@@ -89,7 +92,7 @@ namespace SpikeSoft.DataTypes.Common
                     continue;
                 }
 
-                byte[] tmp = SpikeSoft.FileManager.BinMan.GetBytes(FilePath, fSize, FilePointers[i]);
+                byte[] tmp = BinMan.GetBytes(FilePath, fSize, FilePointers[i]);
                 File.WriteAllBytes(Path.Combine(UnpackedDir, FileNames[i]), tmp);
             }
 
@@ -103,7 +106,7 @@ namespace SpikeSoft.DataTypes.Common
         {
             #region Exceptions
             // Check for Invalid File Path
-            if (!FileManager.FileMan.ValidateFilePath(FilePath))
+            if (!FileMan.ValidateFilePath(FilePath))
             {
                 ExceptionMan.ThrowMessage(0x2000, new string[] { "Unspecified or Invalid File Path" });
                 return false;
@@ -121,24 +124,24 @@ namespace SpikeSoft.DataTypes.Common
             string NewFile_PATH = Path.GetDirectoryName(Path.GetDirectoryName(FilePath));
             NewFile_PATH = Path.Combine(NewFile_PATH, NewFile_NAME + ".pak");
             TmpMan.SetNewAssociatedPath(NewFile_PATH);
-            string tmpPath = FileManager.TmpMan.GetTmpFilePath(NewFile_PATH);
+            string tmpPath = TmpMan.GetTmpFilePath(NewFile_PATH);
 
             using (var newPak = new FileStream(tmpPath, FileMode.Create, FileAccess.ReadWrite))
             {
                 BinaryWriter binMan = new BinaryWriter(newPak);
                 byte[] FileCountArray = BitConverter.GetBytes(FileCount);
-                if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileCountArray);
+                if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileCountArray);
                 binMan.Write(FileCountArray); // Write File Count
                 uint HeaderEnd = (uint)((FileCount * 4) + 8);
                 if (HeaderEnd % 64 != 0) { HeaderEnd = HeaderEnd - (HeaderEnd % 64) + 64; };
                 byte[] FileOffset = BitConverter.GetBytes(HeaderEnd);
-                if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                 binMan.Write(FileOffset); // Write First File Offset Always as End of Header
                 binMan.BaseStream.SetLength(HeaderEnd);
 
                 // Iterate through all files that will be packed
-                uint Current_FID = 0;
-                uint New_FID = 0;
+                int Current_FID = -1;
+                int New_FID = -1;
                 foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(FilePath)))
                 {
                     if (progress != null)
@@ -152,7 +155,7 @@ namespace SpikeSoft.DataTypes.Common
                     // Get Sub File ID
                     try
                     {
-                        New_FID = uint.Parse(Path.GetFileNameWithoutExtension(file).Split('_')[0]);
+                        New_FID = int.Parse(Path.GetFileNameWithoutExtension(file).Split('_')[0]);
                     }
                     catch (FormatException)
                     {
@@ -171,14 +174,14 @@ namespace SpikeSoft.DataTypes.Common
                     // If ID skipped Sub Files ID in between, Fill Header with Dummy Info
                     if (New_FID > Current_FID + 1)
                     {
-                        uint EmptyFiles = New_FID - Current_FID;
-                        for (int i = 0; i <= EmptyFiles; i++)
+                        int EmptyFiles = New_FID - Current_FID;
+                        for (int i = 0; i < EmptyFiles; i++)
                         {
                             uint CurrentFileLength = (uint)binMan.BaseStream.Length;
                             binMan.BaseStream.Seek(0x4 + (Current_FID * 4) + (4 * i) + 0x4, SeekOrigin.Begin);
 
                             FileOffset = BitConverter.GetBytes(CurrentFileLength);
-                            if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                            if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                             binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
                         }
                     }
@@ -187,9 +190,15 @@ namespace SpikeSoft.DataTypes.Common
                     {
                         binMan.BaseStream.Seek(0, SeekOrigin.End);
                         SubFile.CopyTo(newPak);
+
+                        while (newPak.Length % 16 != 0)
+                        {
+                            newPak.WriteByte(0x00);
+                        }
+
                         binMan.BaseStream.Seek(0x4 + (New_FID * 4) + 0x4, SeekOrigin.Begin);
                         FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
-                        if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                        if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                         binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
                     }
 
@@ -206,14 +215,14 @@ namespace SpikeSoft.DataTypes.Common
                         binMan.BaseStream.Seek(0x4 + (Current_FID * 4) + (4 * i) + 0x4, SeekOrigin.Begin);
 
                         FileOffset = BitConverter.GetBytes(CurrentFileLength);
-                        if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                        if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                         binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
                     }
                 }
 
                 binMan.BaseStream.Seek(0x4 + (FileCount * 4), SeekOrigin.Begin);
                 FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
-                if (Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                 binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
             }
 
@@ -229,6 +238,7 @@ namespace SpikeSoft.DataTypes.Common
                 TmpMan.CleanTmpFile(NewFile_PATH);
                 return true;
             }
+
             BPE BPEMan = new BPE();
             byte[] CompressedFile = BPEMan.compress(File.ReadAllBytes(tmpPath));
             File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(NewFile_PATH), NewFile_NAME + ".zpak"), CompressedFile);
@@ -248,23 +258,23 @@ namespace SpikeSoft.DataTypes.Common
 
         public virtual void InitializeSubFileCount(string filePath)
         {
-            FileCount = SpikeSoft.FileManager.BinMan.GetBinaryData_Int32(filePath, 0);
+            FileCount = BinMan.GetBinaryData_Int32(filePath, 0);
         }
 
         public virtual void InitializeFilePointersList(string filePath)
         {
             FilePointers = new List<int>();
-            int total = FileManager.BinMan.GetBinaryData_Int32(filePath, 0);
+            int total = BinMan.GetBinaryData_Int32(filePath, 0);
             for (int i = 0; i < total; i++)
             {
-                FilePointers.Add(FileManager.BinMan.GetBinaryData_Int32(filePath, i * 4 + 4));
+                FilePointers.Add(BinMan.GetBinaryData_Int32(filePath, i * 4 + 4));
             }
         }
 
         public virtual void InitializeEndOfFilePointer(string filePath)
         {
-            int total = FileManager.BinMan.GetBinaryData_Int32(filePath, 0);
-            EOF = FileManager.BinMan.GetBinaryData_Int32(filePath, total * 4 + 4);
+            int total = BinMan.GetBinaryData_Int32(filePath, 0);
+            EOF = BinMan.GetBinaryData_Int32(filePath, total * 4 + 4);
         }
 
         public virtual void InitializeFilenamesList(string filePath, int subFileCount)
@@ -274,7 +284,7 @@ namespace SpikeSoft.DataTypes.Common
             var linePos = 0;
 
             // Set Base PakList File to Initialize Search
-            var txt_path = Path.Combine(Properties.Settings.Default.CommonTXTPath, Properties.Settings.Default.CommonGAMEPath, "paklist.txt");
+            var txt_path = Path.Combine(SpikeSoft.UtilityManager.Properties.Settings.Default.CommonTXTPath, SpikeSoft.UtilityManager.Properties.Settings.Default.CommonGAMEPath, "paklist.txt");
 
             using (var sr = new StreamReader(txt_path))
             {
@@ -412,8 +422,8 @@ namespace SpikeSoft.DataTypes.Common
             for (var i = 0; i < subFileCount; i++)
             {
                 // Get File Offsets to get File Size
-                int fOffset = SpikeSoft.FileManager.BinMan.GetBinaryData_Int32(filePath, i * 4 + 4);
-                int NextOffset = SpikeSoft.FileManager.BinMan.GetBinaryData_Int32(filePath, i * 4 + 8);
+                int fOffset = BinMan.GetBinaryData_Int32(filePath, i * 4 + 4);
+                int NextOffset = BinMan.GetBinaryData_Int32(filePath, i * 4 + 8);
 
                 // File is Empty
                 if ((NextOffset - fOffset) == 0)
@@ -423,7 +433,7 @@ namespace SpikeSoft.DataTypes.Common
                 }
 
                 // Get File to Array and Analyse it to get FileName and Extension
-                result.Add((i + 1).ToString(format) + "_" + FileManager.AnalysisMan.RunFileAnalysis(FileManager.BinMan.GetBytes(filePath, NextOffset - fOffset, fOffset)));
+                result.Add((i + 1).ToString(format) + "_" + FileManager.AnalysisMan.RunFileAnalysis(BinMan.GetBytes(filePath, NextOffset - fOffset, fOffset)));
             }
 
             return result;

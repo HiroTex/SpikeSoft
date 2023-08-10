@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpikeSoft.GUI
+namespace SpikeSoft.UtilityManager
 {
     public interface IEditor
     {
         Control UIEditor { get; }
-        Size UISize { get; set; }
-        void InitializeComponent(string filePath);
+        Size UISize { get; }
+        void Initialize(string filePath);
     }
 }

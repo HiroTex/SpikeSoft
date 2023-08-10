@@ -1,4 +1,4 @@
-﻿using SpikeSoft.FileManager;
+﻿using SpikeSoft.UtilityManager;
 using System;
 using System.IO;
 using System.Reflection;
@@ -26,7 +26,6 @@ namespace SpikeSoft
             if (File.Exists(assemblypath)) return Assembly.LoadFile(assemblypath);
             return null;
         }
-
         private static void AppExit(object sender, EventArgs e)
         {
             TmpMan.CleanAllTmpFiles();

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.DataTypes.Common
 {
@@ -19,17 +20,17 @@ namespace SpikeSoft.DataTypes.Common
 
         public override void InitializeSubFileCount(string filePath)
         {
-            VERSION = SpikeSoft.FileManager.BinMan.GetBinaryData_Int32(filePath, 0x4);
-            FileCount = SpikeSoft.FileManager.BinMan.GetBinaryData_Int32(filePath, 0x8);
+            VERSION = BinMan.GetBinaryData_Int32(filePath, 0x4);
+            FileCount = BinMan.GetBinaryData_Int32(filePath, 0x8);
         }
 
         public override void InitializeFilePointersList(string filePath)
         {
             FilePointers = new List<int>();
-            int total = FileManager.BinMan.GetBinaryData_Int32(filePath, 0x8);
+            int total = BinMan.GetBinaryData_Int32(filePath, 0x8);
             for (int i = 0; i < total; i++)
             {
-                FilePointers.Add(FileManager.BinMan.GetBinaryData_Int32(filePath, i * 4 + 0x10));
+                FilePointers.Add(BinMan.GetBinaryData_Int32(filePath, i * 4 + 0x10));
             }
         }
 

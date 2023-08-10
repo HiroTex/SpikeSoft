@@ -1,5 +1,4 @@
-﻿using SpikeSoft.UserSettings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.GUI
 {
@@ -16,8 +16,8 @@ namespace SpikeSoft.GUI
     {
         private readonly Dictionary<int, SettingsProperty> BooleanSettings = new Dictionary<int, SettingsProperty>
         {
-            {0, Properties.Settings.Default.Properties["UnpackDeleteFile"] },
-            {1, Properties.Settings.Default.Properties["UnpackComplete"] }
+            {0, SpikeSoft.UtilityManager.Properties.Settings.Default.Properties["UnpackDeleteFile"] },
+            {1, SpikeSoft.UtilityManager.Properties.Settings.Default.Properties["UnpackComplete"] }
         };
 
         public SettingsWindow()
@@ -29,15 +29,15 @@ namespace SpikeSoft.GUI
         private void InitializeSettingData()
         {
             // Set Paths
-            txtBoxResourcePath.Text = Properties.Settings.Default.CommonResourcePath;
-            txtBoxTXTPath.Text = Properties.Settings.Default.CommonTXTPath;
-            txtBoxIMGPath.Text = Properties.Settings.Default.CommonIMGPath;
-            txtBoxGAMEPath.Text = Properties.Settings.Default.CommonGAMEPath;
+            txtBoxResourcePath.Text = SpikeSoft.UtilityManager.Properties.Settings.Default.CommonResourcePath;
+            txtBoxTXTPath.Text = SpikeSoft.UtilityManager.Properties.Settings.Default.CommonTXTPath;
+            txtBoxIMGPath.Text = SpikeSoft.UtilityManager.Properties.Settings.Default.CommonIMGPath;
+            txtBoxGAMEPath.Text = SpikeSoft.UtilityManager.Properties.Settings.Default.CommonGAMEPath;
 
             // Define Game Mode
             foreach (RadioButton button in groupBoxGameMode.Controls)
             {
-                if (button.Name.Contains((Properties.Settings.Default.GAMEMODE + 1).ToString()))
+                if (button.Name.Contains((SpikeSoft.UtilityManager.Properties.Settings.Default.GAMEMODE + 1).ToString()))
                 {
                     button.Checked = true;
                     break;
@@ -45,13 +45,13 @@ namespace SpikeSoft.GUI
             }
 
             // Define Wii Mode
-            btnConsoleModeSetting1.Checked = !Properties.Settings.Default.WIIMODE;
-            btnConsoleModeSetting2.Checked = Properties.Settings.Default.WIIMODE;
+            btnConsoleModeSetting1.Checked = !SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE;
+            btnConsoleModeSetting2.Checked = SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE;
 
             // Define Checked Settings
             foreach (var setting in BooleanSettings)
             {
-                bool param =Convert.ToBoolean(Properties.Settings.Default.PropertyValues[setting.Value.Name].PropertyValue);
+                bool param =Convert.ToBoolean(SpikeSoft.UtilityManager.Properties.Settings.Default.PropertyValues[setting.Value.Name].PropertyValue);
                 checkListSettings.SetItemChecked(setting.Key, param);
             }
         }
@@ -63,23 +63,23 @@ namespace SpikeSoft.GUI
 
         private void SaveSettings(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
+            SpikeSoft.UtilityManager.Properties.Settings.Default.Save();
             MessageBox.Show("Settings Saved Successfully", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void ResetDefaultSettings(object sender, EventArgs e)
         {
-            Properties.Settings.Default.GAMEMODE = 2;
-            Properties.Settings.Default.WIIMODE = false;
-            Properties.Settings.Default.UnpackDeleteFile = false;
-            Properties.Settings.Default.UnpackComplete = true;
+            SpikeSoft.UtilityManager.Properties.Settings.Default.GAMEMODE = 2;
+            SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE = false;
+            SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackDeleteFile = false;
+            SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackComplete = true;
             SettingsMan.Instance.ResetDefaultResources();
             InitializeSettingData();
         }
 
         private void SearchPath(object sender, EventArgs e)
         {
-            string NewPath = FileManager.FileMan.GetDirectoryPath("Select New Folder Path");
+            string NewPath = FileMan.GetDirectoryPath("Select New Folder Path");
             if (string.IsNullOrEmpty(NewPath))
             {
                 return;
@@ -97,35 +97,35 @@ namespace SpikeSoft.GUI
         private void PathChanged(object sender, EventArgs e)
         {
             string SettingName = (sender as TextBox).Name.Replace("txtBox", "Common");
-            UserSettings.SettingsMan.Instance.ChangeResourcePath(SettingName,(sender as TextBox).Text);
+            SettingsMan.Instance.ChangeResourcePath(SettingName,(sender as TextBox).Text);
         }
 
         private void UpdateSettingFlags(object sender, ItemCheckEventArgs e)
         {
             if (e.NewValue == CheckState.Checked)
             {
-                Properties.Settings.Default.PropertyValues[BooleanSettings[e.Index].Name].PropertyValue = true;
+                SpikeSoft.UtilityManager.Properties.Settings.Default.PropertyValues[BooleanSettings[e.Index].Name].PropertyValue = true;
             }
             else
             {
-                Properties.Settings.Default.PropertyValues[BooleanSettings[e.Index].Name].PropertyValue = false;
+                SpikeSoft.UtilityManager.Properties.Settings.Default.PropertyValues[BooleanSettings[e.Index].Name].PropertyValue = false;
             }
         }
 
         private void SetGameMode(object sender, EventArgs e)
         {
-            Properties.Settings.Default.GAMEMODE = int.Parse((sender as RadioButton).Name.Replace("btnGameModeSetting", string.Empty)) - 1;
+            SpikeSoft.UtilityManager.Properties.Settings.Default.GAMEMODE = int.Parse((sender as RadioButton).Name.Replace("btnGameModeSetting", string.Empty)) - 1;
         }
 
         private void SetWiiMode(object sender, EventArgs e)
         {
             if (btnConsoleModeSetting2.Checked)
             {
-                Properties.Settings.Default.WIIMODE = true;
+                SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE = true;
             }
             else
             {
-                Properties.Settings.Default.WIIMODE = false;
+                SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE = false;
             }
         }
     }

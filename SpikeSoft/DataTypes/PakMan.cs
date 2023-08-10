@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.DataTypes
 {
@@ -33,8 +29,8 @@ namespace SpikeSoft.DataTypes
                 case ".zpak":
                     // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
                     var BPEMan = new Common.BPE();
-                    FileManager.TmpMan.SetNewAssociatedPath(filePath);
-                    string tmpPath = FileManager.TmpMan.GetTmpFilePath(filePath);
+                    TmpMan.SetNewAssociatedPath(filePath);
+                    string tmpPath = TmpMan.GetTmpFilePath(filePath);
                     byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath));
 
                     if (string.IsNullOrEmpty(tmpPath))
@@ -54,7 +50,7 @@ namespace SpikeSoft.DataTypes
                     Unpack_Handler(typeof(Common.PAK), tmpPath, filePath, true, progress);
 
                     // Then Delete Temporary File Created.
-                    FileManager.TmpMan.CleanTmpFile(filePath);
+                    TmpMan.CleanTmpFile(filePath);
                     break;
                 case ".pak":
                     // Create PAK File Handler.
@@ -62,7 +58,7 @@ namespace SpikeSoft.DataTypes
                     break;
                 case ".pck":
                     // Identify Pck as EPCK file
-                    if (!FileManager.BinMan.GetBinaryData_String(File.ReadAllBytes(filePath), 0).Contains("EPCK"))
+                    if (!BinMan.GetBinaryData_String(File.ReadAllBytes(filePath), 0).Contains("EPCK"))
                     {
                         return;
                     }
@@ -78,12 +74,12 @@ namespace SpikeSoft.DataTypes
                 return;
             }
 
-            if (Properties.Settings.Default.UnpackDeleteFile == true)
+            if (SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackDeleteFile == true)
             {
                 File.Delete(filePath);
             }
 
-            if (Properties.Settings.Default.UnpackComplete != true)
+            if (SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackComplete != true)
             {
                 return;
             }

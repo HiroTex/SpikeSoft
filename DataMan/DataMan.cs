@@ -1,5 +1,4 @@
-﻿using SpikeSoft.FileManager;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,11 +6,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpikeSoft.DataTypes
+namespace SpikeSoft.UtilityManager
 {
-    static public class DataMan
+    public class DataMan
     {
-
         /// <summary>
         /// Updates Object in List with current stored Temporal Data
         /// </summary>
@@ -42,7 +40,7 @@ namespace SpikeSoft.DataTypes
                 throw new IndexOutOfRangeException("Character ID out of Bounds");
             }
         }
-        
+
         /// <summary>
         /// Get List of Objects of a specified Struct Type from a File
         /// </summary>
@@ -84,7 +82,7 @@ namespace SpikeSoft.DataTypes
         /// <returns></returns>
         public static object GetStructFromFile(string filePath, int index, Type type)
         {
-            return DataMan.DataToStruct(BinMan.GetBytes(filePath, Marshal.SizeOf(type), index), type);
+            return DataToStruct(BinMan.GetBytes(filePath, Marshal.SizeOf(type), index), type);
         }
 
         /// <summary>
@@ -144,7 +142,7 @@ namespace SpikeSoft.DataTypes
         /// <returns></returns>
         public static byte[] ParseStructEndianness(byte[] data, Type type)
         {
-            if (Properties.Settings.Default.WIIMODE || (!BitConverter.IsLittleEndian))
+            if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE || (!BitConverter.IsLittleEndian))
             {
                 foreach (var field in type.GetFields())
                 {

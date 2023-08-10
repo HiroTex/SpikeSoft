@@ -2,14 +2,32 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using SpikeSoft.UtilityManager;
+using System.IO;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace SpikeSoft.ZS3Editor.CharaInfo
 {
     public partial class ZS3EditorCharaInfo : UserControl
     {
+        private DataHandler.BinaryHandler Data;
+
         public ZS3EditorCharaInfo()
         {
             InitializeComponent();
+        }
+
+        public ZS3EditorCharaInfo(string filePath)
+        {
+            InitializeComponent();
+            Data = new DataHandler.BinaryHandler(filePath);
+            Location = new System.Drawing.Point(0, 0);
+            Dock = DockStyle.Fill;
+            Enabled = true;
+            Visible = true;
+            SetCharaItemList(SettingsResources.CharaList.ToArray(), SettingsResources.CharaChip);
+            ValidateCharaListItems(Data.GetTotalItems());
         }
 
         private int LatestSelectedIndex;
@@ -23,18 +41,12 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
 
             LatestSelectedIndex = charaList.SelectedIndices[0];
 
-            if (ItemSelectedChanged != null)
-            {
-                ItemSelectedChanged(sender, e);
-            }
+            ItemSelectedChanged(sender, e);
         }
 
         private void UpdateHUDImage(object sender, EventArgs e)
         {
-            if (ValueChanged != null)
-            {
-                this.ValueChanged(sender, e);
-            }
+            ValueChanged(sender, e);
 
             var imgBase = new Bitmap(hudPicture.BackgroundImage.Width, hudPicture.BackgroundImage.Height);
             var imgDraw = Graphics.FromImage(imgBase);
@@ -68,15 +80,112 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
             hudPicture.Image = imgBase;
         }
 
-        [Browsable(true)]
-        [Category("Action")]
-        [Description("Invoked when value is updated")]
-        public event EventHandler ValueChanged;
+        private void ItemSelectedChanged(object sender, EventArgs e)
+        {
+            if ((sender == null) || ((sender as ListView).SelectedItems.Count == 0))
+            {
+                return;
+            }
 
-        [Browsable(true)]
-        [Category("Action")]
-        [Description("Invoked when Selected Index in ListView Changed")]
-        public event EventHandler ItemSelectedChanged;
+            int SelectedChar = GetCharaListSelectedIndex();
+
+            // If Temp File is already created, try to update Data List with Item from Temp File.
+
+            try
+            {
+                if (File.Exists(TmpMan.GetDefaultTmpFile()))
+                {
+                    Data.IUpdateTableItemFromTmp(SelectedChar);
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                // Catch Invalid Index and set to First Item on List is possible.
+                SetCharaListDefault();
+                return;
+            }
+
+            // Sets Data Values on NumericUpDown Controls
+            object[] Values = GetValuesFromData(SelectedChar);
+
+            try
+            {
+                SetDataValues(Values);
+            }
+            catch (Exception)
+            {
+                ExceptionMan.ThrowMessage(0x2001);
+            }
+        }
+
+        private object[] GetValuesFromData(int SelectedChar)
+        {
+            object[] values = new object[]
+            {
+                Data[SelectedChar].Initial_HP / 10000,
+                Data[SelectedChar].Initial_KI / 20000,
+                Data[SelectedChar].Max_Blast_Units
+            };
+
+            return values;
+        }
+
+        private void ValueChanged(object sender, EventArgs e)
+        {
+            if (TmpMan.GetDefaultTmpFile() == string.Empty || !(sender is NumericUpDown))
+            {
+                return;
+            }
+
+            int n = GetCharaListSelectedIndex();
+            DataInfo.CharaInfoObj.CharacterInfo CharInfo = new DataInfo.CharaInfoObj.CharacterInfo();
+
+            // Get Current Selected Character Information
+            try
+            {
+                CharInfo = Data[n];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                // Set First Item on List if Current Selected is Invalid
+                SetCharaListDefault();
+                return;
+            }
+
+            // Update Item Data on List
+            CharInfo = UpdateCharacterData(sender as NumericUpDown, CharInfo);
+            Data[n] = CharInfo;
+
+            // Update Binary File
+            UpdateBinaryFile(n, CharInfo);
+        }
+
+        private DataInfo.CharaInfoObj.CharacterInfo UpdateCharacterData(NumericUpDown numericUpDown, DataInfo.CharaInfoObj.CharacterInfo charInfo)
+        {
+            int newValue = (int)numericUpDown.Value;
+            string controlName = numericUpDown.Name;
+
+            Dictionary<string, Action> numericActions = new Dictionary<string, Action>
+            {
+                { "hpBarNumeric", () => charInfo.Initial_HP = newValue * 10000 },
+                { "kiBarNumeric", () => charInfo.Initial_KI = newValue * 20000 },
+                { "blastNumeric", () => charInfo.Max_Blast_Units = newValue },
+            };
+
+            if (numericActions.ContainsKey(controlName))
+            {
+                numericActions[controlName].Invoke();
+            }
+
+            return charInfo;
+        }
+
+        private void UpdateBinaryFile(int index, DataInfo.CharaInfoObj.CharacterInfo charInfo)
+        {
+            var charInfoData = DataMan.StructToData(charInfo);
+            int offset = index * Marshal.SizeOf(typeof(DataInfo.CharaInfoObj.CharacterInfo));
+            BinMan.SetBytes(TmpMan.GetDefaultTmpFile(), charInfoData, offset);
+        }
 
         /// <summary>
         /// Set CharaList Item List Data and Image List

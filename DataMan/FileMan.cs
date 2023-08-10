@@ -1,5 +1,4 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using SpikeSoft.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace SpikeSoft.FileManager
+namespace SpikeSoft.UtilityManager
 {
     public static class FileMan
     {

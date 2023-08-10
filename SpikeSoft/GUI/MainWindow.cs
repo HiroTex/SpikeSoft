@@ -1,15 +1,13 @@
 ﻿using SpikeSoft.DataTypes;
 using SpikeSoft.FileManager;
 using SpikeSoft.GUI;
-using SpikeSoft.UserSettings;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft
 {
@@ -23,9 +21,16 @@ namespace SpikeSoft
 
         private void InitializeDefaults()
         {
-            mainToolStrip.Renderer = new MyRenderer();
-            mainMenuStrip.Renderer = new MyRenderer();
-            SettingsMan.Instance.SetDefaultResources();
+            try
+            {
+                mainToolStrip.Renderer = new MyRenderer();
+                mainMenuStrip.Renderer = new MyRenderer();
+                SettingsMan.Instance.SetDefaultResources();
+            }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+            }
         }
 
         private void SetSaveBtn(bool set)
@@ -96,6 +101,7 @@ namespace SpikeSoft
             // Get Main Editor Window Size
             Size WindowSize = UI.GetEditorUISize(MainEditor.Name);
             MinimumSize = WindowSize;
+            Size = WindowSize;
 
             // Update Current Work Files
             TmpMan.InitializeMainTmpFile(filePath);

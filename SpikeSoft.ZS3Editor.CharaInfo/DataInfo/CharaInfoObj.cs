@@ -1,12 +1,13 @@
-﻿using SpikeSoft.FileManager;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SpikeSoft.DataTypes.ZS3
+namespace SpikeSoft.ZS3Editor.CharaInfo.DataInfo
 {
-    class CharacterInfoTable
+    class CharaInfoObj
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct CharacterInfo

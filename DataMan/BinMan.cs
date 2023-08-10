@@ -1,12 +1,13 @@
-﻿using SpikeSoft.DataTypes;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace SpikeSoft.FileManager
+namespace SpikeSoft.UtilityManager
 {
-    public static class BinMan
+    public class BinMan
     {
         static public byte[] GetBytes(string filePath, int objSize, int index)
         {

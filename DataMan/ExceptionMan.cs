@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace SpikeSoft.DataTypes
+namespace SpikeSoft.UtilityManager
 {
-    public static class ExceptionMan
+    public class ExceptionMan
     {
         // Common Exception List Messages
         // Key: Hexadecimal Code with format:

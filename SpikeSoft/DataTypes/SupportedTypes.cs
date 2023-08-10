@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SpikeSoft.UtilityManager;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,15 +14,12 @@ namespace SpikeSoft.DataTypes
         // Dictionary that contains:
         // Key: Type of File
         // Value: File Extension Filter for Data Type
-        public static readonly Dictionary<string, string> MainFilterList = new Dictionary<string, string>
-        {
-            {"Binary Data", "*.dat;*.bin"},
-            {"Image Data", "*.dbt;*.cdbt" },
-            {"Model Data", "*.mdl" },
-            {"Animation Data", "*.anm;*.canm" },
-            {"Script Data", "*.gsc"},
-            {"Package", "*.pak;*.zpak;*.pck;*.idx" }
-        };
+        public static readonly Dictionary<string, string> MainFilterList = ReadTxtDictionary("SupportedTypes.txt");
+
+        // Dictionary that contains:
+        // Key: Hardcoded File Name for specific editable File parsing
+        // Value: Type of UI Editor that Edits that File
+        public static readonly Dictionary<string, string> FileNameIds = ReadTxtDictionary("Libs.txt");
 
         // Dictionary that contains:
         // Key: Valid Editable File Extension
@@ -30,7 +29,7 @@ namespace SpikeSoft.DataTypes
             { ".dat", ParseByFileName },
             { ".pmdl", null },
             { ".mdl", null },
-            { ".pck", Package},
+            { ".pck", Package },
             { ".pak", Package },
             { ".zpak", Package },
             { ".idx", Package },
@@ -43,24 +42,38 @@ namespace SpikeSoft.DataTypes
             { ".bin", null }
         };
 
-        // Dictionary that contains:
-        // Key: Hardcoded File Name for specific editable File parsing
-        // Value: Type of UI Editor that Edits that File
-        public static readonly Dictionary<string, Type> FileNameIds = new Dictionary<string, Type>
+        public static Dictionary<string, string> ReadTxtDictionary(string filePath)
         {
-            { "common_character_info", typeof(SpikeSoft.GUI.ZS3.CharaInfo.CharaInfoUIHandler) },
-            { "unlock_item_param", typeof(SpikeSoft.GUI.ZS3.TourUnlockables.TourUnlockablesUIHandler) }
-        };
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            using (var sr = new StreamReader(filePath))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var line = sr.ReadLine();
+                    result.Add(line.Split(',')[0], line.Split(',')[1].Replace(" ", string.Empty));
+                }
+            }
+            return result;
+        }
 
         public static Type ParseByFileName(string filePath)
         {
-            foreach (var Identifier in FileNameIds)
+            try
             {
-                if (Path.GetFileName(filePath).Contains(Identifier.Key))
+                foreach (var Identifier in FileNameIds)
                 {
-                    return Identifier.Value;
+                    if (Path.GetFileName(filePath).Contains(Identifier.Key))
+                    {
+                        AppDomain.CurrentDomain.GetAssemblies();
+                        return Type.GetType($"{Identifier.Value}.IPlugin, {Identifier.Value}");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+            }
+
             return null;
         }
 

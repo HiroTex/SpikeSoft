@@ -1,11 +1,10 @@
-﻿using SpikeSoft.DataTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace SpikeSoft.FileManager
+namespace SpikeSoft.UtilityManager
 {
     public static class TmpMan
     {

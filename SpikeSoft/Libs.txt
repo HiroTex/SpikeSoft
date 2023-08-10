@@ -1,0 +1,2 @@
+﻿common_character_info, SpikeSoft.ZS3Editor.CharaInfo
+unlock_item_param, SpikeSoft.ZS3Editor.TourUnlockables

@@ -1,8 +1,8 @@
-﻿using SpikeSoft.UserSettings;
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.GUI
 {
@@ -21,14 +21,24 @@ namespace SpikeSoft.GUI
 
                 var ResultType = FileType.Value.Invoke(filePath);
 
-                if (!typeof(IEditor).IsAssignableFrom(ResultType))
+                try
+                {
+                    Interface = (CommonMan.GetInterfaceObject(typeof(IEditor), ResultType) as IEditor);
+                    Interface.Initialize(filePath);
+                    return Interface.UIEditor;
+                }
+                catch (TypeLoadException)
                 {
                     continue;
                 }
-
-                Interface = (DataTypes.CommonMan.GetInterfaceObject(typeof(IEditor), ResultType) as IEditor);
-                Interface.InitializeComponent(filePath);
-                return Interface.UIEditor;
+                catch (ArgumentNullException)
+                {
+                    continue;
+                }
+                catch (Exception ex)
+                {
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+                }
             }
 
             return null;

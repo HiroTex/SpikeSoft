@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.DataTypes.Common
 {
@@ -11,7 +12,7 @@ namespace SpikeSoft.DataTypes.Common
         // EXTERNAL LIBRARY
         // modified by Luigi Auriemma
         // Adapted to work with Sparking! Binaries by ZeroDevs and HiroTex
-        /* bpe.c - rewritten to handle parameterised command line input */
+        // bpe.c - rewritten to handle parameterised command line input
 
         #region Internal methods
         /* from compress.c */
@@ -229,8 +230,8 @@ namespace SpikeSoft.DataTypes.Common
             byte[] result = new byte[compressed.Length + 8];
             byte[] osize = BitConverter.GetBytes(in0.Length);
             byte[] zsize = BitConverter.GetBytes(compressed.Length);
-            if (Properties.Settings.Default.WIIMODE) Array.Reverse(osize);
-            if (Properties.Settings.Default.WIIMODE) Array.Reverse(zsize);
+            if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(osize);
+            if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(zsize);
             Array.Copy(osize, 0, result, 0, 0x4);
             Array.Copy(zsize, 0, result, 0x4, 0x4);
             Array.Copy(compressed, 0, result, 0x8, compressed.Length);
@@ -247,10 +248,10 @@ namespace SpikeSoft.DataTypes.Common
         public byte[] decompress(byte[] in0)
         {
             // UZ Size
-            int outsz = FileManager.BinMan.GetBinaryData_Int32(in0, 0);
+            int outsz = SpikeSoft.UtilityManager.BinMan.GetBinaryData_Int32(in0, 0);
 
             // Z Size
-            int insz = FileManager.BinMan.GetBinaryData_Int32(in0, 4);
+            int insz = SpikeSoft.UtilityManager.BinMan.GetBinaryData_Int32(in0, 4);
 
             // UZ File
             byte[] out0 = new byte[outsz];

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.FileManager
 {
@@ -51,7 +49,7 @@ namespace SpikeSoft.FileManager
         static public string AnalyseMAGIC(byte[] source)
         {
             // Get MAGIC Header String for File Extension Parsing
-            string MAGIC = FileManager.BinMan.GetBinaryData_String(source, 0);
+            string MAGIC = BinMan.GetBinaryData_String(source, 0);
 
             // Simple Check for ASCII TXT Files.
             if (source[0] == 0xFF && source[1] == 0xFE)
@@ -73,7 +71,7 @@ namespace SpikeSoft.FileManager
         static public string AnalyseBPE(byte[] source)
         {
             // Get ZSize to try file length comparison.
-            int ZSize = FileManager.BinMan.GetBinaryData_Int32(source, 4);
+            int ZSize = BinMan.GetBinaryData_Int32(source, 4);
 
             // Get Padding Bytes to substract from comparison value.
             int HeaderLength = 8;
@@ -91,7 +89,7 @@ namespace SpikeSoft.FileManager
             }
 
             // Compare if UZSize is Bigger than ZSize to avoid other files that might match this comparison.
-            int UZSize = FileManager.BinMan.GetBinaryData_Int32(source, 0);
+            int UZSize = BinMan.GetBinaryData_Int32(source, 0);
             if (UZSize <= ZSize)
             {
                 return string.Empty;  
@@ -116,14 +114,14 @@ namespace SpikeSoft.FileManager
             // Try to Match PAK Header Structure.
 
             // Get Sub File Count
-            int fCount = FileManager.BinMan.GetBinaryData_Int32(source, 0);
+            int fCount = BinMan.GetBinaryData_Int32(source, 0);
             if (fCount < 1 || (fCount * 4 + 4) >= source.Length || fCount >= short.MaxValue)
             {
                 return string.Empty;
             }
 
             // Skip Header until End of File Pointer to check matching Length
-            int EOFPointer = FileManager.BinMan.GetBinaryData_Int32(source, fCount * 4 + 4);
+            int EOFPointer = BinMan.GetBinaryData_Int32(source, fCount * 4 + 4);
             if (EOFPointer != source.Length)
             {
                 return string.Empty;

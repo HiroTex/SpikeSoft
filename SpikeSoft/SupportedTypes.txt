@@ -1,0 +1,6 @@
+﻿Binary Data, *.dat;*.bin
+Image Data, *.dbt;*.cdbt
+Model Data, *.mdl
+Animation Data, *.anm;*.canm
+Script Data, *.gsc
+Package, *.pak;*.zpak;*.pck;*.idx
