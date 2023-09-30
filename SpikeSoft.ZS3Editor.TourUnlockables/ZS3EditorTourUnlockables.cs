@@ -15,7 +15,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
 {
     public partial class ZS3EditorTourUnlockables: UserControl
     {
-        private DataHandler.BinaryHandler Data;
+        private StructMan<TourUnlockables> Data;
 
         public ZS3EditorTourUnlockables()
         {
@@ -25,7 +25,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
 
         public ZS3EditorTourUnlockables(string filePath, string[] zitemList, string[] charaList, string[] mapList, string[] bgmList)
         {
-            Data = new DataHandler.BinaryHandler(filePath);
+            Data = new StructMan<TourUnlockables>(filePath);
             InitializeComponent();
             InitializeBoxItemList(comboZItem, zitemList);
             InitializeBoxItemList(comboChara1, charaList);
@@ -116,7 +116,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
 
             int n = SelectedTour + (SelectedMode * 5);
 
-            TourUnlockablesTable.TourUnlockables Obj = new TourUnlockablesTable.TourUnlockables();
+            TourUnlockables Obj = new TourUnlockables();
 
             // Get Current Selected Character Information
             try
@@ -146,7 +146,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
             Data[n] = Obj;
 
             // Update Binary File
-            BinMan.SetBytes(TmpMan.GetDefaultTmpFile(), DataMan.StructToData(Obj), n * Marshal.SizeOf(typeof(TourUnlockablesTable.TourUnlockables)));
+            BinMan.SetBytes(TmpMan.GetDefaultTmpFile(), DataMan.StructToData(Obj), n * Marshal.SizeOf(typeof(TourUnlockables)));
         }
 
         private void UpdateEditorData(object sender, EventArgs e)
@@ -217,7 +217,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
 
         private object[] GetValuesFromData(int selectedMode, int selectedTour, int selectedDiff)
         {
-            TourUnlockablesTable.TourUnlockables item = Data[(selectedMode * 5) + selectedTour];
+            TourUnlockables item = Data[(selectedMode * 5) + selectedTour];
 
             object[] values = new object[]
             {
@@ -237,7 +237,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
             return values;
         }
 
-        private void UpdateNumericValue(NumericUpDown numericUpDown, TourUnlockablesTable.TourUnlockables obj, int selectedDiff)
+        private void UpdateNumericValue(NumericUpDown numericUpDown, TourUnlockables obj, int selectedDiff)
         {
             int newValue = (int)numericUpDown.Value;
             string controlName = numericUpDown.Name;
@@ -258,7 +258,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
             }
         }
 
-        private void UpdateComboBoxValue(ComboBox comboBox, TourUnlockablesTable.TourUnlockables obj, int selectedDiff)
+        private void UpdateComboBoxValue(ComboBox comboBox, TourUnlockables obj, int selectedDiff)
         {
             int newIndex = comboBox.SelectedIndex;
             if (newIndex == comboBox.Items.Count - 1)

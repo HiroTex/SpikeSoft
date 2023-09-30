@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SpikeSoft.UtilityManager;
+using SpikeSoft.ZLib;
 
 namespace SpikeSoft.DataTypes
 {
@@ -28,7 +29,7 @@ namespace SpikeSoft.DataTypes
                     return;
                 case ".zpak":
                     // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
-                    var BPEMan = new Common.BPE();
+                    var BPEMan = new BPE();
                     TmpMan.SetNewAssociatedPath(filePath);
                     string tmpPath = TmpMan.GetTmpFilePath(filePath);
                     byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath));
@@ -102,13 +103,7 @@ namespace SpikeSoft.DataTypes
         public void Unpack_Handler(Type T, string filePath, string originalPath, bool ZBPE, IProgress<int> progress)
         {
             var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), T) as Common.IPak);
-            Package.FilePath = filePath;
-            Package.UnpackedDir = Path.Combine(Path.GetDirectoryName(originalPath), Path.GetFileNameWithoutExtension(originalPath));
-            Package.ZBPE = ZBPE;
-            Package.InitializeSubFileCount(filePath);
-            Package.InitializeFilePointersList(filePath);
-            Package.InitializeEndOfFilePointer(filePath);
-            Package.InitializeFilenamesList(originalPath, Package.FileCount);
+            Package.Initialize(filePath, originalPath, ZBPE);
             Package.Unpack(progress);
         }
 

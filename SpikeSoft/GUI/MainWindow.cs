@@ -205,8 +205,7 @@ namespace SpikeSoft
                     progress.Report((int)((ID++ / maxValue) * 100));
                     DataTypes.PakMan pak = new PakMan();
                     pak.ShowProgressWindow = false;
-                    var t = Task.Run(async () => pak.InitializeHandler(file));
-                    t.Wait();
+                    var t = Task.Run(async () => await pak.InitializeHandler(file));
                 }
             }
         }
@@ -254,8 +253,7 @@ namespace SpikeSoft
                 {
                     DataTypes.PakMan pak = new PakMan();
                     pak.ShowProgressWindow = false;
-                    var t = Task.Run(async () => pak.InitializeHandler(file));
-                    t.Wait();
+                    var t = Task.Run(async () => await pak.InitializeHandler(file));
                 }
             }
         }

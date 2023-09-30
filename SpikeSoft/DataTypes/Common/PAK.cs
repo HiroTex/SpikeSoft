@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using SpikeSoft.UtilityManager;
+using SpikeSoft.ZLib;
 
 namespace SpikeSoft.DataTypes.Common
 {
-    class PAK : IPak
+    public class PAK : IPak
     {
         public string FilePath { get; set; }
         public string UnpackedDir { get; set; }
@@ -15,6 +16,17 @@ namespace SpikeSoft.DataTypes.Common
         public List<string> FileNames { get; set; }
         public int EOF { get; set; }
         public bool ZBPE { get; set; }
+
+        public virtual void Initialize(string filePath, string originalPath, bool ZBPE)
+        {
+            FilePath = filePath;
+            UnpackedDir = Path.Combine(Path.GetDirectoryName(originalPath), Path.GetFileNameWithoutExtension(originalPath));
+            this.ZBPE = ZBPE;
+            InitializeSubFileCount(filePath);
+            InitializeFilePointersList(filePath);
+            InitializeEndOfFilePointer(filePath);
+            InitializeFilenamesList(originalPath, FileCount);
+        }
 
         public virtual bool Unpack(IProgress<int> progress)
         {

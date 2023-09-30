@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SpikeSoft.UtilityManager;
+using SpikeSoft.ZLib;
 
 namespace SpikeSoft.FileManager
 {
@@ -96,7 +97,7 @@ namespace SpikeSoft.FileManager
             }
 
             // Decompress File and re-analyze again to determine which kind of compressed file is.
-            var BPEMan = new DataTypes.Common.BPE();
+            var BPEMan = new BPE();
             string ZType = RunFileAnalysis(BPEMan.decompress(source));
             string Result = "compressed.z";
             switch (ZType)

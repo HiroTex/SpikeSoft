@@ -42,8 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataHandler\BinaryHandler.cs" />
-    <Compile Include="DataInfo\CharaInfoObj.cs" />
+    <Compile Include="DataInfo\CharacterInfo.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

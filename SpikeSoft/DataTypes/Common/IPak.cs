@@ -17,6 +17,8 @@ namespace SpikeSoft.DataTypes.Common
         int EOF { get; set; }
         bool ZBPE { get; set; }
 
+        void Initialize(string filePath, string originalPath, bool ZBPE);
+
         bool Unpack(IProgress<int> progress);
 
         bool Repack(IProgress<int> progress);

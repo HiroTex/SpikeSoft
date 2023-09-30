@@ -6,12 +6,13 @@ using SpikeSoft.UtilityManager;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using SpikeSoft.ZS3Editor.CharaInfo.DataInfo;
 
 namespace SpikeSoft.ZS3Editor.CharaInfo
 {
     public partial class ZS3EditorCharaInfo : UserControl
     {
-        private DataHandler.BinaryHandler Data;
+        private StructMan<CharacterInfo> Data;
 
         public ZS3EditorCharaInfo()
         {
@@ -21,13 +22,13 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
         public ZS3EditorCharaInfo(string filePath)
         {
             InitializeComponent();
-            Data = new DataHandler.BinaryHandler(filePath);
+            Data = new StructMan<CharacterInfo>(filePath);
             Location = new System.Drawing.Point(0, 0);
             Dock = DockStyle.Fill;
             Enabled = true;
             Visible = true;
             SetCharaItemList(SettingsResources.CharaList.ToArray(), SettingsResources.CharaChip);
-            ValidateCharaListItems(Data.GetTotalItems());
+            ValidateCharaListItems(Data.Count);
         }
 
         private int LatestSelectedIndex;
@@ -138,7 +139,7 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
             }
 
             int n = GetCharaListSelectedIndex();
-            DataInfo.CharaInfoObj.CharacterInfo CharInfo = new DataInfo.CharaInfoObj.CharacterInfo();
+            DataInfo.CharacterInfo CharInfo = new DataInfo.CharacterInfo();
 
             // Get Current Selected Character Information
             try
@@ -160,7 +161,7 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
             UpdateBinaryFile(n, CharInfo);
         }
 
-        private DataInfo.CharaInfoObj.CharacterInfo UpdateCharacterData(NumericUpDown numericUpDown, DataInfo.CharaInfoObj.CharacterInfo charInfo)
+        private CharacterInfo UpdateCharacterData(NumericUpDown numericUpDown, DataInfo.CharacterInfo charInfo)
         {
             int newValue = (int)numericUpDown.Value;
             string controlName = numericUpDown.Name;
@@ -180,10 +181,10 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
             return charInfo;
         }
 
-        private void UpdateBinaryFile(int index, DataInfo.CharaInfoObj.CharacterInfo charInfo)
+        private void UpdateBinaryFile(int index, CharacterInfo charInfo)
         {
             var charInfoData = DataMan.StructToData(charInfo);
-            int offset = index * Marshal.SizeOf(typeof(DataInfo.CharaInfoObj.CharacterInfo));
+            int offset = index * Marshal.SizeOf(typeof(DataInfo.CharacterInfo));
             BinMan.SetBytes(TmpMan.GetDefaultTmpFile(), charInfoData, offset);
         }
 

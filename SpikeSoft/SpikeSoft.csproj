@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\Common\ANM.cs" />
-    <Compile Include="DataTypes\Common\BPE.cs" />
     <Compile Include="DataTypes\Common\DBT.cs" />
     <Compile Include="DataTypes\Common\IPak.cs" />
     <Compile Include="DataTypes\Common\PAK.cs" />
@@ -120,7 +119,13 @@
     <Content Include="Libs.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib\DocumentFormat.OpenXml.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\lib\SpikeSoft.UtilityManager.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\lib\SpikeSoft.ZLib.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\lib\SpikeSoft.ZS3Editor.TourUnlockables.dll">
@@ -665,6 +670,11 @@
     <Folder Include="resources\txt\ZS2\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BPE\SpikeSoft.ZLib.csproj">
+      <Project>{da7cfb84-9800-4d2e-9984-0e62301ad416}</Project>
+      <Name>SpikeSoft.ZLib</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DataMan\SpikeSoft.UtilityManager.csproj">
       <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
       <Name>SpikeSoft.UtilityManager</Name>
