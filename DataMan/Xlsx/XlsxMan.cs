@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -11,11 +12,11 @@ namespace SpikeSoft.UtilityManager
 {
     public class XlsxMan
     {
-        string excelFilePath = "output.xlsx";
+        string excelFilePath = "file.xlsx";
 
-        public XlsxMan(string outFile)
+        public XlsxMan(string filePath)
         {
-            excelFilePath = outFile;
+            excelFilePath = filePath;
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace SpikeSoft.UtilityManager
 
             try
             {
-                using (SpreadsheetDocument spreadsheetDocument = CreateExcelWorkbook())
+                using (SpreadsheetDocument spreadsheetDocument = CreateExcelWorkbook(typeof(T).Name))
                 {
                     WorksheetPart worksheetPart = AddWorksheet(spreadsheetDocument);
                     FillHeaderRowWithData<T>(worksheetPart);
@@ -50,7 +51,19 @@ namespace SpikeSoft.UtilityManager
             }
         }
 
-        private SpreadsheetDocument CreateExcelWorkbook()
+        public Dictionary<string,Dictionary<string,string>> ImportFromExcel()
+        {
+            // Dependency injection of the EPPlusExcelDataReader
+            var excelDataReader = new XlsxReader();
+            var dataRetriever = new ExcelDataRetriever(excelDataReader);
+
+            var data = dataRetriever.RetrieveData(excelFilePath);
+
+            return data;
+        }
+
+        #region ExportLogic
+        private SpreadsheetDocument CreateExcelWorkbook(string sheetName)
         {
             try
             {
@@ -69,7 +82,7 @@ namespace SpikeSoft.UtilityManager
                 {
                     Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
                     SheetId = 1,
-                    Name = "DataSheet"
+                    Name = sheetName
                 };
 
                 sheets.Append(sheet);
@@ -137,25 +150,11 @@ namespace SpikeSoft.UtilityManager
             {
                 if (field.FieldType.IsEnum)
                 {
-                    if (field.FieldType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
-                    {
-                        // Handle bit-field enum as separate columns
-                        foreach (Enum enumValue in Enum.GetValues(field.FieldType))
-                        {
-                            Cell cell = new Cell();
-                            cell.DataType = CellValues.String;
-                            cell.CellValue = new CellValue($"{prefix}{field.Name}.{enumValue}");
-                            headerRow.Append(cell);
-                        }
-                    }
-                    else
-                    {
-                        // Handle regular enum
-                        Cell cell = new Cell();
-                        cell.DataType = CellValues.String;
-                        cell.CellValue = new CellValue($"{prefix}{field.Name}");
-                        headerRow.Append(cell);
-                    }
+                    // Handle regular enum
+                    Cell cell = new Cell();
+                    cell.DataType = CellValues.String;
+                    cell.CellValue = new CellValue($"{prefix}{field.Name}");
+                    headerRow.Append(cell);
                 }
                 else if (field.FieldType.IsValueType && !field.FieldType.IsPrimitive && !field.FieldType.IsArray)
                 {
@@ -240,31 +239,16 @@ namespace SpikeSoft.UtilityManager
             {
                 if (field.FieldType.IsEnum)
                 {
-                    if (field.FieldType.GetCustomAttributes(typeof(FlagsAttribute), false).Any())
-                    {
-                        // Handle bit-field enum as separate columns
-                        foreach (Enum enumValue in Enum.GetValues(field.FieldType))
-                        {
-                            bool isSet = ((Enum)field.GetValue(data)).HasFlag(enumValue);
-                            Cell cell = new Cell();
-                            cell.DataType = CellValues.String;
-                            cell.CellValue = new CellValue(isSet ? "true" : "false");
-                            dataRow.Append(cell);
-                        }
-                    }
-                    else
-                    {
-                        // Handle regular enum
-                        Cell cell = new Cell();
-                        cell.DataType = CellValues.String;
-                        cell.CellValue = new CellValue($"{prefix}{field.GetValue(data)?.ToString()}");
-                        dataRow.Append(cell);
-                    }
+                    // Handle regular enum
+                    Cell cell = new Cell();
+                    cell.DataType = CellValues.String;
+                    cell.CellValue = new CellValue($"{field.GetValue(data)?.ToString()}");
+                    dataRow.Append(cell);
                 }
                 else if (field.FieldType.IsValueType && !field.FieldType.IsPrimitive && !field.FieldType.IsArray)
                 {
                     // Handle sub-struct field
-                    string subStructPrefix = $"{prefix}{field.Name}.";
+                    string subStructPrefix = $"{field.Name}.";
                     FillBitFieldRowWithDataRecursive(dataRow, (dynamic)field.GetValue(data), subStructPrefix);
                 }
                 else if (field.FieldType.IsArray)
@@ -288,7 +272,7 @@ namespace SpikeSoft.UtilityManager
                         {
                             Cell cell = new Cell();
                             cell.DataType = CellValues.String;
-                            cell.CellValue = new CellValue($"{element?.ToString()}");
+                            cell.CellValue = new CellValue($"{Convert.ToString(element, CultureInfo.InvariantCulture)}");
                             dataRow.Append(cell);
                         }
                     }
@@ -306,10 +290,11 @@ namespace SpikeSoft.UtilityManager
                     // Handle other types (e.g., primitive types)
                     Cell cell = new Cell();
                     cell.DataType = CellValues.String;
-                    cell.CellValue = new CellValue($"{prefix}{field.GetValue(data)?.ToString()}");
+                    cell.CellValue = new CellValue($"{field.GetValue(data)?.ToString()}");
                     dataRow.Append(cell);
                 }
             }
         }
+        #endregion
     }
 }

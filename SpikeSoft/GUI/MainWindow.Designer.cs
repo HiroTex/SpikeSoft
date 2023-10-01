@@ -37,12 +37,12 @@
             this.toolBtnOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.mainPanel = new System.Windows.Forms.Panel();
             this.packagingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnUnpackSingle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnUnpackAll = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnRepackSingle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnRepackAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainPanel = new System.Windows.Forms.Panel();
             this.mainToolStrip.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -133,20 +133,6 @@
             this.toolBtnSettings.Text = "Settings";
             this.toolBtnSettings.Click += new System.EventHandler(this.OpenSettings);
             // 
-            // mainPanel
-            // 
-            this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.mainPanel.BackgroundImage = global::SpikeSoft.Properties.Resources.MainLogo;
-            this.mainPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPanel.Font = new System.Drawing.Font("Consolas", 12F);
-            this.mainPanel.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.mainPanel.Location = new System.Drawing.Point(0, 49);
-            this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(466, 160);
-            this.mainPanel.TabIndex = 1;
-            // 
             // packagingToolStripMenuItem
             // 
             this.packagingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
@@ -195,6 +181,20 @@
             this.toolBtnRepackAll.Size = new System.Drawing.Size(180, 22);
             this.toolBtnRepackAll.Text = "Repack All in Folder";
             this.toolBtnRepackAll.Click += new System.EventHandler(this.toolBtnRepackAll_Click);
+            // 
+            // mainPanel
+            // 
+            this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.mainPanel.BackgroundImage = global::SpikeSoft.Properties.Resources.MainLogo;
+            this.mainPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainPanel.Font = new System.Drawing.Font("Consolas", 12F);
+            this.mainPanel.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.mainPanel.Location = new System.Drawing.Point(0, 49);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Size = new System.Drawing.Size(466, 160);
+            this.mainPanel.TabIndex = 1;
             // 
             // MainWindow
             // 

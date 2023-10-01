@@ -25,7 +25,7 @@ namespace SpikeSoft.UtilityManager
         public StructMan(string filePath, int index)
         {
             ObjTable = new List<T>();
-            ObjTable.Add((T)DataMan.GetStructFromFile(filePath, index, typeof(T)));
+            ObjTable.Add(DataMan.GetStructFromFile<T>(filePath, index));
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace SpikeSoft.UtilityManager
             ObjTable = new List<T>();
             for (int i = 0; i < count; i++)
             {
-                ObjTable.Add((T)DataMan.GetStructFromFile(filePath, index, typeof(T)));
+                ObjTable.Add(DataMan.GetStructFromFile<T>(filePath, index));
                 index += Marshal.SizeOf(typeof(T));
             }
         }
