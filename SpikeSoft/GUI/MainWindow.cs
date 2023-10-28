@@ -251,7 +251,7 @@ namespace SpikeSoft
                 progress.Report((int)((ID++ / (float)Directory.GetDirectories(filePath).Length) * 100));
                 foreach (var file in Directory.EnumerateFiles(dir, "*.idx"))
                 {
-                    DataTypes.PakMan pak = new PakMan();
+                    PakMan pak = new PakMan();
                     pak.ShowProgressWindow = false;
                     var t = Task.Run(async () => await pak.InitializeHandler(file));
                 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SpikeSoft.UtilityManager;
 using SpikeSoft.ZLib;
+using System.Collections.Generic;
 
 namespace SpikeSoft.DataTypes
 {
@@ -122,9 +123,18 @@ namespace SpikeSoft.DataTypes
             var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), Type.GetType("SpikeSoft.DataTypes.Common." + idxFile.ReadLine())) as Common.IPak);
             Package.FileCount = int.Parse(idxFile.ReadLine());
             Package.ZBPE = bool.Parse(idxFile.ReadLine().ToLowerInvariant());
+
+            // Fill File List
+            List<string> FileList = new List<string>();
+            while (!idxFile.EndOfStream)
+            {
+                FileList.Add(idxFile.ReadLine());
+            }
+
             idxFile.Close();
 
             Package.FilePath = filePath;
+            Package.FileNames = FileList;
             Package.Repack(progress);
         }
     }

@@ -105,7 +105,9 @@ namespace SpikeSoft.DataTypes.Common
                 }
 
                 byte[] tmp = BinMan.GetBytes(FilePath, fSize, FilePointers[i]);
-                File.WriteAllBytes(Path.Combine(UnpackedDir, FileNames[i]), tmp);
+                FileInfo exFile = new FileInfo(Path.Combine(UnpackedDir, FileNames[i]));
+                exFile.Directory.Create();
+                File.WriteAllBytes(exFile.FullName, tmp);
             }
 
             // Finally Write Package Information to be able to Repack the Folder into a File.
@@ -142,46 +144,34 @@ namespace SpikeSoft.DataTypes.Common
             {
                 BinaryWriter binMan = new BinaryWriter(newPak);
                 byte[] FileCountArray = BitConverter.GetBytes(FileCount);
-                if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileCountArray);
+                if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileCountArray);
                 binMan.Write(FileCountArray); // Write File Count
                 uint HeaderEnd = (uint)((FileCount * 4) + 8);
                 if (HeaderEnd % 64 != 0) { HeaderEnd = HeaderEnd - (HeaderEnd % 64) + 64; };
                 byte[] FileOffset = BitConverter.GetBytes(HeaderEnd);
-                if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                 binMan.Write(FileOffset); // Write First File Offset Always as End of Header
                 binMan.BaseStream.SetLength(HeaderEnd);
 
                 // Iterate through all files that will be packed
                 int Current_FID = -1;
                 int New_FID = -1;
-                foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(FilePath)))
+                foreach (var file in FileNames)
                 {
+                    // Report Progress to Progress Bar
                     if (progress != null)
                     {
                         progress.Report((int)(((Current_FID + 1) / (float)FileCount) * 100));
                     }
 
-                    // Skip Files without ID
-                    if (Path.GetFileNameWithoutExtension(file).Split('_').Length < 2) continue;
+                    New_FID++;
 
-                    // Get Sub File ID
-                    try
-                    {
-                        New_FID = int.Parse(Path.GetFileNameWithoutExtension(file).Split('_')[0]);
-                    }
-                    catch (FormatException)
-                    {
-                        ExceptionMan.ThrowMessage(0x2000, new string[] { $"Invalid File Name: {file}" });
-                        continue;
-                    }
+                    string fPath = Path.Combine(Path.GetDirectoryName(FilePath), file);
+
+                    if (!new FileInfo(fPath).Exists) continue;
 
                     // If ID is above File Count, break iteration (Only numbers above that one after this ID).
                     if (New_FID > FileCount) break;
-
-                    New_FID -= 1;
-
-                    // If Negative ID, skip to avoid Header Corruption
-                    if (New_FID < 0) continue;
 
                     // If ID skipped Sub Files ID in between, Fill Header with Dummy Info
                     if (New_FID > Current_FID + 1)
@@ -198,7 +188,7 @@ namespace SpikeSoft.DataTypes.Common
                         }
                     }
 
-                    using (var SubFile = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    using (var SubFile = new FileStream(fPath, FileMode.Open, FileAccess.Read))
                     {
                         binMan.BaseStream.Seek(0, SeekOrigin.End);
                         SubFile.CopyTo(newPak);
@@ -210,7 +200,7 @@ namespace SpikeSoft.DataTypes.Common
 
                         binMan.BaseStream.Seek(0x4 + (New_FID * 4) + 0x4, SeekOrigin.Begin);
                         FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
-                        if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
+                        if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
                         binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
                     }
 
@@ -264,6 +254,7 @@ namespace SpikeSoft.DataTypes.Common
             idx.WriteLine(type); // Pak Type
             idx.WriteLine(FileCount); // Total File Count
             idx.WriteLine(ZBPE); // File Needs to be Re-Compressed
+            foreach (var name in FileNames) idx.WriteLine(name);
             idx.Flush();
             idx.Close();
         }
@@ -296,7 +287,7 @@ namespace SpikeSoft.DataTypes.Common
             var linePos = 0;
 
             // Set Base PakList File to Initialize Search
-            var txt_path = Path.Combine(SpikeSoft.UtilityManager.Properties.Settings.Default.CommonTXTPath, SpikeSoft.UtilityManager.Properties.Settings.Default.CommonGAMEPath, "paklist.txt");
+            var txt_path = Path.Combine(UtilityManager.Properties.Settings.Default.CommonTXTPath, UtilityManager.Properties.Settings.Default.CommonGAMEPath, "paklist.txt");
 
             using (var sr = new StreamReader(txt_path))
             {
@@ -337,88 +328,111 @@ namespace SpikeSoft.DataTypes.Common
                     MatchList.Add(linePos);
 
                 } while (!sr.EndOfStream);
+                
+                // Find Matches and Create File Name List
+                FileNames = FindFileListMatch(filePath, subFileCount, sr, MatchList);
 
-                // Search if any Match has the same File Count as Source File
-                foreach (var match in MatchList)
-                {
-                    // Set Stream Position to Matching File Name to Read the ID for File Count checking.
-                    sr.DiscardBufferedData();
-                    sr.BaseStream.Seek(0, SeekOrigin.Begin);
-                    for(int i = 0; i < match - 1; i++)
-                    {
-                        sr.ReadLine();
-                    }
-
-                    var id = sr.ReadLine().Split(' ');
-
-                    // If Sub File Count does not match, skip Matching Result.
-                    if (int.Parse(id[2]) != subFileCount)
-                    {
-                        continue;
-                    }
-
-                    // Return the Matching File List
-                    var Result = new List<string>();
-                    for (int i = 0; i < subFileCount; i++)
-                    {
-                        Result.Add(sr.ReadLine());
-                    }
-
-                    FileNames = Result;
-                    return;
-                }
-
-                // Search if any Match has a File Count above the Max File Count of the Source.
-                foreach (var match in MatchList)
-                {
-                    // Set Stream Position to Matching File Name to Read the ID for File Count checking.
-                    sr.DiscardBufferedData();
-                    sr.BaseStream.Seek(0, SeekOrigin.Begin);
-                    for (int i = 0; i < match - 1; i++)
-                    {
-                        sr.ReadLine();
-                    }
-
-                    var id = sr.ReadLine().Split(' ');
-
-                    // If Sub File Count is above list max count, skip Matching Result.
-                    if (int.Parse(id[2]) <= subFileCount)
-                    {
-                        continue;
-                    }
-
-                    // Check for Extra File Name Words Identifiers
-                    if (id.Length > 3)
-                    {
-                        var extra = id[3].Split('|');
-                        foreach (var identifier in extra)
-                        {
-                            if (!Path.GetFileName(filePath).Contains(identifier))
-                            {
-                                continue;
-                            }
-
-                            goto MatchFound;
-                        }
-
-                        continue;
-                    }
-
-                    // Return the Matching File List
-                    MatchFound:
-                    var Result = new List<string>();
-                    for (int i = 0; i < int.Parse(id[2]); i++)
-                    {
-                        Result.Add(sr.ReadLine());
-                    }
-
-                    FileNames = Result;
-                    return;
-                }
+                if (FileNames != null) return;
 
                 // If no match was found, return a Default File Name List with partially identified extensions
                 FileNames = GenerateDefaultFilenamesList(filePath, subFileCount);
             }
+        }
+
+        private List<string> FindFileListMatch(string filePath, int subFileCount, StreamReader sr, List<int> MatchList)
+        {
+            string[] id;
+
+            // Search if any Match has the same File Count as Source File
+            foreach (var match in MatchList)
+            {
+                // Set Stream Position to Matching File Name to Read the ID for File Count checking.
+                sr.DiscardBufferedData();
+                sr.BaseStream.Seek(0, SeekOrigin.Begin);
+                for (int i = 0; i < match - 1; i++)
+                {
+                    sr.ReadLine();
+                }
+
+                id = sr.ReadLine().Split(' ');
+
+                // If Sub File Count does not match, skip Matching Result.
+                if (int.Parse(id[2]) != subFileCount)
+                {
+                    continue;
+                }
+
+                return FillNameList(sr, id);
+            }
+
+            // Search if any Match has a File Count above the Max File Count of the Source.
+            foreach (var match in MatchList)
+            {
+                // Set Stream Position to Matching File Name to Read the ID for File Count checking.
+                sr.DiscardBufferedData();
+                sr.BaseStream.Seek(0, SeekOrigin.Begin);
+                for (int i = 0; i < match - 1; i++)
+                {
+                    sr.ReadLine();
+                }
+
+                id = sr.ReadLine().Split(' ');
+
+                // If Sub File Count is above list max count, skip Matching Result.
+                if (int.Parse(id[2]) <= subFileCount)
+                {
+                    continue;
+                }
+
+                // Check for Extra File Name Words Identifiers
+                if (id.Length > 3)
+                {
+                    var extra = id[3].Split('|');
+                    foreach (var identifier in extra)
+                    {
+                        if (!Path.GetFileName(filePath).Contains(identifier))
+                        {
+                            continue;
+                        }
+
+                        goto MatchFound;
+                    }
+
+                    continue;
+                }
+                
+                // Return the Matching File List
+                MatchFound:
+                return FillNameList(sr, id);
+            }
+
+            return null;
+        }
+
+        private List<string> FillNameList(StreamReader sr, string[] id)
+        {
+            var Result = new List<string>();
+            for (int i = 0; i < int.Parse(id[2]); i++)
+            {
+                Result.Add(sr.ReadLine());
+            }
+
+            ReplaceDynamicNames(Result);
+
+            return Result;
+        }
+
+        private List<string> ReplaceDynamicNames(List<string> input)
+        {
+            var fName = Path.GetFileNameWithoutExtension(FilePath);
+
+            // Replace Dynamic Names
+            for (int i = 0; i < input.Count; i++)
+            {
+                input[i] = input[i].Replace("{fName}", fName);
+            }
+
+            return input;
         }
 
         public virtual List<string> GenerateDefaultFilenamesList(string filePath, int subFileCount)
