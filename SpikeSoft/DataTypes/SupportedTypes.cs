@@ -24,23 +24,7 @@ namespace SpikeSoft.DataTypes
         // Dictionary that contains:
         // Key: Valid Editable File Extension
         // Value: Function that returns appropriate Editor for File Extension always using File Path as Parameter
-        public static readonly Dictionary<string, Func<string, Type>> FileExtensions = new Dictionary<string, Func<string, Type>>
-        {
-            { ".dat", ParseByFileName },
-            { ".pmdl", null },
-            { ".mdl", null },
-            { ".pck", Package },
-            { ".pak", Package },
-            { ".zpak", Package },
-            { ".idx", Package },
-            { ".dbt", null },
-            { ".zdbt", null },
-            { ".anm", null },
-            { ".zanm", null },
-            { ".gsc", null },
-            { ".fod", null },
-            { ".bin", null }
-        };
+        public static readonly Dictionary<string, Func<string, Type>> FileExtensions = ReadFuncDictionary("ExtType.txt");
 
         public static Dictionary<string, string> ReadTxtDictionary(string filePath)
         {
@@ -55,8 +39,30 @@ namespace SpikeSoft.DataTypes
             }
             return result;
         }
+        public static Dictionary<string, Func<string, Type>> ReadFuncDictionary(string filePath)
+        {
+            Dictionary<string, Func<string, Type>> result = new Dictionary<string, Func<string, Type>>();
+            using (var sr = new StreamReader(filePath))
+            {
+                while (!sr.EndOfStream)
+                {
+                    var line = sr.ReadLine();
 
-        public static Type ParseByFileName(string filePath)
+                    MethodInfo m = typeof(SupportedTypes).GetMethod(line.Split(',')[1].Replace(" ", string.Empty));
+                    if ( m == null && !m.ReturnType.Equals(typeof(Type)))
+                    {
+                        continue;
+                    }
+
+                    Func<string, Type> func = (Func<string, Type>)Delegate.CreateDelegate(typeof(Func<string, Type>), m);
+
+                    result.Add(line.Split(',')[0], func);
+                }
+            }
+            return result;
+        }
+
+        public static Type Generic(string filePath)
         {
             try
             {

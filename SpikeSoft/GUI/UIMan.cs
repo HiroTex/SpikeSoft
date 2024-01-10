@@ -12,7 +12,7 @@ namespace SpikeSoft.GUI
 
         public Control GetEditorUI(string filePath)
         {
-            foreach (var FileType in SpikeSoft.DataTypes.SupportedTypes.FileExtensions)
+            foreach (var FileType in DataTypes.SupportedTypes.FileExtensions)
             {
                 if (Path.GetExtension(filePath) != (FileType.Key) || FileType.Value == null)
                 {

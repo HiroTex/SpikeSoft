@@ -158,6 +158,19 @@ namespace SpikeSoft.UtilityManager
         }
 
         /// <summary>
+        /// Creates folder with same name of filename on same directory
+        /// </summary>
+        /// <param name="filepath">Full Path to File</param>
+        /// <returns></returns>
+        public static string FileToDir(string filepath)
+        {
+            if (!ValidateFilePath(filepath)) throw new Exception("Empty file path"); 
+            var result = Path.Combine(Path.GetDirectoryName(filepath), Path.GetFileNameWithoutExtension(filepath));
+            Directory.CreateDirectory(result);
+            return result;
+        }
+
+        /// <summary>
         /// Validates File Path
         /// </summary>
         /// <param name="path">Full Path to be validated</param>
@@ -172,14 +185,14 @@ namespace SpikeSoft.UtilityManager
             Regex containsABadCharacter = new Regex(regexString);
             if (containsABadCharacter.IsMatch(path))
             {
-                return false;
+                throw new Exception($"Invalid Character on path: {path}");
             }
 
             // Check for invalid root drive
             string pathRoot = Path.GetPathRoot(path);
             if (!Directory.GetLogicalDrives().Contains(pathRoot))
             {
-                return false;
+                throw new Exception($"Invalid Root on path: {path}");
             }
 
             // Final check if a File can exist on that directory
@@ -189,12 +202,22 @@ namespace SpikeSoft.UtilityManager
             {
                 fi = new FileInfo(path);
             }
-            catch (ArgumentException) { }
-            catch (PathTooLongException) { }
-            catch (NotSupportedException) { }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Argument Exception on path: {path}");
+            }
+            catch (PathTooLongException)
+            {
+                throw new PathTooLongException($"Path Too Long: {path}");
+            }
+            catch (NotSupportedException)
+            {
+                throw new NotSupportedException($"Not Supported Exception: {path}");
+            }
+
             if (ReferenceEquals(fi, null))
             {
-                return false;
+                throw new Exception($"Invalid File Path: {path}");
             }
 
             return true;

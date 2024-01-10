@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace SpikeSoft.UtilityManager
 {
-    public class StructMan<T>
+    public class StructMan<T> : IEnumerable
     {
         protected List<T> ObjTable;
 
@@ -58,6 +59,58 @@ namespace SpikeSoft.UtilityManager
         public void IUpdateTableItemFromTmp(int n)
         {
             DataMan.UpdateTableItemFromTmp(n, ObjTable);
+        }
+        
+        //private enumerator class
+        private class StructEnumerator : IEnumerator
+        {
+            public List<T> ObjList;
+            int position = -1;
+
+            //constructor
+            public StructEnumerator(List<T> list)
+            {
+                ObjList = list;
+            }
+
+            private IEnumerator getEnumerator()
+            {
+                return (IEnumerator)this;
+            }
+
+            //IEnumerator
+            public bool MoveNext()
+            {
+                position++;
+                return (position < ObjList.Count);
+            }
+
+            //IEnumerator
+            public void Reset()
+            {
+                position = -1;
+            }
+
+            //IEnumerator
+            public object Current
+            {
+                get
+                {
+                    try
+                    {
+                        return ObjList[position];
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+            }
+        }  //end nested class
+
+        public IEnumerator GetEnumerator()
+        {
+            return new StructEnumerator(ObjTable);
         }
     }
 }

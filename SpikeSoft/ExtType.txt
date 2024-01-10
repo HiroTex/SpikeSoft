@@ -1,0 +1,5 @@
+﻿.dat, Generic
+.pck, Package
+.pak, Package
+.zpak, Package
+.idx, Package
