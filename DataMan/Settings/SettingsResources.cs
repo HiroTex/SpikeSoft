@@ -17,14 +17,17 @@ namespace SpikeSoft.UtilityManager
         };
         public static readonly List<Action> IMGResourceInitializers = new List<Action>
         {
-            SetCharaChip
+            SetCharaChip,
+            SetMapChip
         };
         
         public static List<string> ZitemList { get; set; }
         public static List<string> MapList { get; set; }
         public static List<string> BgmList { get; set; }
         public static List<string> CharaList { get; set; }
+
         public static ImageList CharaChip { get; set; }
+        public static ImageList MapChip { get; set; }
 
         public static List<string> SetNamesList(string txtName)
         {
@@ -61,35 +64,51 @@ namespace SpikeSoft.UtilityManager
             return list;
         }
 
-        public static void SetCharaChip()
+        public static void SetImageListFromItemList(ImageList list, string imagePath, List<string> Source, string txtSource)
         {
-            var folderPath = Path.Combine(SpikeSoft.UtilityManager.Properties.Settings.Default.CommonIMGPath, SpikeSoft.UtilityManager.Properties.Settings.Default.CommonGAMEPath, "chara_chip");
+            var folderPath = Path.Combine(Properties.Settings.Default.CommonIMGPath, Properties.Settings.Default.CommonGAMEPath, imagePath);
 
             if (!FileMan.ValidateFilePath(Path.Combine(folderPath, "0.png")))
             {
                 ExceptionMan.ThrowMessage(0x1000);
             }
 
-            if (CharaList == null)
+            if (Source == null)
             {
-                CharaList = SetNamesList("characters.txt");
+                Source = SetNamesList(txtSource);
             }
 
-            CharaChip = new ImageList();
+            list.Images.Clear();
 
-            for (var i = 0; i < CharaList.Count; i++)
+            for (var i = 0; i < Source.Count; i++)
             {
                 var imgPath = Path.Combine(folderPath, $"{i}.png");
                 if (File.Exists(imgPath))
                 {
-                    CharaChip.Images.Add(Image.FromFile(imgPath));
+                    list.Images.Add(Image.FromFile(imgPath));
                 }
                 else
                 {
                     var Placeholder = new Bitmap(64, 64);
-                    CharaChip.Images.Add(Placeholder);
+                    list.Images.Add(Placeholder);
                 }
             }
+        }
+
+        public static void SetCharaChip()
+        {
+            CharaChip = new ImageList();
+            CharaChip.ColorDepth = ColorDepth.Depth32Bit;
+            CharaChip.ImageSize = new Size(64, 64);
+            SetImageListFromItemList(CharaChip, "chara_chip", CharaList, "characters.txt");
+        }
+
+        public static void SetMapChip()
+        {
+            MapChip = new ImageList();
+            MapChip.ColorDepth = ColorDepth.Depth32Bit;
+            MapChip.ImageSize = new Size(64, 64);
+            SetImageListFromItemList(MapChip, "map_chip", MapList, "maps.txt");
         }
     }
 }
