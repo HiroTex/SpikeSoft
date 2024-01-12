@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DarkMode.cs" />
+    <Compile Include="Binary.cs" />
+    <Compile Include="UiUtils.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="GenericItemListUI.cs">
       <SubType>UserControl</SubType>

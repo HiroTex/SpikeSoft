@@ -59,7 +59,7 @@
             this.ItemList.Size = new System.Drawing.Size(660, 445);
             this.ItemList.TabIndex = 0;
             this.ItemList.UseCompatibleStateImageBehavior = false;
-            this.ItemList.SelectedIndexChanged += new System.EventHandler(this.UpdateItemInfo);
+            this.ItemList.SelectedIndexChanged += new System.EventHandler(this.lst_SelectedItemChanged);
             this.ItemList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lst_MouseDown);
             // 
             // imageList
@@ -115,7 +115,7 @@
             this.ItemBox.Name = "ItemBox";
             this.ItemBox.Size = new System.Drawing.Size(287, 27);
             this.ItemBox.TabIndex = 1;
-            this.ItemBox.SelectedIndexChanged += new System.EventHandler(this.UpdateListItemData);
+            this.ItemBox.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SelectedIndexChanged);
             // 
             // contextMenu
             // 
