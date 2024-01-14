@@ -136,6 +136,117 @@ namespace SpikeSoft.UtilityManager
         }
 
         /// <summary>
+        /// Converts struct that contains dynamic data fields (arrays and/or strings) to Binary format
+        /// </summary>
+        /// <typeparam name="T">Struct Type</typeparam>
+        /// <param name="structInstance">Struct Instance to convert to Data</param>
+        /// <returns>Data in Binary format</returns>
+        public byte[] DynamicStructToData<T>(T structInstance) where T : struct
+        {
+            int size = CalculateSize(structInstance);
+            byte[] output = new byte[size];
+
+            // Allocate memory for the struct
+            IntPtr structPtr = Marshal.AllocHGlobal(size);
+
+            try
+            {
+                // Manually copy each field's data to the allocated memory
+                int offset = 0;
+
+                foreach (var field in typeof(T).GetFields())
+                {
+                    if (field.FieldType.IsArray)
+                    {
+                        int arrayLength = ((Array)field.GetValue(structInstance))?.Length ?? 0;
+                        int elementSize = Marshal.SizeOf(field.FieldType.GetElementType());
+
+                        IntPtr arrayPtr = (IntPtr)((long)structPtr + offset);
+
+                        for (int i = 0; i < arrayLength; i++)
+                        {
+                            object arrayElementValue = ((Array)field.GetValue(structInstance)).GetValue(i);
+                            Marshal.StructureToPtr(arrayElementValue, arrayPtr, false);
+                            arrayPtr = (IntPtr)((long)arrayPtr + elementSize);
+                        }
+
+                        offset += arrayLength * elementSize;
+                    }
+                    else if (field.FieldType == typeof(string))
+                    {
+                        string stringValue = (string)field.GetValue(structInstance);
+                        int stringLength = stringValue?.Length ?? 0;
+
+                        IntPtr stringPtr = (IntPtr)((long)structPtr + offset);
+
+                        for (int i = 0; i < stringLength; i++)
+                        {
+                            byte charValue = Convert.ToByte(stringValue[i]);
+                            Marshal.StructureToPtr(charValue, stringPtr, false);
+                            stringPtr = (IntPtr)((long)stringPtr + sizeof(char));
+                        }
+
+                        offset += stringLength;
+                    }
+                    else
+                    {
+                        object fieldValue = field.GetValue(structInstance);
+                        Marshal.StructureToPtr(fieldValue, (IntPtr)((long)structPtr + offset), false);
+                        offset += Marshal.SizeOf(field.FieldType);
+                    }
+                }
+            }
+            finally
+            {
+                // Copy the Data and Free the memory
+                Marshal.Copy(structPtr, output, 0, size);
+                Marshal.FreeHGlobal(structPtr);
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Calculate Size in Bytes of Struct Instance
+        /// </summary>
+        /// <typeparam name="T">Type of Struct</typeparam>
+        /// <param name="structInstance">Instance of Struct to calculate overall size in bytes</param>
+        /// <returns>Size in Bytes of Struct Instance</returns>
+        private int CalculateSize<T>(T structInstance) where T : struct
+        {
+            int sizeOfFixedPart = 0;
+            foreach (var field in typeof(T).GetFields())
+            {
+                if (!field.FieldType.IsArray && field.FieldType != typeof(string))
+                {
+                    // Assuming all non-array, non-string fields are part of the fixed section
+                    sizeOfFixedPart += System.Runtime.InteropServices.Marshal.SizeOf(field.FieldType);
+                }
+            }
+
+            int sizeOfInstance = sizeOfFixedPart;
+
+            foreach (var field in typeof(T).GetFields())
+            {
+                if (field.FieldType.IsArray)
+                {
+                    // Handle variable-sized array
+                    int arrayLength = ((Array)field.GetValue(structInstance))?.Length ?? 0;
+                    sizeOfInstance += arrayLength * System.Runtime.InteropServices.Marshal.SizeOf(field.FieldType.GetElementType());
+                }
+                else if (field.FieldType == typeof(string))
+                {
+                    // Handle string
+                    string stringValue = (string)field.GetValue(structInstance);
+                    int stringLength = stringValue?.Length ?? 0;
+                    sizeOfInstance += stringLength;
+                }
+            }
+
+            return sizeOfInstance;
+        }
+
+        /// <summary>
         /// Parses Data as Big Endian if Wii Mode is Enabled or if System's Endianness is reversed
         /// </summary>
         /// <param name="data">Data belonging to a particular struct</param>
@@ -167,6 +278,12 @@ namespace SpikeSoft.UtilityManager
             return data;
         }
 
+        /// <summary>
+        /// Generates List of Structs of a determined Type from Excel Data made with XlsxMan
+        /// </summary>
+        /// <typeparam name="T">Type of Structs to Create</typeparam>
+        /// <param name="excelData">Excel Data generated with XlsxMan</param>
+        /// <returns>List of Structs with Data</returns>
         public static List<T> FillStructsFromXlsx<T>(Dictionary<string, Dictionary<string, string>> excelData) where T : struct
         {
             var result = new List<T>();
@@ -186,6 +303,14 @@ namespace SpikeSoft.UtilityManager
             return result;
         }
 
+        /// <summary>
+        /// Fills struct fields with data from Xlsx Cell
+        /// </summary>
+        /// <typeparam name="T">Type of Struct</typeparam>
+        /// <param name="target">Struct to fill</param>
+        /// <param name="columnName">Name of Field of Struct to Set Value</param>
+        /// <param name="cellValue">Cell Data to fill on Struct Field</param>
+        /// <returns>Modified Struct</returns>
         private static T PopulateStructFields<T>(T target, string columnName, string cellValue)
         {
             TypedReference reference = __makeref(target);
@@ -308,6 +433,12 @@ namespace SpikeSoft.UtilityManager
             return target;
         }
 
+        /// <summary>
+        /// Utility to convert Enums and other types of data to a certain Type
+        /// </summary>
+        /// <param name="value">Original Data</param>
+        /// <param name="targetType">Type to Convert to</param>
+        /// <returns>Converted Data</returns>
         private static object ConvertValue(string value, Type targetType)
         {
             if (targetType.IsEnum)

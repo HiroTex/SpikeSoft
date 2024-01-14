@@ -113,7 +113,7 @@ namespace SpikeSoft.DataTypes
             // Recursively Check All Sub Folders for Paks to Repack
             foreach (var dir in Directory.EnumerateDirectories(Path.GetDirectoryName(filePath)))
             {
-                foreach (var file in Directory.EnumerateFiles(dir, "info.idx"))
+                foreach (var file in Directory.EnumerateFiles(dir, "*info.idx"))
                 {
                     Repack_Handler(file, progress);
                 }

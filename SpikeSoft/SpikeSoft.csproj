@@ -63,8 +63,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes\Common\ANM.cs" />
-    <Compile Include="DataTypes\Common\DBT.cs" />
     <Compile Include="DataTypes\Common\IPak.cs" />
     <Compile Include="DataTypes\Common\PAK.cs" />
     <Compile Include="DataTypes\Common\PCK.cs" />

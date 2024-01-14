@@ -241,7 +241,7 @@ namespace SpikeSoft.DataTypes.Common
                 return true;
             }
 
-            BPE BPEMan = new BPE();
+            var BPEMan = new BPE();
             byte[] CompressedFile = BPEMan.compress(File.ReadAllBytes(tmpPath));
             File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(NewFile_PATH), NewFile_NAME + ".zpak"), CompressedFile);
             TmpMan.CleanTmpFile(NewFile_PATH);
@@ -250,7 +250,7 @@ namespace SpikeSoft.DataTypes.Common
 
         public virtual void WriteInfo(string dir, string type)
         {
-            var idx = new StreamWriter(Path.Combine(dir, "info.idx"));
+            var idx = new StreamWriter(Path.Combine(dir, "#info.idx"));
             idx.WriteLine(type); // Pak Type
             idx.WriteLine(FileCount); // Total File Count
             idx.WriteLine(ZBPE); // File Needs to be Re-Compressed
@@ -342,6 +342,37 @@ namespace SpikeSoft.DataTypes.Common
         private List<string> FindFileListMatch(string filePath, int subFileCount, StreamReader sr, List<int> MatchList)
         {
             string[] id;
+
+            List<string> fNameMatch = new List<string>();
+
+            foreach (var match in MatchList)
+            {
+                // Set Stream Position to Matching File Name to Read the File Name Filter.
+                sr.DiscardBufferedData();
+                sr.BaseStream.Seek(0, SeekOrigin.Begin);
+                for (int i = 0; i < match - 1; i++)
+                {
+                    sr.ReadLine();
+                }
+
+                id = sr.ReadLine().Split(' ');
+
+                fNameMatch.Add(id[1]);
+            }
+
+            // Process Matching List to get only the ones with the most similar filenames
+            string pakFname = Path.GetFileNameWithoutExtension(filePath);
+            var newList = new List<int>();
+            for (int i = 0; i < MatchList.Count; i++)
+            {
+                if (fNameMatch[i] == "*" ||
+                    fNameMatch[i] == FileManager.AnalysisMan.GetMostSimilarString(pakFname, fNameMatch.ToArray()))
+                {
+                    newList.Add(MatchList[i]);
+                }
+            }
+
+            MatchList = newList;
 
             // Search if any Match has the same File Count as Source File
             foreach (var match in MatchList)

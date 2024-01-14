@@ -34,22 +34,22 @@
             this.itemDbtList = new System.Windows.Forms.ListBox();
             this.imgFull = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlMain = new System.Windows.Forms.Panel();
+            this.pnlFullImg = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.statLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnlFullImg = new System.Windows.Forms.Panel();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.imgFull)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.pnlMain.SuspendLayout();
+            this.pnlFullImg.SuspendLayout();
             this.pnlLeft.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.pnlFullImg.SuspendLayout();
             this.SuspendLayout();
             // 
             // itemImgList
@@ -107,6 +107,11 @@
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // statLabel
+            // 
+            this.statLabel.Name = "statLabel";
+            this.statLabel.Size = new System.Drawing.Size(0, 17);
+            // 
             // pnlMain
             // 
             this.pnlMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
@@ -118,6 +123,14 @@
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Size = new System.Drawing.Size(690, 548);
             this.pnlMain.TabIndex = 5;
+            // 
+            // pnlFullImg
+            // 
+            this.pnlFullImg.Controls.Add(this.imgFull);
+            this.pnlFullImg.Location = new System.Drawing.Point(168, 24);
+            this.pnlFullImg.Name = "pnlFullImg";
+            this.pnlFullImg.Size = new System.Drawing.Size(512, 512);
+            this.pnlFullImg.TabIndex = 6;
             // 
             // pnlLeft
             // 
@@ -143,11 +156,6 @@
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // statLabel
-            // 
-            this.statLabel.Name = "statLabel";
-            this.statLabel.Size = new System.Drawing.Size(0, 17);
-            // 
             // ToolStripMenuItem1
             // 
             this.ToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -163,9 +171,17 @@
             this.openToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.openToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Control;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolStripMenuItem2.ForeColor = System.Drawing.SystemColors.Control;
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(108, 22);
+            this.toolStripMenuItem2.Text = "Export";
             // 
             // settingsToolStripMenuItem
             // 
@@ -188,22 +204,6 @@
             this.backgroundImageToolStripMenuItem.Text = "Background Image";
             this.backgroundImageToolStripMenuItem.CheckedChanged += new System.EventHandler(this.SetBackgroundImage);
             // 
-            // pnlFullImg
-            // 
-            this.pnlFullImg.Controls.Add(this.imgFull);
-            this.pnlFullImg.Location = new System.Drawing.Point(168, 24);
-            this.pnlFullImg.Name = "pnlFullImg";
-            this.pnlFullImg.Size = new System.Drawing.Size(512, 512);
-            this.pnlFullImg.TabIndex = 6;
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolStripMenuItem2.ForeColor = System.Drawing.SystemColors.Control;
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-            this.toolStripMenuItem2.Text = "Export";
-            // 
             // UIDBTManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -219,11 +219,11 @@
             this.statusStrip1.PerformLayout();
             this.pnlMain.ResumeLayout(false);
             this.pnlMain.PerformLayout();
+            this.pnlFullImg.ResumeLayout(false);
+            this.pnlFullImg.PerformLayout();
             this.pnlLeft.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.pnlFullImg.ResumeLayout(false);
-            this.pnlFullImg.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
