@@ -43,8 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binary.cs" />
-    <Compile Include="GenList.cs" />
-    <Compile Include="UiUtils.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="GenericItemListUI.cs">
       <SubType>UserControl</SubType>
@@ -73,6 +71,10 @@
     <ProjectReference Include="..\DataMan\SpikeSoft.UtilityManager.csproj">
       <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
       <Name>SpikeSoft.UtilityManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpikeSoft.UiUtils\SpikeSoft.UiUtils.csproj">
+      <Project>{6c54405e-c7b6-4386-96b2-ed76cac834ca}</Project>
+      <Name>SpikeSoft.UiUtils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

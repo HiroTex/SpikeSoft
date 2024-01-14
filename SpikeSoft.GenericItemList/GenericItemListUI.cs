@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Drawing.Imaging;
-using System.Threading;
+using SpikeSoft.UiUtils;
 
 namespace SpikeSoft.GenericItemList
 {
@@ -24,7 +17,7 @@ namespace SpikeSoft.GenericItemList
         public GenericItemListUI(string filePath, ImageList images, string[] items, int[] list)
         {
             InitializeComponent();
-            contextMenu.Renderer = new MyRenderer();
+            contextMenu.Renderer = new DarkRenderer();
             InitializeImageList(images);
             InitializeItemBox(items);
             InitializeListView(list);
@@ -71,7 +64,7 @@ namespace SpikeSoft.GenericItemList
         public void InitializeListView(int[] list)
         {
             // Set Behaviour
-            ItemList.ListViewItemSorter = new ListViewIndexComparer();
+            ItemList.ListViewItemSorter = new ListViewUtils.ListViewIndexComparer();
             ItemList.LargeImageList = imageList;
 
             // Initialize the drag-and-drop operation when running
@@ -79,10 +72,10 @@ namespace SpikeSoft.GenericItemList
             if (OSFeature.Feature.IsPresent(OSFeature.Themes))
             {
                 ItemList.AllowDrop = true;
-                ItemList.ItemDrag += new ItemDragEventHandler(lst_ItemDrag);
-                ItemList.DragEnter += new DragEventHandler(lst_DragEnter);
-                ItemList.DragOver += new DragEventHandler(lst_DragOver);
-                ItemList.DragLeave += new EventHandler(lst_DragLeave);
+                ItemList.ItemDrag += new ItemDragEventHandler(ListViewUtils.lst_ItemDrag);
+                ItemList.DragEnter += new DragEventHandler(ListViewUtils.lst_DragEnter);
+                ItemList.DragOver += new DragEventHandler(ListViewUtils.lst_DragOver);
+                ItemList.DragLeave += new EventHandler(ListViewUtils.lst_DragLeave);
                 ItemList.DragDrop += new DragEventHandler(lst_DragDrop);
             }
 
@@ -97,104 +90,12 @@ namespace SpikeSoft.GenericItemList
 
         #region DragDropOperation
 
-        // Starts the drag-and-drop operation when an item is dragged.
-        private void lst_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            ItemList.DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        // See if we should allow this kind of drag.
-        private void lst_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = e.AllowedEffect;
-        }
-        
-        // Select the item under the mouse during a drag.
-        private void lst_DragOver(object sender, DragEventArgs e)
-        {
-            // Do nothing if the drag is not allowed.
-            if (e.Effect != DragDropEffects.Move) return;
-            
-            // Retrieve the client coordinates of the mouse pointer.
-            Point targetPoint = ItemList.PointToClient(new Point(e.X, e.Y));
-
-            // Retrieve the index of the item closest to the mouse pointer.
-            int targetIndex = ItemList.InsertionMark.NearestIndex(targetPoint);
-
-            // Confirm that the mouse pointer is not over the dragged item.
-            if (targetIndex > -1)
-            {
-                // Determine whether the mouse pointer is to the left or
-                // the right of the midpoint of the closest item and set
-                // the InsertionMark.AppearsAfterItem property accordingly.
-                Rectangle itemBounds = ItemList.GetItemRect(targetIndex);
-                if (targetPoint.X > itemBounds.Left + (itemBounds.Width / 2))
-                {
-                    ItemList.InsertionMark.AppearsAfterItem = true;
-                }
-                else
-                {
-                    ItemList.InsertionMark.AppearsAfterItem = false;
-                }
-            }
-
-            // Set the location of the insertion mark. If the mouse is
-            // over the dragged item, the targetIndex value is -1 and
-            // the insertion mark disappears.
-            ItemList.InsertionMark.Index = targetIndex;
-        }
-
-        // Removes the insertion mark when the mouse leaves the control.
-        private void lst_DragLeave(object sender, EventArgs e)
-        {
-            ItemList.InsertionMark.Index = -1;
-        }
-
         // Drop the item here.
         private void lst_DragDrop(object sender, DragEventArgs e)
         {
-            // Retrieve the index of the insertion mark;
-            int targetIndex = ItemList.InsertionMark.Index;
-
-            // If the insertion mark is not visible, exit the method.
-            if (targetIndex == -1)
-            {
-                return;
-            }
-
-            // If the insertion mark is to the right of the item with
-            // the corresponding index, increment the target index.
-            if (ItemList.InsertionMark.AppearsAfterItem)
-            {
-                targetIndex++;
-            }
-
-            // Retrieve the dragged item.
-            foreach (ListViewItem item in ItemList.SelectedItems)
-            {
-                int prevIndex = item.Index;
-                // Insert a copy of the dragged item at the target index.
-                // A copy must be inserted before the original item is removed
-                // to preserve item index values. 
-                ItemList.Items.Insert(targetIndex, (ListViewItem)item.Clone());
-
-                // Remove the original copy of the dragged item.
-                ItemList.Items.Remove(item);
-
-                // Increase Index if moving from last to first
-                if (prevIndex > targetIndex) targetIndex++;
-            }
+            ListViewUtils.lst_DragDrop(sender, e);
 
             UpdateBinary();
-        }
-
-        // Sorts ListViewItem objects by index.
-        private class ListViewIndexComparer : System.Collections.IComparer
-        {
-            public int Compare(object x, object y)
-            {
-                return ((ListViewItem)x).Index - ((ListViewItem)y).Index;
-            }
         }
 
         #endregion

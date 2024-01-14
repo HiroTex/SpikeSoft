@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpikeSoft.UtilityManager;
+using SpikeSoft.UiUtils;
 
 namespace SpikeSoft
 {
@@ -23,8 +24,8 @@ namespace SpikeSoft
         {
             try
             {
-                mainToolStrip.Renderer = new MyRenderer();
-                mainMenuStrip.Renderer = new MyRenderer();
+                mainToolStrip.Renderer = new DarkRenderer();
+                mainMenuStrip.Renderer = new DarkRenderer();
                 SettingsMan.Instance.SetDefaultResources();
             }
             catch (Exception ex)

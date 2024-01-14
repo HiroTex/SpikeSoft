@@ -1,12 +1,16 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpikeSoft
+namespace SpikeSoft.UiUtils
 {
-    #region "MyRenderer"
-    public class MyRenderer : ToolStripProfessionalRenderer
+    public class DarkRenderer : ToolStripProfessionalRenderer
     {
-        public MyRenderer() : base(new TestColorTable()) { }
+        public DarkRenderer() : base(new DarkColorTable()) { }
         protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
         {
             if (!e.Item.Selected) base.OnRenderMenuItemBackground(e);
@@ -20,13 +24,13 @@ namespace SpikeSoft
         }
     }
 
-    public class TestColorTable : ProfessionalColorTable
+    public class DarkColorTable : ProfessionalColorTable
     {
         public override Color MenuItemBorder
         {
             get { return Color.Black; }
         }
-        public override Color MenuBorder 
+        public override Color MenuBorder
         {
             get { return Color.Black; }
         }
@@ -95,5 +99,4 @@ namespace SpikeSoft
             get { return Color.Transparent; }
         }
     }
-    #endregion
 }

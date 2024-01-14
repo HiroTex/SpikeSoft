@@ -77,7 +77,6 @@
     <Compile Include="GUI\BWorkWindow.Designer.cs">
       <DependentUpon>BWorkWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\DarkMode.cs" />
     <Compile Include="GUI\SettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -809,6 +808,10 @@
       <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
       <Name>SpikeSoft.UtilityManager</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SpikeSoft.UiUtils\SpikeSoft.UiUtils.csproj">
+      <Project>{6c54405e-c7b6-4386-96b2-ed76cac834ca}</Project>
+      <Name>SpikeSoft.UiUtils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

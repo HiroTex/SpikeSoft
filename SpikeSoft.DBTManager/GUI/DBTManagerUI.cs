@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpikeSoft.UtilityManager;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using SpikeSoft.DBTManager.DataInfo;
+using SpikeSoft.UiUtils;
 
 namespace SpikeSoft.DBTManager
 {
@@ -23,7 +19,7 @@ namespace SpikeSoft.DBTManager
         public UIDBTManager()
         {
             InitializeComponent();
-            menuStrip1.Renderer = new MyRenderer();
+            menuStrip1.Renderer = new DarkRenderer();
         }
 
         private void button1_Click(object sender, EventArgs e)
