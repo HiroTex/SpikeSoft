@@ -4,3 +4,4 @@ random_chara_list, SpikeSoft.GenericItemList
 random_map_list, SpikeSoft.GenericItemList
 random_bgm_list, SpikeSoft.GenericItemList
 character_select_order, SpikeSoft.GenericItemList
+battle_info, SpikeSoft.ZS3Editor.Mission

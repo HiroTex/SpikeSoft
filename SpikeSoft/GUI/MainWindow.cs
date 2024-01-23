@@ -99,6 +99,8 @@ namespace SpikeSoft
                 ExceptionMan.ThrowMessage(0x1001); return;
             }
 
+            mainPanel.SuspendLayout();
+
             // Get Main Editor Window Size
             Size WindowSize = UI.GetEditorUISize(MainEditor.Name);
             MinimumSize = WindowSize;
@@ -114,40 +116,55 @@ namespace SpikeSoft
 
             // Enable File Saving
             SetSaveBtn(true);
+            mainPanel.ResumeLayout();
         }
 
         private void QuickSave(object sender, EventArgs e)
         {
-            string OriginalPath = TmpMan.GetDefaultWrkFile();
-
-            if (string.IsNullOrEmpty(OriginalPath))
+            try
             {
-                return;
-            }
+                int tmpCount = TmpMan.GetTmpPathCount();
+                for (int i = 0; i < tmpCount; i++)
+                {
+                    if (!FileMan.SaveTmpFile(i))
+                    {
+                        throw new Exception($"Problem at file {i}");
+                    }
+                }
 
-            if (FileMan.SaveDefaultTmpFile(OriginalPath))
-            {
                 System.Media.SoundPlayer sfx = new System.Media.SoundPlayer(Properties.Resources.confirmation);
                 sfx.Play();
+            }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
             }
         }
 
         private void SaveNewFile(object sender, EventArgs e)
         {
-            // Check if Default Work Path has been Initialized
-            string OriginalPath = TmpMan.GetDefaultWrkFile();
-
-            if (string.IsNullOrEmpty(OriginalPath))
+            try
             {
-                return;
+                int tmpCount = TmpMan.GetTmpPathCount();
+                for (int i = 0; i < tmpCount; i++)
+                {
+                    string OriginalPath = TmpMan.GetWrkFile(i);
+                    string NewWrkFile = FileMan.SaveTmpFileAs(i, Path.GetFileNameWithoutExtension(OriginalPath), Path.GetExtension(OriginalPath));
+                    
+                    if (!string.IsNullOrEmpty(NewWrkFile))
+                    {
+                        TmpMan.CleanTmpFile(OriginalPath);
+                        TmpMan.SetNewAssociatedPath(NewWrkFile);
+                    }
+                }
+
+                System.Media.SoundPlayer sfx = new System.Media.SoundPlayer(Properties.Resources.confirmation);
+                sfx.Play();
+                MessageBox.Show("File/s Saved Successfully", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            string NewDefaultWrkFile = FileMan.SaveDefaultTmpFileAs(Path.GetFileNameWithoutExtension(OriginalPath), Path.GetExtension(OriginalPath));
-
-            if (!string.IsNullOrEmpty(NewDefaultWrkFile))
+            catch (Exception ex)
             {
-                TmpMan.InitializeMainTmpFile(NewDefaultWrkFile);
-                MessageBox.Show("File Saved Successfully", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
             }
         }
 

@@ -143,6 +143,31 @@ namespace SpikeSoft.UtilityManager
         }
 
         /// <summary>
+        /// Save Temp File as New File at a new Location with the Default Extension specified if ommited.
+        /// </summary>
+        /// <param name="tmpId">TmpFile Id Source</param>
+        /// <param name="defaultName">File Default Name</param>
+        /// <param name="defaultExtension">File Default Extension (if User ommited)</param>
+        public static string SaveTmpFileAs(int tmpId, string defaultName, string defaultExtension)
+        {
+            // Assign Params
+            var FileSave = new SaveFileDialog();
+            FileSave.Title = "Please Select Directory and Filename of the New File";
+            FileSave.Filter = "All Files|*.*";
+            FileSave.FileName = defaultName;
+            FileSave.AddExtension = true;
+            FileSave.DefaultExt = defaultExtension; // No Period (ex: "txt")
+
+            // User Save File
+            if ((FileSave.ShowDialog() != DialogResult.OK) || (!SaveTmpFile(tmpId, FileSave.FileName)))
+            {
+                return string.Empty;
+            }
+
+            return FileSave.FileName;
+        }
+
+        /// <summary>
         /// Copies Default Temporal File to Param File Path and returns if task completed successfully
         /// </summary>
         /// <param name="savePath">Destiny File Path to Copy File</param>
@@ -154,6 +179,49 @@ namespace SpikeSoft.UtilityManager
             }
 
             File.Copy(TmpMan.GetDefaultTmpFile(), savePath, true);
+            return true;
+        }
+
+        /// <summary>
+        /// Copies Temporal File to Param File Path and returns if task completed successfully
+        /// </summary>
+        /// <param name="tmpId">Destiny File Path to Copy File</param>
+        public static bool SaveTmpFile(int tmpId)
+        {
+            string OriginalPath = TmpMan.GetWrkFile(tmpId);
+
+            if (string.IsNullOrEmpty(OriginalPath))
+            {
+                return false;
+            }
+
+            if (!ValidateFilePath(OriginalPath))
+            {
+                ExceptionMan.ThrowMessage(0x1000); return false;
+            }
+
+            File.Copy(TmpMan.GetTmpFile(tmpId), OriginalPath, true);
+            return true;
+        }
+
+        /// <summary>
+        /// Copies Temporal File to Param File Path and returns if task completed successfully
+        /// </summary>
+        /// <param name="tmpId">Destiny File Path to Copy File</param>
+        /// <param name="savePath">Destiny File Path to Copy File</param>
+        public static bool SaveTmpFile(int tmpId, string newPath)
+        {
+            if (string.IsNullOrEmpty(newPath))
+            {
+                return false;
+            }
+
+            if (!ValidateFilePath(newPath))
+            {
+                ExceptionMan.ThrowMessage(0x1000); return false;
+            }
+
+            File.Copy(TmpMan.GetTmpFile(tmpId), newPath, true);
             return true;
         }
 

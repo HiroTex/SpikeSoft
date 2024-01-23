@@ -321,7 +321,7 @@ ds_chapter.zpak
 ds_result.zpak
 ds_system_window.zpak
 
-# 01_ds 040
+# ds 040
 ds_select_bg.dbt
 ds_select_bg_tree.dbt
 ds_select_bg_cloud.dbt
@@ -533,7 +533,7 @@ mission_param.dat
 chara_chip.pak
 ub_msg
 ub_lips.pak
-ub_mission_name_txt.pak
+font_ultimatebattle.pak
 
 # ub_result 016
 result_screen_config_1.fod
@@ -549,7 +549,7 @@ ub_result_10.bin
 if_title_line.pak
 ub_msg
 ub_lips.pak
-ub_mission_name_txt.pak
+font_ultimatebattle.pak
 param.dat
 font_zitem_name.pak
 
@@ -662,7 +662,7 @@ chara_chip.pak
 if_title_line.pak
 ub_circuit_battle_info.dat
 ub_circuit_opponent_info.dat
-ub_msg.pak
+font_ultimatebattle.pak
 ub_lips.pak
 
 # WorldTour_Main 002
@@ -1880,31 +1880,31 @@ font_zitem_name.pak
 setup_bar.dbt
 
 # Map 025
-01_map_main_data.mdl
-02_map_parameters.map
-03_map_intro_1.cma
-04_map_intro_2.cma
-05_map_intro_3.cma
-06_map_skybox.dbt
-07_map_effect_data.dbe
-08_map_
-09_map_special_model.pck
-10_map_effect_water.dbt
-11_map_effect_dust.dbt
-12_map_
-13_map_water_model.mdl
-14_map_effect_sky.dbt
-15_map_
-16_map_parameters.dat
-17_map_
-18_map_extra_effects.dbt
-19_map_parameters.mef
-20_map_moon.dbt
-21_map_barrier.dbt
-22_map_parameters.dat
-23_map_parameters.dat
-24_map_clash_camera.evp
-25_map_
+terrain_data.mdl
+terrain_info.map
+cutscene_A.cma
+cutscene_B.cma
+cutscene_C.cma
+skybox.dbt
+skybox.dbe
+08.bin
+extra_model.pck
+vfx_water.dbt
+vfx_dust.dbt
+12.bin
+water.mdl3
+vfx_sky.dbt
+15.bin
+parameter_info_16.dat
+17.bin
+vfx_extra.dbt
+parameter_info_19.mef
+moon.dbt
+barrier.dbt
+parameter_info_22.dat
+parameter_info_23.dat
+clash_cutscene.evp
+25.bin
 
 # _eff 006
 effect_skill_000.pak
@@ -1915,17 +1915,17 @@ effect_ublast.pak
 effect_chara.pak
 
 # 06_effect_common 011
-01_common_vfx_info.dat
-02_charge_aura.pak
-03_kidan.pak
-04_charge_kidan.pak
-05_.pak
-06_ki_wave.pak
-07_energy_wave.pak
-08_blast_event_camera.pak
-09_jetpack.pak
-10_.pak
-11_absorb.pak
+common_vfx_info.dat
+charge_aura.pak
+kidan.pak
+charge_kidan.pak
+05.pak
+ki_wave.pak
+energy_wave.pak
+blast_event_camera.pak
+jetpack.pak
+10.pak
+absorb.pak
 
 # 08_skill_camera 004
 scene_blast_000.cma

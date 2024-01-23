@@ -248,10 +248,16 @@
     <Content Include="resources\lib\SpikeSoft.GenericItemList.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib\SpikeSoft.UiUtils.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\lib\SpikeSoft.UtilityManager.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\lib\SpikeSoft.ZLib.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\lib\SpikeSoft.ZS3Editor.Mission.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\lib\SpikeSoft.ZS3Editor.TourUnlockables.dll">
@@ -267,6 +273,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\txt\ZS3\paklist.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\txt\ZS3\referees.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\txt\ZS3\songs.txt">
@@ -812,6 +821,7 @@
     <ProjectReference Include="..\SpikeSoft.UiUtils\SpikeSoft.UiUtils.csproj">
       <Project>{6c54405e-c7b6-4386-96b2-ed76cac834ca}</Project>
       <Name>SpikeSoft.UiUtils</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

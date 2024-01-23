@@ -5,11 +5,98 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SpikeSoft.UtilityManager
 {
     public class DataMan
     {
+        /// <summary>
+        /// Writes Struct Data to File on Offset Position
+        /// </summary>
+        /// <param name="str">Struct Object</param>
+        /// <param name="filePath">File where data will be written</param>
+        /// <param name="offset">Offset of File</param>
+        public static void StructToFile(object str, string filePath, int offset)
+        {
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            using (var bw = new BinaryWriter(fs))
+            {
+                if (fs.Length < offset)
+                {
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { $"Wrong Offset: {offset} \nfor file: {filePath}" });
+                    return;
+                }
+
+                fs.Seek(offset, SeekOrigin.Begin);
+                byte[] data = StructToData(str);
+                if (data.Length > (fs.Length - fs.Position))
+                {
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { $"Too Big Data Size: {data.Length} \nfor file: {filePath} at offset:{offset}" });
+                    return;
+                }
+
+                bw.Write(data);
+            }
+        }
+
+        /// <summary>
+        /// Get Unicode String from PAK Files
+        /// </summary>
+        /// <param name="filePath">Full Path to File</param>
+        /// <param name="fId">File ID</param>
+        /// <returns></returns>
+        public static string GetUnicodeStringFromTextPak(string filePath, int fId)
+        {
+            // Default Empty String
+            string result = string.Empty;
+
+            try
+            {
+                // Only for PAK Files
+                if (Path.GetExtension(filePath) != ".pak")
+                {
+                    throw new ArgumentException($"{Path.GetFileName(filePath)} is not a valid PAK file.");
+                }
+
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+                using (var br = new BinaryReader(fs))
+                {
+                    // Check if File ID wanted exists on File
+                    if (br.ReadInt32() < fId)
+                    {
+                        throw new ArgumentException($"{fId} is not a valid File ID for this PAK.");
+                    }
+
+                    fs.Seek((fId * 4), SeekOrigin.Current);
+
+                    // Get File Start Offset and End Offset
+                    int fOffs = br.ReadInt32();
+                    int fEnd = br.ReadInt32();
+
+                    // If File is Empty return empty string
+                    if (fOffs != fEnd)
+                    {
+                        // Check for possible errors on Pak File
+                        if (fOffs > fEnd || fEnd > fs.Length)
+                        {
+                            throw new Exception($"Wrong PAK Data on file = {fId}");
+                        }
+
+                        // Get string
+                        fs.Seek(fOffs, SeekOrigin.Begin);
+                        result = Encoding.Unicode.GetString(br.ReadBytes(fEnd - fOffs));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ExceptionMan.ThrowMessage(0x2001, new string[] { e.Message });
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Updates Object in List with current stored Temporal Data
         /// </summary>

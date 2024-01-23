@@ -13,7 +13,8 @@ namespace SpikeSoft.UtilityManager
             {"characters.txt", "CharaList" },
             {"items.txt", "ZitemList" },
             {"maps.txt", "MapList" },
-            {"songs.txt", "BgmList" }
+            {"songs.txt", "BgmList" },
+            {"referees.txt", "RefereeList" }
         };
         public static readonly List<Action> IMGResourceInitializers = new List<Action>
         {
@@ -24,6 +25,7 @@ namespace SpikeSoft.UtilityManager
         public static List<string> ZitemList { get; set; }
         public static List<string> MapList { get; set; }
         public static List<string> BgmList { get; set; }
+        public static List<string> RefereeList { get; set; }
         public static List<string> CharaList { get; set; }
 
         public static ImageList CharaChip { get; set; }

@@ -18,43 +18,56 @@ namespace SpikeSoft.UtilityManager
         /// <param name="filePath">Complete File Path to Current Working File</param>
         public static void InitializeMainTmpFile(string filePath)
         {
-            TmpFilePaths = new Dictionary<string, string>();
-            TmpFilePaths.Add(filePath, Path.Combine(Path.GetTempPath(), "Temp.ss"));
-            if (!File.Exists(filePath))
+            // Skip if a Temp file has already been created for this file
+            if (VerifyExistentTmp(filePath))
             {
                 return;
             }
 
-            File.Copy(filePath, GetDefaultTmpFile(), true);
+            // Reset Links
+            TmpFilePaths = new Dictionary<string, string>();
+
+            // Set new Default Working File
+            SetNewAssociatedPath(filePath);
         }
 
         public static void SetNewAssociatedPath(string filePath)
         {
-            string tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + ".tmp");
+            if (VerifyExistentTmp(filePath))
+            {
+                return;
+            }
+
+            string baseDir = Path.Combine(Path.GetTempPath(), "SSTemp");
+
+            if (!Directory.Exists(baseDir))
+            {
+                Directory.CreateDirectory(baseDir);
+            }
+
+            string tmpPath = Path.Combine(baseDir, Path.GetFileNameWithoutExtension(filePath) + ".tmp");
             int i = 0;
 
             while (File.Exists(tmpPath))
             {
-                tmpPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(filePath) + $"_{i++.ToString()}" + ".tmp");
+                tmpPath = Path.Combine(baseDir, Path.GetFileNameWithoutExtension(filePath) + $"_{i++.ToString()}" + ".tmp");
             }
 
-            if (!ValidateTmpNull(0))
+            try
             {
-                // If Default Tmp Path has not been Initialized, set new Associated Path to Default Temp File
-                InitializeMainTmpFile(filePath);
+                if (!ValidateTmpNull(0))
+                {
+                    // Initialize TmpFilePaths If Tmp Paths has not been Initialized
+                    TmpFilePaths = new Dictionary<string, string>();
+                }
+
+                TmpFilePaths.Add(filePath, tmpPath);
+                if (!File.Exists(filePath)) return;
+                File.Copy(filePath, tmpPath, true);
             }
-            else
+            catch (ArgumentException)
             {
-                try
-                {
-                    TmpFilePaths.Add(filePath, tmpPath);
-                    if (!File.Exists(filePath)) return;
-                    File.Copy(filePath, tmpPath, true);
-                }
-                catch (ArgumentException)
-                {
-                    ExceptionMan.ThrowMessage(0x2000, new string[] { $"Temp File was not cleaned!\nFile: {filePath}" });
-                }
+                ExceptionMan.ThrowMessage(0x2000, new string[] { $"Temp File was not cleaned!\nFile: {filePath}" });
             }
         }
 
@@ -167,6 +180,11 @@ namespace SpikeSoft.UtilityManager
             return tmpPath;
         }
 
+        public static int GetTmpPathCount()
+        {
+            return TmpFilePaths.Values.Count;
+        }
+
         private static bool ValidateTmpNull(int n)
         {
             if (TmpFilePaths == null || TmpFilePaths.Count == 0 || n >= TmpFilePaths.Count)
@@ -174,6 +192,20 @@ namespace SpikeSoft.UtilityManager
                 return false;
             }
             return true;
+        }
+
+        private static bool VerifyExistentTmp(string filePath)
+        {
+            if (ValidateTmpNull(0))
+            {
+                if (TmpFilePaths.Keys.Contains(filePath))
+                {
+                    // filePath already been created
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

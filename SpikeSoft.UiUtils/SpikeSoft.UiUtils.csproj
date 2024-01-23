@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DarkRenderer.cs" />
+    <Compile Include="ImageAnimator.cs" />
     <Compile Include="ImageTransparency.cs" />
     <Compile Include="ListViewUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

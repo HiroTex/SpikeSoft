@@ -38,12 +38,12 @@
             this.toolBtnSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.packagingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mainPanel = new System.Windows.Forms.Panel();
             this.toolBtnUnpackSingle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnUnpackAll = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnRepackSingle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnRepackAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.mainPanel = new System.Windows.Forms.Panel();
             this.mainToolStrip.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -144,20 +144,6 @@
             this.packagingToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
             this.packagingToolStripMenuItem.Text = "Utils";
             // 
-            // mainPanel
-            // 
-            this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
-            this.mainPanel.BackgroundImage = global::SpikeSoft.Properties.Resources.MainLogo;
-            this.mainPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainPanel.Font = new System.Drawing.Font("Consolas", 12F);
-            this.mainPanel.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.mainPanel.Location = new System.Drawing.Point(0, 49);
-            this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(466, 160);
-            this.mainPanel.TabIndex = 1;
-            // 
             // toolBtnUnpackSingle
             // 
             this.toolBtnUnpackSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
@@ -168,7 +154,7 @@
             this.toolBtnRepackAll});
             this.toolBtnUnpackSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.toolBtnUnpackSingle.Name = "toolBtnUnpackSingle";
-            this.toolBtnUnpackSingle.Size = new System.Drawing.Size(152, 22);
+            this.toolBtnUnpackSingle.Size = new System.Drawing.Size(129, 22);
             this.toolBtnUnpackSingle.Text = "Packaging";
             // 
             // toolStripMenuItem1
@@ -207,6 +193,20 @@
             this.toolBtnRepackAll.Text = "Repack All in Folder";
             this.toolBtnRepackAll.Click += new System.EventHandler(this.toolBtnRepackAll_Click);
             // 
+            // mainPanel
+            // 
+            this.mainPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.mainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.mainPanel.BackgroundImage = global::SpikeSoft.Properties.Resources.MainLogo;
+            this.mainPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainPanel.Font = new System.Drawing.Font("Consolas", 12F);
+            this.mainPanel.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.mainPanel.Location = new System.Drawing.Point(0, 49);
+            this.mainPanel.Name = "mainPanel";
+            this.mainPanel.Size = new System.Drawing.Size(466, 160);
+            this.mainPanel.TabIndex = 1;
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -217,6 +217,7 @@
             this.Controls.Add(this.mainPanel);
             this.Controls.Add(this.mainToolStrip);
             this.Controls.Add(this.mainMenuStrip);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mainMenuStrip;
             this.Name = "MainWindow";

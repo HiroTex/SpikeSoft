@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
@@ -54,6 +55,57 @@ namespace SpikeSoft.UiUtils
             value = (value > 1.0f) ? 1.0f : value;
             value = (value < 0.0f) ? 0.0f : value;
             return value;
+        }
+
+        private static Bitmap ResizeAndConvertToBlackAndWhite(Bitmap original)
+        {
+            // Resize the image to 16x16
+            Bitmap resizedImage = new Bitmap(16, 16);
+            using (Graphics g = Graphics.FromImage(resizedImage))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(original, 0, 0, 16, 16);
+            }
+
+            // Convert the image to black and white
+            Bitmap bwImage = new Bitmap(16, 16);
+            for (int x = 0; x < 16; x++)
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    Color originalColor = resizedImage.GetPixel(x, y);
+                    int grayscaleValue = (int)(originalColor.R * 0.3 + originalColor.G * 0.59 + originalColor.B * 0.11);
+                    Color newColor = Color.FromArgb(grayscaleValue, grayscaleValue, grayscaleValue);
+                    bwImage.SetPixel(x, y, newColor);
+                }
+            }
+
+            return bwImage;
+        }
+
+        public static bool AreImagesEqual(Bitmap image1, Bitmap image2)
+        {
+            // Check dimensions
+            if (image1.Width != image2.Width || image1.Height != image2.Height)
+                return false;
+
+            image1 = ResizeAndConvertToBlackAndWhite(image1);
+            image2 = ResizeAndConvertToBlackAndWhite(image2);
+
+            // Compare pixel by pixel
+            for (int x = 0; x < image1.Width; x++)
+            {
+                for (int y = 0; y < image1.Height; y++)
+                {
+                    var px1 = image1.GetPixel(x, y);
+                    var px2 = image2.GetPixel(x, y);
+                    if (px1 != px2)
+                        return false;
+                }
+            }
+
+            // If all pixels are equal, the images are considered equal
+            return true;
         }
     }
 }
