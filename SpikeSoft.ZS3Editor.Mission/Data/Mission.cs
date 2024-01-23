@@ -38,7 +38,8 @@ namespace SpikeSoft.ZS3Editor.Mission
     public struct RankingBattleInfo
     {
         public BattleSettings BattleSettings;
-        public int OpponentID;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 1)]
+        public int[] OpponentID;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

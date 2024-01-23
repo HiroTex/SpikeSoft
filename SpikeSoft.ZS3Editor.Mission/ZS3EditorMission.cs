@@ -13,6 +13,7 @@ namespace SpikeSoft.ZS3Editor.Mission
 {
     public partial class ZS3EditorMission: UserControl
     {
+        #region gVar
         public List<Mission> MissionInfo;
         public List<string> CharaList;
         public List<string> ZitemList;
@@ -20,8 +21,10 @@ namespace SpikeSoft.ZS3Editor.Mission
         public int RandomCharaID = 161;
         public int EmptyCharaID = 164;
         public int RandomID = 998;
-        public int BlankID = 999; 
+        public int BlankID = 999;
+        #endregion
 
+        #region Ctor
         public ZS3EditorMission()
         {
             InitializeComponent();
@@ -98,7 +101,9 @@ namespace SpikeSoft.ZS3Editor.Mission
                     break;
             }
         }
+        #endregion
 
+        #region "Editor Data Update" 
         public void ExternalOpponentDataUpdate(int opponentID)
         {
             UpdateOpponentData(opponentID);
@@ -362,10 +367,17 @@ namespace SpikeSoft.ZS3Editor.Mission
 
             UpdateBattleData();
         }
+        #endregion
+
+        #region FileDataUpdate
+        private string GetWorkFilePath(string filter)
+        {
+            return (SpikeSoft.UtilityManager.TmpMan.GetDefaultWrkFile().Contains(filter)) ? SpikeSoft.UtilityManager.TmpMan.GetDefaultTmpFile() : SpikeSoft.UtilityManager.TmpMan.GetTmpFile(1);
+        }
 
         private void UpdateBattleData()
         {
-            string battleInfoPath = (SpikeSoft.UtilityManager.TmpMan.GetDefaultWrkFile().Contains("battle_info")) ? SpikeSoft.UtilityManager.TmpMan.GetDefaultTmpFile() : SpikeSoft.UtilityManager.TmpMan.GetTmpFile(1);
+            string battleInfoPath = GetWorkFilePath("battle_info");
             var data = MissionInfo[MissionBox.SelectedIndex].BattleInfo;
             int size = Marshal.SizeOf(data);
             int offset = MissionBox.SelectedIndex * size;
@@ -374,12 +386,13 @@ namespace SpikeSoft.ZS3Editor.Mission
 
         private void UpdateOpponentData(int opponentID)
         {
-            string enemyInfoPath = (SpikeSoft.UtilityManager.TmpMan.GetDefaultWrkFile().Contains("opponent")) ? SpikeSoft.UtilityManager.TmpMan.GetDefaultTmpFile() : SpikeSoft.UtilityManager.TmpMan.GetTmpFile(1);
+            string enemyInfoPath = GetWorkFilePath("opponent");
             var data = MissionInfo[MissionBox.SelectedIndex].OpponentInfo[opponentID];
             int size = Marshal.SizeOf(data);
             int offset = (MissionBox.SelectedIndex * MissionInfo[MissionBox.SelectedIndex].OpponentCount) * size;
             offset = (offset) + (opponentID * size);
             SpikeSoft.UtilityManager.DataMan.StructToFile(data, enemyInfoPath, offset);
         }
+        #endregion
     }
 }

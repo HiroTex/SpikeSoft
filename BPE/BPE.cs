@@ -48,10 +48,8 @@ namespace SpikeSoft.ZLib
             Array.Clear(left, 0, HASHSIZE);
             Array.Clear(right, 0, HASHSIZE);
             Array.Clear(count, 0, HASHSIZE);
-
             Array.Clear(leftcode, 0, 256);
             Array.Clear(rightcode, 0, 256);
-
             Array.Clear(buffer, 0, BLOCKSIZE);
         }
 
@@ -85,32 +83,29 @@ namespace SpikeSoft.ZLib
             int c, index, used = 0;
 
             /* reset hash table and pair table */
-
-            Array.Clear(count, 0, hs);
-            Array.Clear(rightcode, 0, 256);
-
+            for (c = 0; c < hs; c++)
+            {
+                count[c] = 0;
+            }
             for (c = 0; c < 256; c++)
             {
                 leftcode[c] = (byte)c;
+                rightcode[c] = 0;
             }
-
             size = 0;
 
             /* read data until full or few unused chars */
             while (size < bs && used < mc && pos < sz)
             {
                 c = input[pos++] & 255;
-
                 if (size > 0)
                 {
                     index = lookup(buffer[size - 1] & 255, c, hs);
-                    int val = (count[index] & 255);
-                    if (val < 255)
+                    if ((count[index] & 255) < 255)
                     {
-                        count[index] = (byte)(val + 1);
+                        count[index] = (byte)((count[index] & 255) + 1);
                     }
                 }
-
                 buffer[size++] = (byte)c;
 
                 /* use right code to flag data chars found */
@@ -120,11 +115,10 @@ namespace SpikeSoft.ZLib
                     used++;
                 }
             }
-
             return pos >= sz ? 1 : 0;
         }
 
-        private static int filewrite(byte[] output, int pos, bool yuke)
+        private static int filewrite(byte[] output, int pos, int sz, bool yuke)
         {
             int i, len, c = 0;
 
@@ -152,7 +146,8 @@ namespace SpikeSoft.ZLib
                 {
                     len = 0;
                     c++;
-                    
+
+
                     /* original, will add extra brackets per compiler suggestions:      while ( len < 127 && c < 256 && c != leftcode[c] || len < 125 && c < 254 && c+1 != leftcode[c+1]) */
                     while ((len < 127 && c < 256 && c != (leftcode[c] & 255)) || (len < 125
                             && c < 254 && c + 1 != (leftcode[c + 1] & 255)))
@@ -160,9 +155,7 @@ namespace SpikeSoft.ZLib
                         len++;
                         c++;
                     }
-
                     output[pos++] = (byte)len;
-
                     c -= len + 1;
                 }
 
@@ -177,11 +170,17 @@ namespace SpikeSoft.ZLib
                     c++;
                 }
             }
-
             /* write size bytes and compressed data block */
-            output[pos++] = yuke ? (byte)(size % 256) : (byte)(size / 256);
-            output[pos++] = yuke ? (byte)(size / 256) : (byte)(size % 256);
-
+            if (yuke)
+            {
+                output[pos++] = (byte)(size % 256);
+                output[pos++] = (byte)(size / 256);
+            }
+            else
+            {
+                output[pos++] = (byte)(size / 256);
+                output[pos++] = (byte)(size % 256);
+            }
             Array.Copy(buffer, 0, output, pos, size);
             return pos + size;
         }
@@ -300,7 +299,7 @@ namespace SpikeSoft.ZLib
                     count[index] = 1;
                 }
 
-                opz = filewrite(outfile, outOff + opz, yuke) - outOff;
+                opz = filewrite(outfile, outOff + opz, outsz, yuke) - outOff;
             }
 
             byte[] _outputf = new byte[opz];

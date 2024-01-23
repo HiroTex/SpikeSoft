@@ -21,73 +21,80 @@ namespace SpikeSoft.DataTypes
 
         public void Work_Handler(object[] args, IProgress<int> progress)
         {
-            string filePath = args[0] as string;
-            switch (Path.GetExtension(filePath))
+            try
             {
-                case ".idx":
-                    // Create Repack Folder Handler.
-                    Repack_Handler(filePath, progress);
+                string filePath = args[0] as string;
+                switch (Path.GetExtension(filePath))
+                {
+                    case ".idx":
+                        // Create Repack Folder Handler.
+                        Repack_Handler(filePath, progress);
+                        return;
+                    case ".zpak":
+                        // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
+                        var BPEMan = new BPE();
+                        TmpMan.SetNewAssociatedPath(filePath);
+                        string tmpPath = TmpMan.GetTmpFilePath(filePath);
+                        byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath));
+
+                        if (string.IsNullOrEmpty(tmpPath))
+                        {
+                            ExceptionMan.ThrowMessage(0x2000, new string[] { "tmpPath is Empty!\nTemp File was not created" });
+                            return;
+                        }
+                        if (zfile == null)
+                        {
+                            ExceptionMan.ThrowMessage(0x2000, new string[] { $"Decompression Error on File: {filePath}" });
+                            return;
+                        }
+
+                        File.WriteAllBytes(tmpPath, zfile);
+
+                        // Then Create PAK File Handler.
+                        Unpack_Handler(typeof(Common.PAK), tmpPath, filePath, true, progress);
+
+                        // Then Delete Temporary File Created.
+                        TmpMan.CleanTmpFile(filePath);
+                        break;
+                    case ".pak":
+                        // Create PAK File Handler.
+                        Unpack_Handler(typeof(Common.PAK), filePath, filePath, false, progress);
+                        break;
+                    case ".pck":
+                        // Identify Pck as EPCK file
+                        if (!BinMan.GetBinaryData_String(File.ReadAllBytes(filePath), 0).Contains("EPCK"))
+                        {
+                            return;
+                        }
+
+                        // Create PCK File Handler.
+                        Unpack_Handler(typeof(Common.PCK), filePath, filePath, false, progress);
+                        break;
+                }
+
+                // If no File was Unpacked, don't do recursive Unpacking or Delete File
+                if (!Directory.Exists(Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath))))
+                {
                     return;
-                case ".zpak":
-                    // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
-                    var BPEMan = new BPE();
-                    TmpMan.SetNewAssociatedPath(filePath);
-                    string tmpPath = TmpMan.GetTmpFilePath(filePath);
-                    byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath));
+                }
 
-                    if (string.IsNullOrEmpty(tmpPath))
-                    {
-                        ExceptionMan.ThrowMessage(0x2000, new string[] { "tmpPath is Empty!\nTemp File was not created" });
-                        return;
-                    }
-                    if (zfile == null)
-                    {
-                        ExceptionMan.ThrowMessage(0x2000, new string[] { $"Decompression Error on File: {filePath}" });
-                        return;
-                    }
+                if (SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackDeleteFile == true)
+                {
+                    File.Delete(filePath);
+                }
 
-                    File.WriteAllBytes(tmpPath, zfile);
+                if (SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackComplete != true)
+                {
+                    return;
+                }
 
-                    // Then Create PAK File Handler.
-                    Unpack_Handler(typeof(Common.PAK), tmpPath, filePath, true, progress);
-
-                    // Then Delete Temporary File Created.
-                    TmpMan.CleanTmpFile(filePath);
-                    break;
-                case ".pak":
-                    // Create PAK File Handler.
-                    Unpack_Handler(typeof(Common.PAK), filePath, filePath, false, progress);
-                    break;
-                case ".pck":
-                    // Identify Pck as EPCK file
-                    if (!BinMan.GetBinaryData_String(File.ReadAllBytes(filePath), 0).Contains("EPCK"))
-                    {
-                        return;
-                    }
-
-                    // Create PCK File Handler.
-                    Unpack_Handler(typeof(Common.PCK), filePath, filePath, false, progress);
-                    break;
+                // Unpack sub Paks, Compressed Paks and PCKs
+                RecursiveUnpacking(filePath, new string[] { "*.pak", "*.zpak", "*.pck" }, progress);
             }
-
-            // If no File was Unpacked, don't do recursive Unpacking or Delete File
-            if (!Directory.Exists(Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath))))
+            catch (Exception ex)
             {
-                return;
+                ExceptionMan.ThrowMessage(0x1000, new string[] { ex.Message });
             }
-
-            if (SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackDeleteFile == true)
-            {
-                File.Delete(filePath);
-            }
-
-            if (SpikeSoft.UtilityManager.Properties.Settings.Default.UnpackComplete != true)
-            {
-                return;
-            }
-
-            // Unpack sub Paks, Compressed Paks and PCKs
-            RecursiveUnpacking(filePath, new string[] { "*.pak", "*.zpak", "*.pck" }, progress);
         }
 
         public void RecursiveUnpacking(string filePath, string[] args, IProgress<int> progress)

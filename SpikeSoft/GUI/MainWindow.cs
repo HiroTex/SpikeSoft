@@ -54,6 +54,11 @@ namespace SpikeSoft
 
         private void ExecuteDragDrop(object sender, DragEventArgs e)
         {
+            if (e.Effect == DragDropEffects.None)
+            {
+                return;
+            }
+
             foreach (var filepath in (string[])e.Data.GetData(DataFormats.FileDrop, false))
             {
                 if (!FileMan.ValidateFilePath(filepath))
@@ -63,6 +68,8 @@ namespace SpikeSoft
 
                 SetEditorUI(filepath);
             }
+
+            this.Focus();
         }
 
         private void OpenFile(object sender, EventArgs e)

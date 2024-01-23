@@ -15,6 +15,9 @@ namespace SpikeSoft.ZS3Editor.Mission
         public Control UIEditor { get { return Editor; } }
         public Size UISize { get { return new Size(925, 688); } set { } }
 
+        /// <summary>
+        /// Dictionary to get Path of Opponent Data of Mission Type
+        /// </summary>
         Dictionary<string, string> fileTypeToEnemyDataPath = new Dictionary<string, string>
         {
             { "mission", "ub_mission_opponent_info.dat" },
@@ -25,12 +28,15 @@ namespace SpikeSoft.ZS3Editor.Mission
             { "sim", "sim_opponent_info.dat" }
         };
 
+        /// <summary>
+        /// Dictionary to get Total Mission Count of Mission Type
+        /// </summary>
         Dictionary<string, int> fileTypeToMissionCount = new Dictionary<string, int>
         {
             { "mission", 100 },
             { "survivor", 3 },
             { "challenge", 36 },
-            { "ranking", 100 },
+            { "ranking", 99 },
             { "circuit", 5 },
             { "sim", 7 }
         };
@@ -51,6 +57,7 @@ namespace SpikeSoft.ZS3Editor.Mission
             {
                 var enemyDataPath = Path.Combine(fDir, enemyDatafName);
 
+                // Initialize new Temp Files to Work with
                 TmpMan.InitializeMainTmpFile(filePath);
                 TmpMan.SetNewAssociatedPath(enemyDataPath);
 
@@ -58,6 +65,7 @@ namespace SpikeSoft.ZS3Editor.Mission
                 int txtID = 0;
                 int missionCount = 0;
                 fileTypeToMissionCount.TryGetValue(fileType, out missionCount);
+
                 switch (fileType)
                 {
                     case "mission":
@@ -91,6 +99,8 @@ namespace SpikeSoft.ZS3Editor.Mission
 
                     foreach (dynamic mission in battleInfo)
                     {
+                        // Populate Mission Objects with Data
+
                         string missionTitle = string.Empty;
                         switch (fileType)
                         {
@@ -113,12 +123,9 @@ namespace SpikeSoft.ZS3Editor.Mission
 
                         List<OpponentInfo> OpponentData = new List<OpponentInfo>();
 
-                        // Handle the case where OpponentID is an int instead of an int array
-                        int[] opponentIds = (mission.OpponentID is int) ? new int[] { (int)mission.OpponentID } : mission.OpponentID;
-
-                        for (int i = 0; i < opponentIds.Length; i++)
+                        for (int i = 0; i < mission.OpponentID.Length; i++)
                         {
-                            var offset = opponentIds[i] * Marshal.SizeOf(typeof(OpponentInfo));
+                            var offset = mission.OpponentID[i] * Marshal.SizeOf(typeof(OpponentInfo));
                             var opponentInfo1 = new StructMan<OpponentInfo>(enemyDataPath, offset, 1);
                             OpponentData.Add(opponentInfo1[0]);
                         }
@@ -128,6 +135,8 @@ namespace SpikeSoft.ZS3Editor.Mission
                     }
                 }
             }
+
+            // Initialize Editor Data
 
             args.Add(Missions); // [0]
             args.Add(SettingsResources.CharaChip); // [1]
@@ -142,6 +151,11 @@ namespace SpikeSoft.ZS3Editor.Mission
             Editor = new ZS3EditorMission(args.ToArray());
         }
 
+        /// <summary>
+        /// Get Mission Type by parsing text of File Name
+        /// </summary>
+        /// <param name="fName">File name</param>
+        /// <returns></returns>
         private string GetFileType(string fName)
         {
             foreach (var fileType in fileTypeToEnemyDataPath.Keys)
