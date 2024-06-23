@@ -44,6 +44,11 @@
             this.toolBtnRepackSingle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnRepackAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.toolBtnBpeTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnBpeSingle = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnBpeAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnZBpeSingle = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBtnZBpeAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStrip.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -138,7 +143,8 @@
             // 
             this.packagingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.packagingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolBtnUnpackSingle});
+            this.toolBtnUnpackSingle,
+            this.toolBtnBpeTop});
             this.packagingToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.packagingToolStripMenuItem.Name = "packagingToolStripMenuItem";
             this.packagingToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
@@ -154,7 +160,7 @@
             this.toolBtnRepackAll});
             this.toolBtnUnpackSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.toolBtnUnpackSingle.Name = "toolBtnUnpackSingle";
-            this.toolBtnUnpackSingle.Size = new System.Drawing.Size(129, 22);
+            this.toolBtnUnpackSingle.Size = new System.Drawing.Size(152, 22);
             this.toolBtnUnpackSingle.Text = "Packaging";
             // 
             // toolStripMenuItem1
@@ -207,6 +213,55 @@
             this.mainPanel.Size = new System.Drawing.Size(466, 160);
             this.mainPanel.TabIndex = 1;
             // 
+            // toolBtnBpeTop
+            // 
+            this.toolBtnBpeTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnBpeTop.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolBtnBpeSingle,
+            this.toolBtnBpeAll,
+            this.toolBtnZBpeSingle,
+            this.toolBtnZBpeAll});
+            this.toolBtnBpeTop.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnBpeTop.Name = "toolBtnBpeTop";
+            this.toolBtnBpeTop.Size = new System.Drawing.Size(152, 22);
+            this.toolBtnBpeTop.Text = "Compression";
+            // 
+            // toolBtnBpeSingle
+            // 
+            this.toolBtnBpeSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnBpeSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnBpeSingle.Name = "toolBtnBpeSingle";
+            this.toolBtnBpeSingle.Size = new System.Drawing.Size(205, 22);
+            this.toolBtnBpeSingle.Text = "Decompress File";
+            this.toolBtnBpeSingle.Click += new System.EventHandler(this.toolBtnBpeSingle_Click);
+            // 
+            // toolBtnBpeAll
+            // 
+            this.toolBtnBpeAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnBpeAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnBpeAll.Name = "toolBtnBpeAll";
+            this.toolBtnBpeAll.Size = new System.Drawing.Size(205, 22);
+            this.toolBtnBpeAll.Text = "Decompress All in Folder";
+            this.toolBtnBpeAll.Click += new System.EventHandler(this.toolBtnBpeAll_Click);
+            // 
+            // toolBtnZBpeSingle
+            // 
+            this.toolBtnZBpeSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnZBpeSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnZBpeSingle.Name = "toolBtnZBpeSingle";
+            this.toolBtnZBpeSingle.Size = new System.Drawing.Size(205, 22);
+            this.toolBtnZBpeSingle.Text = "Compress File";
+            this.toolBtnZBpeSingle.Click += new System.EventHandler(this.toolBtnZBpeSingle_Click);
+            // 
+            // toolBtnZBpeAll
+            // 
+            this.toolBtnZBpeAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.toolBtnZBpeAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.toolBtnZBpeAll.Name = "toolBtnZBpeAll";
+            this.toolBtnZBpeAll.Size = new System.Drawing.Size(205, 22);
+            this.toolBtnZBpeAll.Text = "Decompress All in Folder";
+            this.toolBtnZBpeAll.Click += new System.EventHandler(this.toolBtnZBpeAll_Click);
+            // 
             // MainWindow
             // 
             this.AllowDrop = true;
@@ -250,6 +305,11 @@
         private System.Windows.Forms.ToolStripMenuItem toolBtnUnpackAll;
         private System.Windows.Forms.ToolStripMenuItem toolBtnRepackSingle;
         private System.Windows.Forms.ToolStripMenuItem toolBtnRepackAll;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnBpeTop;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnBpeSingle;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnBpeAll;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnZBpeSingle;
+        private System.Windows.Forms.ToolStripMenuItem toolBtnZBpeAll;
     }
 }
 

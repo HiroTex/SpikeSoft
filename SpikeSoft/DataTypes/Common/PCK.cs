@@ -20,17 +20,17 @@ namespace SpikeSoft.DataTypes.Common
 
         public override void InitializeSubFileCount(string filePath)
         {
-            VERSION = BinMan.GetBinaryData_Int32(filePath, 0x4);
-            FileCount = BinMan.GetBinaryData_Int32(filePath, 0x8);
+            VERSION = BinMan.GetBinaryData<int>(filePath, 0x4);
+            FileCount = BinMan.GetBinaryData<int>(filePath, 0x8);
         }
 
         public override void InitializeFilePointersList(string filePath)
         {
             FilePointers = new List<int>();
-            int total = BinMan.GetBinaryData_Int32(filePath, 0x8);
+            int total = BinMan.GetBinaryData<int>(filePath, 0x8);
             for (int i = 0; i < total; i++)
             {
-                FilePointers.Add(BinMan.GetBinaryData_Int32(filePath, i * 4 + 0x10));
+                FilePointers.Add(BinMan.GetBinaryData<int>(filePath, i * 4 + 0x10));
             }
         }
 

@@ -480,10 +480,10 @@ namespace SpikeSoft.ZLib
         public byte[] decompress(byte[] in0)
         {
             // UZ Size
-            int outsz = SpikeSoft.UtilityManager.BinMan.GetBinaryData_Int32(in0, 0);
+            int outsz = SpikeSoft.UtilityManager.BinMan.GetBinaryData<int>(in0, 0);
 
             // Z Size
-            int insz = SpikeSoft.UtilityManager.BinMan.GetBinaryData_Int32(in0, 4);
+            int insz = SpikeSoft.UtilityManager.BinMan.GetBinaryData<int>(in0, 4);
 
             // UZ File
             byte[] out0 = new byte[outsz];

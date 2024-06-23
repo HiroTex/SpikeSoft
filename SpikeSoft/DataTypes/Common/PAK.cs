@@ -261,23 +261,23 @@ namespace SpikeSoft.DataTypes.Common
 
         public virtual void InitializeSubFileCount(string filePath)
         {
-            FileCount = BinMan.GetBinaryData_Int32(filePath, 0);
+            FileCount = BinMan.GetBinaryData<int>(filePath, 0);
         }
 
         public virtual void InitializeFilePointersList(string filePath)
         {
             FilePointers = new List<int>();
-            int total = BinMan.GetBinaryData_Int32(filePath, 0);
+            int total = BinMan.GetBinaryData<int>(filePath, 0);
             for (int i = 0; i < total; i++)
             {
-                FilePointers.Add(BinMan.GetBinaryData_Int32(filePath, i * 4 + 4));
+                FilePointers.Add(BinMan.GetBinaryData<int>(filePath, i * 4 + 4));
             }
         }
 
         public virtual void InitializeEndOfFilePointer(string filePath)
         {
-            int total = BinMan.GetBinaryData_Int32(filePath, 0);
-            EOF = BinMan.GetBinaryData_Int32(filePath, total * 4 + 4);
+            int total = BinMan.GetBinaryData<int>(filePath, 0);
+            EOF = BinMan.GetBinaryData<int>(filePath, total * 4 + 4);
         }
 
         public virtual void InitializeFilenamesList(string filePath, int subFileCount)
@@ -479,8 +479,8 @@ namespace SpikeSoft.DataTypes.Common
             for (var i = 0; i < subFileCount; i++)
             {
                 // Get File Offsets to get File Size
-                int fOffset = BinMan.GetBinaryData_Int32(filePath, i * 4 + 4);
-                int NextOffset = BinMan.GetBinaryData_Int32(filePath, i * 4 + 8);
+                int fOffset = BinMan.GetBinaryData<int>(filePath, i * 4 + 4);
+                int NextOffset = BinMan.GetBinaryData<int>(filePath, i * 4 + 8);
 
                 // File is Empty
                 if ((NextOffset - fOffset) == 0)

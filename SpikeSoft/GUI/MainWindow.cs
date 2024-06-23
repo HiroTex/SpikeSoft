@@ -209,8 +209,9 @@ namespace SpikeSoft
                 return;
             }
 
-            FileManager.FunMan FUN = new FileManager.FunMan();
-            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnUnpackAll_Click_DoWork), new object[] { FilePath }, false);
+            FunMan FUN = new FunMan();
+            await Task.Run(() => FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnUnpackAll_Click_DoWork), new object[] { FilePath }, true));
+            MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void toolBtnUnpackAll_Click_DoWork(object[] fpath, IProgress<int> progress)
@@ -261,7 +262,7 @@ namespace SpikeSoft
                 return;
             }
 
-            FileManager.FunMan FUN = new FileManager.FunMan();
+            FunMan FUN = new FunMan();
             await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnRepackAll_Click_DoWork), new object[] { FilePath }, false);
         }
 
@@ -283,6 +284,175 @@ namespace SpikeSoft
             }
         }
 
+        #endregion
+
+        #region "Compression"
+        private async void toolBtnBpeSingle_Click(object sender, EventArgs e)
+        {
+            List<string> FilterNames = new List<string>();
+            List<string> FilterExt = new List<string>();
+
+            FilterNames.Add("Compressed File");
+            FilterExt.Add("*.z*");
+
+            string FilePath = FileMan.GetFilePath("Select an appropriate Compressed File", FilterNames, FilterExt);
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                return;
+            }
+
+            try
+            {
+                ZLib.BPE worker = new ZLib.BPE();
+                await Task.Run(() => worker.decompress(File.ReadAllBytes(FilePath)))
+                    .ContinueWith(antecedent =>
+                    {
+                        if (antecedent.Result == null)
+                        {
+                            throw new Exception("Decompression Issue, Result is NULL");
+                        }
+                        else
+                        {
+                            var dir = Path.GetDirectoryName(FilePath);
+                            var fname = Path.GetFileNameWithoutExtension(FilePath);
+                            var ext = Path.GetExtension(FilePath).Replace("z", string.Empty);
+                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
+                        }
+                    });
+
+                MessageBox.Show("Decompression was performed successfully", "Process Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+            }
+        }
+
+        private async void toolBtnZBpeSingle_Click(object sender, EventArgs e)
+        {
+            List<string> FilterNames = new List<string>();
+            List<string> FilterExt = new List<string>();
+
+            string FilePath = FileMan.GetFilePath("Select a File", FilterNames, FilterExt);
+            if (string.IsNullOrEmpty(FilePath))
+            {
+                return;
+            }
+
+            try
+            {
+                ZLib.BPE worker = new ZLib.BPE();
+                await Task.Run(() => worker.compress(File.ReadAllBytes(FilePath)))
+                    .ContinueWith(antecedent =>
+                    {
+                        if (antecedent.Result == null)
+                        {
+                            throw new Exception("Compression Issue, Result is NULL");
+                        }
+                        else
+                        {
+                            var dir = Path.GetDirectoryName(FilePath);
+                            var fname = Path.GetFileNameWithoutExtension(FilePath);
+                            var ext = $".z{Path.GetExtension(FilePath).Replace(".", string.Empty)}";
+                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
+                        }
+                    });
+
+                MessageBox.Show("Compression was performed successfully", "Process Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+            }
+        }
+
+        private async void toolBtnBpeAll_Click(object sender, EventArgs e)
+        {
+            string Dir = FileMan.GetDirectoryPath("Select a Folder containing Compressed Files");
+            if (string.IsNullOrEmpty(Dir))
+            {
+                return;
+            }
+
+            FunMan FUN = new FunMan();
+            await Task.Run(() => FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnBpeAll_Work), new object[] { Dir }, true));
+            MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private async void toolBtnBpeAll_Work(object[] args, IProgress<int> progress)
+        {
+            string baseDir = args[0] as string;
+
+            if (!Directory.Exists(baseDir)) return;
+
+            int ID = 1;
+            float maxValue = Directory.GetFiles(baseDir, "*.z*").Length;
+
+            foreach (var file in Directory.EnumerateFiles(baseDir, "*.z*"))
+            {
+                progress.Report((int)((ID++ / maxValue) * 100));
+                ZLib.BPE worker = new ZLib.BPE();
+                await Task.Run(() => worker.decompress(File.ReadAllBytes(file)))
+                    .ContinueWith(antecedent =>
+                    {
+                        if (antecedent.Result == null)
+                        {
+                            throw new Exception("Decompression Issue, Result is NULL");
+                        }
+                        else
+                        {
+                            var dir = Path.GetDirectoryName(file);
+                            var fname = Path.GetFileNameWithoutExtension(file);
+                            var ext = Path.GetExtension(file).Replace("z", string.Empty);
+                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
+                        }
+                    });
+            }
+        }
+
+        private async void toolBtnZBpeAll_Click(object sender, EventArgs e)
+        {
+            string Dir = FileMan.GetDirectoryPath("Select a Folder containing Files");
+            if (string.IsNullOrEmpty(Dir))
+            {
+                return;
+            }
+
+            FunMan FUN = new FunMan();
+            await Task.Run(() => FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnZBpeAll_Work), new object[] { Dir }, true));
+            MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private async void toolBtnZBpeAll_Work(object[] args, IProgress<int> progress)
+        {
+            string baseDir = args[0] as string;
+
+            if (!Directory.Exists(baseDir)) return;
+
+            int ID = 1;
+            float maxValue = Directory.GetFiles(baseDir).Length;
+
+            foreach (var file in Directory.EnumerateFiles(baseDir))
+            {
+                progress.Report((int)((ID++ / maxValue) * 100));
+                ZLib.BPE worker = new ZLib.BPE();
+                await Task.Run(() => worker.compress(File.ReadAllBytes(file)))
+                    .ContinueWith(antecedent =>
+                    {
+                        if (antecedent.Result == null)
+                        {
+                            throw new Exception("Compression Issue, Result is NULL");
+                        }
+                        else
+                        {
+                            var dir = Path.GetDirectoryName(file);
+                            var fname = Path.GetFileNameWithoutExtension(file);
+                            var ext = $".z{Path.GetExtension(file).Replace(".", string.Empty)}";
+                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
+                        }
+                    });
+            }
+        }
         #endregion
     }
 }

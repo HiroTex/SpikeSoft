@@ -38,20 +38,7 @@ namespace SpikeSoft.UtilityManager
                 return;
             }
 
-            string baseDir = Path.Combine(Path.GetTempPath(), "SSTemp");
-
-            if (!Directory.Exists(baseDir))
-            {
-                Directory.CreateDirectory(baseDir);
-            }
-
-            string tmpPath = Path.Combine(baseDir, Path.GetFileNameWithoutExtension(filePath) + ".tmp");
-            int i = 0;
-
-            while (File.Exists(tmpPath))
-            {
-                tmpPath = Path.Combine(baseDir, Path.GetFileNameWithoutExtension(filePath) + $"_{i++.ToString()}" + ".tmp");
-            }
+            string tmpPath = Path.GetTempFileName();
 
             try
             {

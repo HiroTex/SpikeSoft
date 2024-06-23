@@ -4,7 +4,7 @@ common_002_.dat
 common_animation_info.dat
 com_think.bin
 common_camera_info.dat
-common_006_.dat
+common_audio_info_.dat
 common_combo_info.dat
 common_character_info.dat
 common_009_.dat
@@ -243,26 +243,26 @@ system_prompt_IT/missing_joystick_p2.txt
 system_prompt_IT/missing_joysticks.txt
 
 # Init 003
-init_main.zpak
+init_pad.zpak
 init_system_window.zpak
 init_logos.zpak
 
-# init_main 004
+# Init 004
+init_pad.zpak
+init_system_window.zpak
+init_logos.zpak
+init_lang.zpak
+
+# init_pad 003
+system_no_joy_text.dbt
+system_02.dbt
+system_03.dbt
+
+# init_pad 004
 system_no_joy_text.dbt
 system_02.dbt
 system_03.dbt
 system_04.dbt
-
-# 03_init_logos 009
-bg_warning.dbt
-bg_bandai.dbt
-bg_bandai_namco.dbt
-bg_spike.dbt
-bg_criware.dbt
-bg_atari.dbt
-bg_funimation.dbt
-bg_okratron5.dbt
-bg_copyright.dbt
 
 # Main 002
 start_menu.zpak
@@ -929,30 +929,30 @@ menu_titles.dbt
 songs_order.dat
 
 # Training 002
-ut.zpak
+UT.zpak
 character_select.zpak
 
-# ut 026
-UltimateTraining_top.fod
-ut_bg.dbt
-ut_guide_bidel.dbt
-ut_guide_saiyaman.dbt
-ut_title.dbt
-ut_select_tex_chara.dbt
-ut_select_tex.dbt
-ut_select_text_class.dbt
-ut_select_text_class_Wii_.dbt
-if_title_line.pak
-if_msg_window.pak
-utraining_lips.pak
-btutorial_lips.pak
-ut_msg.pak
-bt_msg.pak
-font_Training.pak
-font_BattleTutorial.pak
-font_BattleTutorial_Wii_.pak
-font_BattleTutorial_Wii_.pak
-font_BattleTutorial_Wii_.pak
+# UT 026
+UltimateTraining_top_PS2_.fod
+ut_bg_PS2_.dbt
+ut_guide_bidel_PS2_.dbt
+ut_guide_saiyaman_PS2_.dbt
+ut_title_JP_PS2_.dbt
+ut_select_tex_chara_PS2_.dbt
+ut_select_tex_PS2_.dbt
+ut_select_text_class_JP_PS2_.dbt
+ut_select_text_class_JP_Wii_.dbt
+if_title_line_PS2_.pak
+if_msg_window_PS2_.pak
+utraining_lips_PS2_.pak
+btutorial_lips_PS2_.pak
+ut_msg_JP_PS2_.pak
+bt_msg_JP_PS2_.pak
+font_Training_JP_PS2_.pak
+font_BattleTutorial_JP_PS2_.pak
+font_BattleTutorial_JP_Wii1_.pak
+font_BattleTutorial_JP_Wii2_.pak
+font_BattleTutorial_JP_Wii3_.pak
 ut_normal_index_data.dat
 ut_normal_index_data.dat
 tu_noraml_botu.dat
@@ -961,23 +961,23 @@ tu_noraml_notexture.dat
 tu_noraml_notexture.dat
 
 
-# EvoZ 003
+# * 003 EvoZ|Evolution_Z
 evoZ.zpak
 shop.zpak
 character_setup.zpak
 
 # evoZ 011
-EvoZ_Top_bg.dbt
-EvoZ_Cririn.dbt
-EvoZ_Title.dbt
-EvoZ_BOX.dbt
-EvoZ_TEXT.dbt
-evo_z_top.fod
-ez_msg.pak
-if_msg_window.pak
-if_title_line.pak
-evoz_lips.pak
-if_system_window.pak
+EvoZ_Top_bg_PS2_.dbt
+EvoZ_Cririn_PS2_.dbt
+EvoZ_Title_JP_PS2_.dbt
+EvoZ_TEX_PS2_.dbt
+EvoZ_TEXT_JP_PS2_.dbt
+evo_z_top_PS2_.fod
+ez_msg_JP_PS2_.pak
+if_msg_window_JP_PS2_.pak
+if_title_line_PS2_.pak
+evoz_lips_PS2_.pak
+if_system_window_JP_PS2_.pak
 
 # shop 033
 ez_shop_bg.dbt
@@ -1057,89 +1057,89 @@ dc_password_window.pak
 message_txt.pak
 
 # DataCenter 004
-dc.zpak
-list.zpak
+DC.zpak
+LIST.zpak
 password_input.zpak
-replay.zpak
+Replay.zpak
 
-# dc 012
-dcenter_lips.pak
-if_msg_window.pak
-if_title_line.pak
-dc_msg.pak
-data_center_top.fod
-dc_select_bg.dbt
-dc_select_guide.dbt
-dc_select_text.dbt
-dc_select_title.dbt
-dc_select.dbt
-dc_compane.dbt
-if_system_window.pak
+# DC 012
+dcenter_lips_PS2_.pak
+if_msg_window_PS2_.pak
+if_title_line_PS2_.pak
+dc_msg_JP_PS2_.pak
+data_center_top_PS2_.fod
+dc_select_bg_PS2_.dbt
+dc_select_guide_PS2_.dbt
+dc_select_text_JP_PS2.dbt
+dc_select_title_JP_PS2.dbt
+dc_select_PS2_.dbt
+dc_compane_PS2_.dbt
+if_system_window_jp_PS2_.pak
 
-# list 022
-chara_list_bg.dbt
-dc_select_guide.dbt
-chara_list_top_tex.dbt
-chara_list_top_text.dbt
-chara_list_top.fod
-chara_list_z_item_tex_plate.dbt
-chara_list_z_item_tex.dbt
-chara_list_z_item_text.dbt
-chara_list_z_item.fod
-dc_password_window.pak
-if_msg_window.pak
-if_system_window.pak
-dc_msg.pak
-dcenter_lips.pak
-zitem_parameter.dat
-ez_item_details.pak
-chara_name.pak
-chara_form.pak
-dc_compane.dbt
-pwd_imput_ball.dbt
-font_zitem_name.pak
-font_datacenter.pak
+# LIST 022
+chara_list_bg_PS2_.dbt
+dc_select_guide_PS2_.dbt
+chara_list_top_tex_PS2_.dbt
+chara_list_top_text_JP_PS2_.dbt
+chara_list_top_PS2_.fod
+chara_list_z_item_tex_plate_PS2_.dbt
+chara_list_z_item_tex_PS2_.dbt
+chara_list_z_item_text_JP_PS2_.dbt
+chara_list_z_item_PS2_.fod
+dc_password_window_JP_PS2_.pak
+if_msg_window_PS2_.pak
+if_system_window_JP_PS2_.pak
+dc_msg_JP_PS2_.pak
+dcenter_lips_PS2_.pak
+zitem_parameter_PS2_.dat
+ez_item_details_JP_PS2_.pak
+chara_name_JP_PS2_.pak
+chara_form_JP_PS2_.pak
+dc_compane_PS2_.dbt
+pwd_imput_ball_PS2_.dbt
+font_zitem_name_JP_PS2_.pak
+font_datacenter_JP_PS2_.pak
 
 # password_input 021
-pwd_imput_1_TEX.dbt
-pwd_imput_1_TEXT.dbt
-pwd_imput_2_TEX.dbt
-pwd_imput_2_TEXT.dbt
-pwd_imput_ball.dbt
-if_msg_window.pak
-if_system_window.pak
-dc_msg.pak
-dcenter_lips.pak
-dc_select_bg.dbt
-dc_select_guide.dbt
-zitem_parameter.dat
-chara_name.pak
-chara_form.pak
-dc_compane.dbt
-pwd_imput_EFFECT.dbt
-password_input_1.fod
-password_input_2.fod
-pwd_input.pak
-character_select_order.dat
-font_datacenter.pak
+pwd_imput_1_TEX_PS2_.dbt
+pwd_imput_1_TEXT_JP_PS2_.dbt
+pwd_imput_2_TEX_PS2_.dbt
+pwd_imput_2_TEXT_JP_PS2_.dbt
+pwd_imput_ball_PS2_.dbt
+if_msg_window_PS2_.pak
+if_system_window_JP_PS2_.pak
+dc_msg_JP_PS2_.pak
+dcenter_lips_PS2_.pak
+dc_select_bg_PS2_.dbt
+dc_select_guide_PS2_.dbt
+zitem_parameter_PS2_.dat
+chara_name_JP_PS2_.pak
+chara_form_JP_PS2_.pak
+dc_compane_PS2_.dbt
+pwd_imput_EFFECT_PS2_.dbt
+password_input_1_PS2_.fod
+password_input_2_PS2_.fod
+zitem_parameter_PS2_.pak
+character_select_order_PS2_.dat
+font_datacenter_JP_PS2_.pak
 
-# pwd_input 005
-password_chara_ID_Neo.dat
-zitem_parameter_neo.dat
-password_chara_item_Neo.dat
-password_Item_toZs3.dat
-progress_chara_param_neo.dat
+# zitem_parameter_PS2_ 005
+password_chara_ID_Neo_PS2_.dat
+zitem_parameter_neo_PS2_.dat
+password_chara_item_Neo_PS2_.dat
+password_Item_toZs3_PS2_.dat
+progress_chara_param_neo_PS2_.dat
 
-# replay 009
-replay_data.fod
-dc_replay_tex.dbt
-dc_replay_tex_plate.dbt
-dc_replay_text.dbt
-if_system_window.pak
-dc_select_bg.dbt
-dc_compane.dbt
-chara_chip.pak
-font_datacenter.pak
+# Replay 009
+replay_data_PS2_.fod
+dc_replay_tex_PS2_.dbt
+dc_replay_tex_plate_PS2_.dbt
+dc_replay_text_JP_PS2_.dbt
+if_system_window_JP_PS2_.pak
+dc_select_bg_PS2_.dbt
+dc_compane_PS2_.dbt
+chara_chip_PS2_.pak
+font_datacenter_PS2_.pak
 
 # Collection 001
 collection_list.zpak
@@ -1769,7 +1769,7 @@ dende_lips.pak
 songs_order.dat
 default_txt.pak
 
-# Shenron 002
+# DragonBalls_ 002
 reconfir.zpak
 shenron.zpak
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,45 +38,62 @@ namespace SpikeSoft.UtilityManager
         }
 
         /// <summary>
-        /// Gets Int32 Value with Endianness Parsed by Settings Automatically from a determined Offset in a File.
+        /// Get Binary Data of Specified Type from File
         /// </summary>
-        /// <param name="filePath">Path to Binary File</param>
-        /// <param name="dataOffset">Offset to Data</param>
+        /// <typeparam name="T">Type of Data to Get</typeparam>
+        /// <param name="filePath">File Path</param>
+        /// <param name="offset">Data Offset</param>
         /// <returns></returns>
-        public static int GetBinaryData_Int32(string filePath, int dataOffset)
+        public static T GetBinaryData<T>(string filePath, int offset) where T : struct
         {
-            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            using (var bin = new BinaryReader(fs))
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                fs.Seek(dataOffset, SeekOrigin.Begin);
-                byte[] tmp = bin.ReadBytes(4);
-                if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
-                int result = BitConverter.ToInt32(tmp, 0);
-                return result;
+                return ReadBinaryData<T>(fs, offset);
             }
         }
 
         /// <summary>
-        /// Gets Int32 Value with Endianness Parsed by Settings Automatically from a determined Offset in a Byte Array.
+        /// Get Binary Data of Specified Type from Object
         /// </summary>
-        /// <param name="source">Byte Array with Data</param>
-        /// <param name="dataOffset">Data Offset</param>
+        /// <typeparam name="T">Type of Data to Get</typeparam>
+        /// <param name="data">Object</param>
+        /// <param name="offset">Data Offset</param>
         /// <returns></returns>
-        public static int GetBinaryData_Int32(byte[] source, int dataOffset)
+        public static T GetBinaryData<T>(byte[] data, int offset) where T : struct
         {
-            try
+            using (MemoryStream ms = new MemoryStream(data))
             {
-                var tmp = new byte[4];
-                Array.Copy(source, dataOffset, tmp, 0, 4);
-                if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
-                return BitConverter.ToInt32(tmp, 0);
+                return ReadBinaryData<T>(ms, offset);
             }
-            catch (Exception ex)
+        }
+
+        private static T ReadBinaryData<T>(Stream stream, int offset) where T : struct
+        {
+            if (offset > stream.Length)
             {
-                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+                throw new Exception($"Offset OOB: {offset}");
             }
 
-            return 0;
+            stream.Seek(offset, SeekOrigin.Begin);
+
+            int size = Marshal.SizeOf(typeof(T));
+            byte[] buffer = new byte[size];
+            stream.Read(buffer, 0, size);
+
+            if (Properties.Settings.Default.WIIMODE && size > 1)
+            {
+                Array.Reverse(buffer);
+            }
+
+            GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            try
+            {
+                return (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+            }
+            finally
+            {
+                handle.Free();
+            }
         }
 
         /// <summary>
