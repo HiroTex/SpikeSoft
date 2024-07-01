@@ -10,6 +10,13 @@ namespace SpikeSoft.UtilityManager
 {
     public class BinMan
     {
+        /// <summary>
+        /// Get Generic Data as Byte Array from File at Specified Offset
+        /// </summary>
+        /// <param name="filePath">Path to File</param>
+        /// <param name="objSize">Array Size</param>
+        /// <param name="index">Offset of Binary File where Data is located</param>
+        /// <returns></returns>
         static public byte[] GetBytes(string filePath, int objSize, int index)
         {
             byte[] obj = new byte[objSize];
@@ -22,6 +29,12 @@ namespace SpikeSoft.UtilityManager
             return obj;
         }
 
+        /// <summary>
+        /// Set Generic Data as Byte Array on File at Specified Offset
+        /// </summary>
+        /// <param name="filePath">Path to Binary File</param>
+        /// <param name="source">Byte Array to Insert on File</param>
+        /// <param name="index">Specified Offset of Binary File</param>
         public static void SetBytes(string filePath, byte[] source, int index)
         {
             if (!File.Exists(filePath))
@@ -32,6 +45,11 @@ namespace SpikeSoft.UtilityManager
             using (var f = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             using (var b = new BinaryWriter(f))
             {
+                if (index > f.Length)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
                 f.Seek(index, SeekOrigin.Begin);
                 b.Write(source);
             }

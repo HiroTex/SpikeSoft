@@ -126,7 +126,7 @@ namespace SpikeSoft.ZS3Editor.Mission
                         for (int i = 0; i < mission.OpponentID.Length; i++)
                         {
                             var offset = mission.OpponentID[i] * Marshal.SizeOf(typeof(OpponentInfo));
-                            var opponentInfo1 = new StructMan<OpponentInfo>(enemyDataPath, offset, 1);
+                            var opponentInfo1 = new StructMan<OpponentInfo>(enemyDataPath, offset);
                             OpponentData.Add(opponentInfo1[0]);
                         }
 

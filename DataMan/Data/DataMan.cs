@@ -345,20 +345,33 @@ namespace SpikeSoft.UtilityManager
             {
                 foreach (var field in type.GetFields())
                 {
-                    if (field.IsStatic)
+                    var fieldType = field.FieldType;
+                    var offset = Marshal.OffsetOf(type, field.Name);
+                    var size = Marshal.SizeOf(fieldType);
+
+                    if (field.IsStatic || size < 2)
                     {
                         // Do not Swap Static Values
                         continue;
                     }
 
-                    var fieldType = field.FieldType;
-                    var offset = Marshal.OffsetOf(type, field.Name);
+                    // Get True Type of Enums
                     if (fieldType.IsEnum)
                     {
                         fieldType = Enum.GetUnderlyingType(fieldType);
                     }
-
-                    Array.Reverse(data, (int)offset, Marshal.SizeOf(fieldType));
+                    // Parse Sub Structs
+                    else if (fieldType.IsValueType && !fieldType.IsPrimitive)
+                    {
+                        byte[] subStruct = new byte[size];
+                        Array.Copy(data, (int)offset, subStruct, 0, size);
+                        Array.Copy(ParseStructEndianness(subStruct, fieldType), 0, data, (int)offset, size);
+                    }
+                    // Reverse Primitive Types
+                    else
+                    {
+                        Array.Reverse(data, (int)offset, size);
+                    }
                 }
             }
 

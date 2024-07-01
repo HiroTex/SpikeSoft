@@ -29,14 +29,17 @@ namespace SpikeSoft.UiUtils
 
         public void SetTimer(System.ComponentModel.ISynchronizeInvoke source, int ms, ElapsedEventHandler func, bool autoReset)
         {
-            // Create a timer with a milisecond interval.
-            Tmr = new System.Timers.Timer(ms);
+            Task.Run(() =>
+            {
+                // Create a timer with a milisecond interval.
+                Tmr = new System.Timers.Timer(ms);
 
-            // Hook up the Elapsed event for the timer. 
-            Tmr.Elapsed += func;
-            Tmr.AutoReset = autoReset;
-            Tmr.SynchronizingObject = source;
-            Tmr.Start();
+                // Hook up the Elapsed event for the timer. 
+                Tmr.Elapsed += func;
+                Tmr.AutoReset = autoReset;
+                Tmr.SynchronizingObject = source;
+                Tmr.Start();
+            });
         }
 
         public void ImageTransition (Object sender, ElapsedEventArgs e)
