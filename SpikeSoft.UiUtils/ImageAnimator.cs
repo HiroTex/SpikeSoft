@@ -73,6 +73,10 @@ namespace SpikeSoft.UiUtils
                 // Increase Opacity Value
                 opacity += 0.25f;
             }
+            catch (Exception)
+            {
+                // ignore
+            }
             finally
             {
                 // If Opacity value is not Full, repeat process

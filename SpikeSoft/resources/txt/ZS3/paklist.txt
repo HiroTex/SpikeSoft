@@ -491,7 +491,7 @@ sim_bg.dbt
 ub_guide_androids.dbt
 if_title_line.pak
 chara_chip.pak
-ub_msg
+ub_msg.pak
 ub_lips.pak
 
 # ub_fusion 012
@@ -504,7 +504,7 @@ if_title_line.pak
 if_msg_window.pak
 bg.dbt
 androids.dbt
-ub_msg
+ub_msg.pak
 ub_lips.pak
 font_ultimatebattle.pak
 
@@ -531,7 +531,7 @@ ub_mission_08.dat
 ub_mission_09.dat
 mission_param.dat
 chara_chip.pak
-ub_msg
+ub_msg.pak
 ub_lips.pak
 font_ultimatebattle.pak
 
@@ -547,7 +547,7 @@ ub_result_08.bin
 ub_result_09.bin
 ub_result_10.bin
 if_title_line.pak
-ub_msg
+ub_msg.pak
 ub_lips.pak
 font_ultimatebattle.pak
 param.dat

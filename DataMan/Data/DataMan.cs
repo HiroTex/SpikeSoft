@@ -59,34 +59,29 @@ namespace SpikeSoft.UtilityManager
                     throw new ArgumentException($"{Path.GetFileName(filePath)} is not a valid PAK file.");
                 }
 
-                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
-                using (var br = new BinaryReader(fs))
+                int fCount = BinMan.GetBinaryData<int>(filePath, 0);
+
+                // Check if File ID wanted exists on File
+                if (fCount < fId)
                 {
-                    // Check if File ID wanted exists on File
-                    if (br.ReadInt32() < fId)
+                    throw new ArgumentException($"{fId} is not a valid File ID for this PAK.");
+                }
+
+                // Get File Start Offset and End Offset
+                int fOffs = BinMan.GetBinaryData<int>(filePath, 4 + (fId * 4));
+                int fEnd = BinMan.GetBinaryData<int>(filePath, 8 + (fId * 4));
+
+                // If File is Empty return empty string
+                if (fOffs != fEnd)
+                {
+                    // Check for possible errors on Pak File
+                    if (fOffs > fEnd || fEnd > (new FileInfo(filePath)).Length)
                     {
-                        throw new ArgumentException($"{fId} is not a valid File ID for this PAK.");
+                        throw new Exception($"Wrong PAK Data on file = {fId}");
                     }
 
-                    fs.Seek((fId * 4), SeekOrigin.Current);
-
-                    // Get File Start Offset and End Offset
-                    int fOffs = br.ReadInt32();
-                    int fEnd = br.ReadInt32();
-
-                    // If File is Empty return empty string
-                    if (fOffs != fEnd)
-                    {
-                        // Check for possible errors on Pak File
-                        if (fOffs > fEnd || fEnd > fs.Length)
-                        {
-                            throw new Exception($"Wrong PAK Data on file = {fId}");
-                        }
-
-                        // Get string
-                        fs.Seek(fOffs, SeekOrigin.Begin);
-                        result = Encoding.Unicode.GetString(br.ReadBytes(fEnd - fOffs));
-                    }
+                    // Get string
+                    result = Encoding.Unicode.GetString(BinMan.GetBytes(filePath, fEnd - fOffs, fOffs)).Replace("\0", string.Empty);
                 }
             }
             catch (Exception e)
@@ -341,12 +336,18 @@ namespace SpikeSoft.UtilityManager
         /// <returns></returns>
         public static byte[] ParseStructEndianness(byte[] data, Type type)
         {
-            if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE || (!BitConverter.IsLittleEndian))
+            if (Properties.Settings.Default.WIIMODE || (!BitConverter.IsLittleEndian))
             {
                 foreach (var field in type.GetFields())
                 {
                     var fieldType = field.FieldType;
                     var offset = Marshal.OffsetOf(type, field.Name);
+
+                    if (field.IsStatic || fieldType == typeof(string))
+                    {
+                        // Do not Swap Static Values or strings
+                        continue;
+                    }
 
                     // Handle Arrays
                     if (fieldType.IsArray)
@@ -384,20 +385,20 @@ namespace SpikeSoft.UtilityManager
                         continue;
                     }
 
-                    var size = Marshal.SizeOf(fieldType);
-
-                    if (field.IsStatic || size < 2)
-                    {
-                        // Do not Swap Static Values
-                        continue;
-                    }
-
                     // Get True Type of Enums
                     if (fieldType.IsEnum)
                     {
                         fieldType = Enum.GetUnderlyingType(fieldType);
                     }
-                    // Parse Sub Structs
+
+                    var size = Marshal.SizeOf(fieldType);
+
+                    if (size < 2)
+                    {
+                        // Do not swap char or byte values
+                        continue;
+                    }
+                    // Process Sub Structs
                     else if (fieldType.IsValueType && !fieldType.IsPrimitive)
                     {
                         byte[] subStruct = new byte[size];
