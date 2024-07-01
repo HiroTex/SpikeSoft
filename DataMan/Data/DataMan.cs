@@ -347,6 +347,43 @@ namespace SpikeSoft.UtilityManager
                 {
                     var fieldType = field.FieldType;
                     var offset = Marshal.OffsetOf(type, field.Name);
+
+                    // Handle Arrays
+                    if (fieldType.IsArray)
+                    {
+                        var elementType = fieldType.GetElementType();
+                        var elementSize = Marshal.SizeOf(elementType);
+                        var arrayLength = 0;
+                        var arrayAttr = field.GetCustomAttributes(typeof(MarshalAsAttribute), false)
+                          .OfType<MarshalAsAttribute>()
+                          .FirstOrDefault();
+
+                        if (arrayAttr != null && arrayAttr.Value == UnmanagedType.ByValArray)
+                        {
+                            arrayLength = arrayAttr.SizeConst;
+                        }
+
+                        for (int i = 0; i < arrayLength; i++)
+                        {
+                            int elementOffset = (int)offset + (i * elementSize);
+
+                            if (elementType.IsValueType && !elementType.IsPrimitive)
+                            {
+                                // Handle array of structs
+                                byte[] subStruct = new byte[elementSize];
+                                Array.Copy(data, elementOffset, subStruct, 0, elementSize);
+                                Array.Copy(ParseStructEndianness(subStruct, elementType), 0, data, elementOffset, elementSize);
+                            }
+                            else
+                            {
+                                // Handle array of primitive types
+                                Array.Reverse(data, elementOffset, elementSize);
+                            }
+                        }
+
+                        continue;
+                    }
+
                     var size = Marshal.SizeOf(fieldType);
 
                     if (field.IsStatic || size < 2)
@@ -367,8 +404,7 @@ namespace SpikeSoft.UtilityManager
                         Array.Copy(data, (int)offset, subStruct, 0, size);
                         Array.Copy(ParseStructEndianness(subStruct, fieldType), 0, data, (int)offset, size);
                     }
-                    // Reverse Primitive Types
-                    else
+                    else // Reverse Primitive Types
                     {
                         Array.Reverse(data, (int)offset, size);
                     }
