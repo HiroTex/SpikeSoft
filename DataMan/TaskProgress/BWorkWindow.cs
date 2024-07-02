@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpikeSoft.GUI
+namespace SpikeSoft.UtilityManager
 {
     public partial class BWorkWindow : Form
     {
@@ -51,6 +51,25 @@ namespace SpikeSoft.GUI
             Thread.Sleep(500);
 
             bw.RunWorkerAsync(args);
+        }
+
+        public async Task InitializeNewTask(string title, Action<object[], IProgress<int>> AsyncMethod, object[] args, bool hidden)
+        {
+            SetLabel(title);
+            SetProgressValue(0);
+            var progress = new Progress<int>();
+
+            if (!hidden)
+            {
+                progress = new Progress<int>(v => pBar.Value = v);
+                Show();
+            }
+
+            Thread.Sleep(500);
+            await Task.Run(() => AsyncMethod(args, progress));
+            Close();
+
+            if (!hidden) MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public void ReportProgress(object sender, ProgressChangedEventArgs e)

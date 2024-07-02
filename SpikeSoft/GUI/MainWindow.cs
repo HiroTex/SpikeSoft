@@ -197,7 +197,7 @@ namespace SpikeSoft
                 return;
             }
 
-            DataTypes.PakMan worker = new PakMan();
+            PakMan worker = new PakMan();
             await worker.InitializeHandler(FilePath);
         }
 
@@ -210,8 +210,7 @@ namespace SpikeSoft
             }
 
             FunMan FUN = new FunMan();
-            await Task.Run(() => FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnUnpackAll_Click_DoWork), new object[] { FilePath }, true));
-            MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnUnpackAll_Click_DoWork), new object[] { FilePath }, false);
         }
 
         private void toolBtnUnpackAll_Click_DoWork(object[] fpath, IProgress<int> progress)
@@ -375,8 +374,7 @@ namespace SpikeSoft
             }
 
             FunMan FUN = new FunMan();
-            await Task.Run(() => FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnBpeAll_Work), new object[] { Dir }, true));
-            MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnBpeAll_Work), new object[] { Dir }, false);
         }
 
         private async void toolBtnBpeAll_Work(object[] args, IProgress<int> progress)
@@ -419,8 +417,7 @@ namespace SpikeSoft
             }
 
             FunMan FUN = new FunMan();
-            await Task.Run(() => FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnZBpeAll_Work), new object[] { Dir }, true));
-            MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnZBpeAll_Work), new object[] { Dir }, false);
         }
 
         private async void toolBtnZBpeAll_Work(object[] args, IProgress<int> progress)

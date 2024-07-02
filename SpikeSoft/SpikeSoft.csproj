@@ -71,12 +71,6 @@
     <Compile Include="DataTypes\SupportedTypes.cs" />
     <Compile Include="FileManager\AnalysisMan.cs" />
     <Compile Include="FileManager\FunMan.cs" />
-    <Compile Include="GUI\BWorkWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\BWorkWindow.Designer.cs">
-      <DependentUpon>BWorkWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\SettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,9 +86,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GUI\BWorkWindow.resx">
-      <DependentUpon>BWorkWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>

@@ -11,7 +11,7 @@ namespace SpikeSoft.DataTypes
     public class PakMan : IFunType
     {
         public bool ShowProgressWindow = true;
-        public GUI.BWorkWindow Worker;
+        public BWorkWindow Worker;
 
         public async Task InitializeHandler(string filePath)
         {

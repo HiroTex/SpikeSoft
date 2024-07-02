@@ -1,4 +1,4 @@
-﻿namespace SpikeSoft.GUI
+﻿namespace SpikeSoft.UtilityManager
 {
     partial class BWorkWindow
     {
