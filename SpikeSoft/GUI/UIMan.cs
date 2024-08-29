@@ -44,13 +44,18 @@ namespace SpikeSoft.GUI
             return null;
         }
 
-        public Size GetEditorUISize(string editor)
+        public Size GetEditorUISize()
         {
             if (Interface == null)
             {
                 throw new ArgumentNullException("WindowSize", "Unrecognized Editor");
             }
             return Interface.UISize;
+        }
+
+        public System.Reflection.MethodInfo GetEditorCustomMethod(string methodName)
+        {
+            return Interface.UIEditor.GetType().GetMethod(methodName);
         }
     }
 }

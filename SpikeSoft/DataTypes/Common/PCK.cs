@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SpikeSoft.UtilityManager;
+using SpikeSoft.UtilityManager.TaskProgress;
 
 namespace SpikeSoft.DataTypes.Common
 {
@@ -13,7 +14,7 @@ namespace SpikeSoft.DataTypes.Common
     {
         public int VERSION { get; set; }
 
-        public override bool Repack(IProgress<int> progress)
+        public override bool Repack(IProgress<ProgressInfo> progress)
         {
             return true;
         }

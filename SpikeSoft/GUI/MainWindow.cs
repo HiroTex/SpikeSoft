@@ -14,6 +14,8 @@ namespace SpikeSoft
 {
     public partial class MainWindow : Form
     {
+        Dictionary<string, System.Reflection.MethodInfo> customMethods = new Dictionary<string, System.Reflection.MethodInfo>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -109,12 +111,17 @@ namespace SpikeSoft
             mainPanel.SuspendLayout();
 
             // Get Main Editor Window Size
-            Size WindowSize = UI.GetEditorUISize(MainEditor.Name);
+            Size WindowSize = UI.GetEditorUISize();
             MinimumSize = WindowSize;
             Size = WindowSize;
 
             // Update Current Work Files
             TmpMan.InitializeMainTmpFile(filePath);
+
+            // Set Custom Save Method
+            customMethods.Clear();
+            customMethods.Add("plgQuickSave", UI.GetEditorCustomMethod("plgQuickSave"));
+            customMethods.Add("plgSaveAs", UI.GetEditorCustomMethod("plgSaveAs"));
 
             // Set Editor Screen
             mainPanel.Controls.Clear();
@@ -126,21 +133,26 @@ namespace SpikeSoft
             mainPanel.ResumeLayout();
         }
 
-        private void QuickSave(object sender, EventArgs e)
+        /// <summary>
+        /// Executes a custom method if it exists on the Custom Method Dictionary or a default method instead.
+        /// </summary>
+        /// <param name="methodName">Method Name to search on Dictionary.</param>
+        /// <param name="def">Default Action to perform if custom method is not found.</param>
+        private void ExecuteMethodOrDefault(string methodName, Action def)
         {
             try
             {
-                int tmpCount = TmpMan.GetTmpPathCount();
-                for (int i = 0; i < tmpCount; i++)
+                if (customMethods[methodName] != null)
                 {
-                    if (!FileMan.SaveTmpFile(i))
+                    customMethods[methodName].Invoke(mainPanel.Controls[0], null);
+                }
+                else
+                {
+                    if (def != null)
                     {
-                        throw new Exception($"Problem at file {i}");
+                        def();
                     }
                 }
-
-                System.Media.SoundPlayer sfx = new System.Media.SoundPlayer(Properties.Resources.confirmation);
-                sfx.Play();
             }
             catch (Exception ex)
             {
@@ -148,37 +160,63 @@ namespace SpikeSoft
             }
         }
 
+        private void QuickSave(object sender, EventArgs e)
+        {
+            ExecuteMethodOrDefault("plgQuickSave", defaultQuickSave);
+        }
+
         private void SaveNewFile(object sender, EventArgs e)
         {
-            try
-            {
-                int tmpCount = TmpMan.GetTmpPathCount();
-                for (int i = 0; i < tmpCount; i++)
-                {
-                    string OriginalPath = TmpMan.GetWrkFile(i);
-                    string NewWrkFile = FileMan.SaveTmpFileAs(i, Path.GetFileNameWithoutExtension(OriginalPath), Path.GetExtension(OriginalPath));
-                    
-                    if (!string.IsNullOrEmpty(NewWrkFile))
-                    {
-                        TmpMan.CleanTmpFile(OriginalPath);
-                        TmpMan.SetNewAssociatedPath(NewWrkFile);
-                    }
-                }
+            ExecuteMethodOrDefault("plgSaveAs", defaultNewSave);
+        }
 
-                System.Media.SoundPlayer sfx = new System.Media.SoundPlayer(Properties.Resources.confirmation);
-                sfx.Play();
-                MessageBox.Show("File/s Saved Successfully", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
+        private void defaultQuickSave()
+        {
+            int tmpCount = TmpMan.GetTmpPathCount();
+            for (int i = 0; i < tmpCount; i++)
             {
-                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
+                if (!FileMan.SaveTmpFile(i))
+                {
+                    throw new Exception($"Problem at file {i}");
+                }
             }
+
+            playSaveSFX(false);
+        }
+
+        private void defaultNewSave()
+        {
+            int tmpCount = TmpMan.GetTmpPathCount();
+            for (int i = 0; i < tmpCount; i++)
+            {
+                string OriginalPath = TmpMan.GetWrkFile(i);
+                string NewWrkFile = FileMan.SaveTmpFileAs(i, Path.GetFileNameWithoutExtension(OriginalPath), Path.GetExtension(OriginalPath));
+
+                if (!string.IsNullOrEmpty(NewWrkFile))
+                {
+                    TmpMan.CleanTmpFile(OriginalPath);
+                    TmpMan.SetNewAssociatedPath(NewWrkFile);
+                }
+            }
+
+            playSaveSFX(true);
         }
 
         private void OpenSettings(object sender, EventArgs e)
         {
             SettingsWindow sw = new SettingsWindow();
             sw.ShowDialog();
+        }
+
+        private void playSaveSFX(bool showMsg)
+        {
+            System.Media.SoundPlayer sfx = new System.Media.SoundPlayer(Properties.Resources.confirmation);
+            sfx.Play();
+
+            if (showMsg)
+            {
+                MessageBox.Show("File/s Saved Successfully", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         #region Packaging
@@ -303,7 +341,7 @@ namespace SpikeSoft
             try
             {
                 ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.decompress(File.ReadAllBytes(FilePath)))
+                await Task.Run(() => worker.decompress(File.ReadAllBytes(FilePath), null))
                     .ContinueWith(antecedent =>
                     {
                         if (antecedent.Result == null)
@@ -341,7 +379,7 @@ namespace SpikeSoft
             try
             {
                 ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.compress(File.ReadAllBytes(FilePath)))
+                await Task.Run(() => worker.compress(File.ReadAllBytes(FilePath), null))
                     .ContinueWith(antecedent =>
                     {
                         if (antecedent.Result == null)
@@ -390,7 +428,7 @@ namespace SpikeSoft
             {
                 progress.Report((int)((ID++ / maxValue) * 100));
                 ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.decompress(File.ReadAllBytes(file)))
+                await Task.Run(() => worker.decompress(File.ReadAllBytes(file), null))
                     .ContinueWith(antecedent =>
                     {
                         if (antecedent.Result == null)
@@ -433,7 +471,7 @@ namespace SpikeSoft
             {
                 progress.Report((int)((ID++ / maxValue) * 100));
                 ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.compress(File.ReadAllBytes(file)))
+                await Task.Run(() => worker.compress(File.ReadAllBytes(file), null))
                     .ContinueWith(antecedent =>
                     {
                         if (antecedent.Result == null)

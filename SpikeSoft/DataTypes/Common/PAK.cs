@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using SpikeSoft.UtilityManager;
 using SpikeSoft.ZLib;
+using SpikeSoft.UtilityManager.TaskProgress;
 
 namespace SpikeSoft.DataTypes.Common
 {
@@ -28,7 +29,7 @@ namespace SpikeSoft.DataTypes.Common
             InitializeFilenamesList(originalPath, FileCount);
         }
 
-        public virtual bool Unpack(IProgress<int> progress)
+        public virtual bool Unpack(IProgress<ProgressInfo> progress)
         {
             #region Exceptions
             // Check for Invalid File Path
@@ -76,7 +77,8 @@ namespace SpikeSoft.DataTypes.Common
             {
                 if (progress != null)
                 {
-                    progress.Report((int)(((i + 1) / (float)FileCount) * 100));
+                    int v = (int)(((i + 1) / (float)FileCount) * 100);
+                    progress.Report(new ProgressInfo { Value = v });
                 }
 
                 int fSize;
@@ -116,7 +118,7 @@ namespace SpikeSoft.DataTypes.Common
             return true;
         }
 
-        public virtual bool Repack(IProgress<int> progress)
+        public virtual bool Repack(IProgress<ProgressInfo> progress)
         {
             #region Exceptions
             // Check for Invalid File Path
@@ -161,7 +163,8 @@ namespace SpikeSoft.DataTypes.Common
                     // Report Progress to Progress Bar
                     if (progress != null)
                     {
-                        progress.Report((int)(((Current_FID + 1) / (float)FileCount) * 100));
+                        int v = (int)(((Current_FID + 1) / (float)FileCount) * 100);
+                        progress.Report(new ProgressInfo { Value = v });
                     }
 
                     New_FID++;
@@ -241,8 +244,15 @@ namespace SpikeSoft.DataTypes.Common
                 return true;
             }
 
+            // Report Progress to Progress Bar
+            if (progress != null)
+            {
+                string label = "Encrypting File...";
+                progress.Report(new ProgressInfo { Value = 0, Message = label });
+            }
+
             var BPEMan = new BPE();
-            byte[] CompressedFile = BPEMan.compress(File.ReadAllBytes(tmpPath));
+            byte[] CompressedFile = BPEMan.compress(File.ReadAllBytes(tmpPath), progress);
             File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(NewFile_PATH), NewFile_NAME + ".zpak"), CompressedFile);
             TmpMan.CleanTmpFile(NewFile_PATH);
             return true;

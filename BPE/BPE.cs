@@ -1,4 +1,5 @@
 ﻿using System;
+using SpikeSoft.UtilityManager.TaskProgress;
 using System.Collections.Generic;
 using System.IO;
 
@@ -196,7 +197,7 @@ namespace SpikeSoft.ZLib
         #endregion
 
         #region Algorithm Methods
-        private byte[] compress(byte[] infile, int inOff, int zs, byte[] outfile, int outOff, int outsz, int bs, int hs, int mc, int th, bool yuke)
+        private byte[] compress(byte[] infile, int inOff, int zs, byte[] outfile, int outOff, int outsz, int bs, int hs, int mc, int th, bool yuke, IProgress<ProgressInfo> progress)
         {
             reset();
             zs += inOff;
@@ -209,6 +210,13 @@ namespace SpikeSoft.ZLib
             {
                 done = fileread(infile, inOff + ala, zs, bs, hs, mc);
                 ala += size;
+                
+                if (progress != null)
+                {
+                    int v = (int)(((ala) / (float)zs) * 100);
+                    progress.Report(new ProgressInfo { Value = v });
+                }
+
                 code = 256;
                 /* compress this block */
                 for (;;)
@@ -306,7 +314,7 @@ namespace SpikeSoft.ZLib
             Array.Copy(outfile, _outputf, _outputf.Length);
             return _outputf;
         }
-        private byte[] decompress(byte[] in0, int pi, int insz, byte[] out0, int po, int outsz, bool yuke)
+        private byte[] decompress(byte[] in0, int pi, int insz, byte[] out0, int po, int outsz, bool yuke, IProgress<ProgressInfo> progress)
         {
             reset();
             int c, count, i, size, n;
@@ -315,6 +323,12 @@ namespace SpikeSoft.ZLib
             /* unpack each block until end of file */
             while ((count = xgetc(in0, in1++, inl)) >= 0)
             {
+                if (progress != null)
+                {
+                    int v = (int)(((in1) / (float)outsz) * 100);
+                    progress.Report(new ProgressInfo { Value = v });
+                }
+
                 /* set left to itself as literal flag */
                 for (i = 0; i < 256; i++)
                 {
@@ -445,14 +459,14 @@ namespace SpikeSoft.ZLib
         /// </summary>
         /// <param name="in0"></param>
         /// <returns></returns>
-        public byte[] compress(byte[] in0)
+        public byte[] compress(byte[] in0, IProgress<ProgressInfo> progress)
         {
             int bs = 0x4e20, hs = 0x4000;
             int mc = MAXCHARS, th = THRESHOLD;
             bs = 0x2710;     // best value in my tests
             hs = 0x10000;     // best value in my tests
 
-            byte[] compressed = compress(in0, 0, in0.Length, new byte[in0.Length], 0, in0.Length, bs, hs, mc, th, false);
+            byte[] compressed = compress(in0, 0, in0.Length, new byte[in0.Length], 0, in0.Length, bs, hs, mc, th, false, progress);
 
             if (compressed == null || compressed.Length == 0)
             {
@@ -477,7 +491,7 @@ namespace SpikeSoft.ZLib
 
             return result;
         }
-        public byte[] decompress(byte[] in0)
+        public byte[] decompress(byte[] in0, IProgress<ProgressInfo> progress)
         {
             // UZ Size
             int outsz = SpikeSoft.UtilityManager.BinMan.GetBinaryData<int>(in0, 0);
@@ -491,7 +505,7 @@ namespace SpikeSoft.ZLib
             // Erase 8 byte Header
             Array.Copy(in0, 8, in0, 0, in0.Length - 8);
 
-            return decompress(in0, 0, insz, out0, 0, outsz, false);
+            return decompress(in0, 0, insz, out0, 0, outsz, false, progress);
         }
         #endregion
     }

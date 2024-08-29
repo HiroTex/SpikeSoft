@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SpikeSoft.UtilityManager;
 using SpikeSoft.ZLib;
 using System.Collections.Generic;
+using SpikeSoft.UtilityManager.TaskProgress;
 
 namespace SpikeSoft.DataTypes
 {
@@ -16,10 +17,10 @@ namespace SpikeSoft.DataTypes
         public async Task InitializeHandler(string filePath)
         {
             FileManager.FunMan FUN = new FileManager.FunMan();
-            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(Work_Handler), new object[] { filePath }, !ShowProgressWindow);
+            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<ProgressInfo>>(Work_Handler), new object[] { filePath }, !ShowProgressWindow);
         }
 
-        public void Work_Handler(object[] args, IProgress<int> progress)
+        public void Work_Handler(object[] args, IProgress<ProgressInfo> progress)
         {
             try
             {
@@ -32,10 +33,11 @@ namespace SpikeSoft.DataTypes
                         return;
                     case ".zpak":
                         // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
+                        progress.Report(new ProgressInfo { Value = 0, Message = "Decrypting File..." });
                         var BPEMan = new BPE();
                         TmpMan.SetNewAssociatedPath(filePath);
                         string tmpPath = TmpMan.GetTmpFilePath(filePath);
-                        byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath));
+                        byte[] zfile = BPEMan.decompress(File.ReadAllBytes(filePath), progress);
 
                         if (string.IsNullOrEmpty(tmpPath))
                         {
@@ -51,6 +53,7 @@ namespace SpikeSoft.DataTypes
                         File.WriteAllBytes(tmpPath, zfile);
 
                         // Then Create PAK File Handler.
+                        progress.Report(new ProgressInfo { Value = 0, Message = "Executing Package Work, Please Wait..." });
                         Unpack_Handler(typeof(Common.PAK), tmpPath, filePath, true, progress);
 
                         // Then Delete Temporary File Created.
@@ -97,7 +100,7 @@ namespace SpikeSoft.DataTypes
             }
         }
 
-        public void RecursiveUnpacking(string filePath, string[] args, IProgress<int> progress)
+        public void RecursiveUnpacking(string filePath, string[] args, IProgress<ProgressInfo> progress)
         {
             foreach (var arg in args)
             {
@@ -108,14 +111,14 @@ namespace SpikeSoft.DataTypes
             }
         }
 
-        public void Unpack_Handler(Type T, string filePath, string originalPath, bool ZBPE, IProgress<int> progress)
+        public void Unpack_Handler(Type T, string filePath, string originalPath, bool ZBPE, IProgress<ProgressInfo> progress)
         {
             var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), T) as Common.IPak);
             Package.Initialize(filePath, originalPath, ZBPE);
             Package.Unpack(progress);
         }
 
-        public void Repack_Handler(string filePath, IProgress<int> progress)
+        public void Repack_Handler(string filePath, IProgress<ProgressInfo> progress)
         {
             // Recursively Check All Sub Folders for Paks to Repack
             foreach (var dir in Directory.EnumerateDirectories(Path.GetDirectoryName(filePath)))

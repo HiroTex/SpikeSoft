@@ -91,6 +91,7 @@
     <Compile Include="TaskProgress\BWorkWindow.Designer.cs">
       <DependentUpon>BWorkWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="TaskProgress\ProgressInfo.cs" />
     <Compile Include="UI\CommonMan.cs" />
     <Compile Include="Data\DataMan.cs" />
     <Compile Include="UI\ExceptionMan.cs" />

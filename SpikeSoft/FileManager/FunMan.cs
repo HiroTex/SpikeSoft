@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpikeSoft.UtilityManager;
+using SpikeSoft.UtilityManager.TaskProgress;
 
 namespace SpikeSoft.FileManager
 {
@@ -44,6 +45,12 @@ namespace SpikeSoft.FileManager
         }
 
         public async Task InitializeTask(string title, Action<object[], IProgress<int>> AsyncMethod, object[] args, bool hidden)
+        {
+            var Worker = new BWorkWindow();
+            await Worker.InitializeNewTask(title, AsyncMethod, args, hidden);
+        }
+
+        public async Task InitializeTask(string title, Action<object[], IProgress<ProgressInfo>> AsyncMethod, object[] args, bool hidden)
         {
             var Worker = new BWorkWindow();
             await Worker.InitializeNewTask(title, AsyncMethod, args, hidden);

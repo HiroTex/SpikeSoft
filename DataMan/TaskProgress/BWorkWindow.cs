@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SpikeSoft.UtilityManager.TaskProgress;
 
 namespace SpikeSoft.UtilityManager
 {
@@ -70,6 +71,36 @@ namespace SpikeSoft.UtilityManager
             Close();
 
             if (!hidden) MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public async Task InitializeNewTask(string title, Action<object[], IProgress<ProgressInfo>> AsyncMethod, object[] args, bool hidden)
+        {
+            SetLabel(title);
+            SetProgressValue(0);
+            var progress = new Progress<ProgressInfo>();
+
+            if (!hidden)
+            {
+                progress = new Progress<ProgressInfo>(UpdateProgress);
+                Show();
+            }
+
+            Thread.Sleep(500);
+            await Task.Run(() => AsyncMethod(args, progress));
+            Close();
+
+            if (!hidden) MessageBox.Show("Task Completed Successfully", "Finished", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void UpdateProgress(ProgressInfo info)
+        {
+            pBar.Value = info.Value;
+
+            // Update Label if Message is provided
+            if (!string.IsNullOrEmpty(info.Message))
+            {
+                SetLabel(info.Message);
+            }
         }
 
         public void ReportProgress(object sender, ProgressChangedEventArgs e)
