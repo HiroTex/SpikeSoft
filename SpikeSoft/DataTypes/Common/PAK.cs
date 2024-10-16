@@ -183,7 +183,7 @@ namespace SpikeSoft.DataTypes.Common
                     // Report Progress to Progress Bar
                     if (progress != null)
                     {
-                        int v = (int)(((Current_FID) / (float)FileCount) * 100);
+                        int v = (int)(((Current_FID++) / (float)FileCount) * 100);
                         progress.Report(new ProgressInfo { Value = v });
                     }
 
