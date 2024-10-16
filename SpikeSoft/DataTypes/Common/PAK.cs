@@ -143,92 +143,100 @@ namespace SpikeSoft.DataTypes.Common
             string tmpPath = TmpMan.GetTmpFilePath(NewFile_PATH);
 
             using (var newPak = new FileStream(tmpPath, FileMode.Create, FileAccess.ReadWrite))
+            using (var newBw = new BinaryWriter(newPak))
+            using (var newBr = new BinaryReader(newPak))
             {
-                BinaryWriter binMan = new BinaryWriter(newPak);
-                byte[] FileCountArray = BitConverter.GetBytes(FileCount);
-                if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileCountArray);
-                binMan.Write(FileCountArray); // Write File Count
-                uint HeaderEnd = (uint)((FileCount * 4) + 8);
-                if (HeaderEnd % 64 != 0) { HeaderEnd = HeaderEnd - (HeaderEnd % 64) + 64; };
-                byte[] FileOffset = BitConverter.GetBytes(HeaderEnd);
-                if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
-                binMan.Write(FileOffset); // Write First File Offset Always as End of Header
-                binMan.BaseStream.SetLength(HeaderEnd);
+                uint hd_length = (uint)(FileCount * 4) + 8;
+                hd_length = ((hd_length % 64) == 0) ? hd_length : (hd_length + (64 - (hd_length % 64)));
 
-                // Iterate through all files that will be packed
-                int Current_FID = -1;
-                int New_FID = -1;
+                // Write Total File Count
+                byte[] fcount = BitConverter.GetBytes(FileCount);
+                if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(fcount);
+                newBw.Write(fcount); // Write File Count
+
+                // Write First File Offset (Same as Header Size)
+                byte[] hsize = BitConverter.GetBytes(hd_length);
+                if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(hsize);
+                newBw.Write(hsize);
+
+                // Write rest of header
+                newBw.Write(new byte[hd_length - 8]);
+
+                List<uint> fSizes = new List<uint>();
+                int Current_FID = 0;
+
+                // Report Progress to Progress Bar
+                if (progress != null)
+                {
+                    string label = "Packaging Files...";
+                    progress.Report(new ProgressInfo { Value = 0, Message = label });
+                }
+
                 foreach (var file in FileNames)
+                {
+                    // If ID is above File Count, break iteration (Only numbers above that one after this ID).
+                    if (Current_FID > FileCount)
+                    {
+                        break;
+                    }
+
+                    // Report Progress to Progress Bar
+                    if (progress != null)
+                    {
+                        int v = (int)(((Current_FID) / (float)FileCount) * 100);
+                        progress.Report(new ProgressInfo { Value = v });
+                    }
+
+                    // Get if File Exists
+                    string fPath = Path.Combine(Path.GetDirectoryName(FilePath), file);
+
+                    if (!new FileInfo(fPath).Exists)
+                    {
+                        fSizes.Add(0); // If file doesn't exists, set empty header
+                        continue;
+                    }
+
+                    using (var subFile = new FileStream(fPath, FileMode.Open, FileAccess.Read))
+                    {
+                        uint sub_length = (uint)subFile.Length;
+
+                        subFile.CopyTo(newPak);
+
+                        if ((sub_length % 16) != 0)
+                        {
+                            newBw.Write(new byte[(16 - (sub_length % 16))]);
+                            sub_length += (16 - (sub_length % 16));
+                        }
+
+                        fSizes.Add(sub_length);
+                    }
+                }
+
+                // Report Progress to Progress Bar
+                if (progress != null)
+                {
+                    string label = "Creating Header...";
+                    progress.Report(new ProgressInfo { Value = 0, Message = label });
+                }
+
+                for (int i = 0; i < fSizes.Count; i++)
                 {
                     // Report Progress to Progress Bar
                     if (progress != null)
                     {
-                        int v = (int)(((Current_FID + 1) / (float)FileCount) * 100);
+                        int v = (int)(((i) / (float)fSizes.Count) * 100);
                         progress.Report(new ProgressInfo { Value = v });
                     }
 
-                    New_FID++;
-
-                    string fPath = Path.Combine(Path.GetDirectoryName(FilePath), file);
-
-                    if (!new FileInfo(fPath).Exists) continue;
-
-                    // If ID is above File Count, break iteration (Only numbers above that one after this ID).
-                    if (New_FID > FileCount) break;
-
-                    // If ID skipped Sub Files ID in between, Fill Header with Dummy Info
-                    if (New_FID > Current_FID + 1)
-                    {
-                        int EmptyFiles = New_FID - Current_FID;
-                        for (int i = 0; i < EmptyFiles; i++)
-                        {
-                            uint CurrentFileLength = (uint)binMan.BaseStream.Length;
-                            binMan.BaseStream.Seek(0x4 + (Current_FID * 4) + (4 * i) + 0x4, SeekOrigin.Begin);
-
-                            FileOffset = BitConverter.GetBytes(CurrentFileLength);
-                            if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
-                            binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
-                        }
-                    }
-
-                    using (var SubFile = new FileStream(fPath, FileMode.Open, FileAccess.Read))
-                    {
-                        binMan.BaseStream.Seek(0, SeekOrigin.End);
-                        SubFile.CopyTo(newPak);
-
-                        while (newPak.Length % 16 != 0)
-                        {
-                            newPak.WriteByte(0x00);
-                        }
-
-                        binMan.BaseStream.Seek(0x4 + (New_FID * 4) + 0x4, SeekOrigin.Begin);
-                        FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
-                        if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
-                        binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
-                    }
-
-                    Current_FID = New_FID;
+                    newPak.Seek(0x4 + (i * 4), SeekOrigin.Begin);
+                    byte[] fStart = newBr.ReadBytes(4);
+                    if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(fStart);
+                    uint startOffset = BitConverter.ToUInt32(fStart, 0);
+                    uint endOffset = (startOffset += fSizes[i]);
+                    byte[] fEnd = BitConverter.GetBytes(endOffset);
+                    if (UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(fEnd);
+                    newBw.Write(fEnd);
                 }
-
-                // If ID skipped Sub Files ID in between, Fill Header with Dummy Info
-                if (FileCount > Current_FID + 1)
-                {
-                    uint EmptyFiles = (uint)(FileCount - Current_FID);
-                    for (int i = 0; i <= EmptyFiles; i++)
-                    {
-                        uint CurrentFileLength = (uint)binMan.BaseStream.Length;
-                        binMan.BaseStream.Seek(0x4 + (Current_FID * 4) + (4 * i) + 0x4, SeekOrigin.Begin);
-
-                        FileOffset = BitConverter.GetBytes(CurrentFileLength);
-                        if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
-                        binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
-                    }
-                }
-
-                binMan.BaseStream.Seek(0x4 + (FileCount * 4), SeekOrigin.Begin);
-                FileOffset = BitConverter.GetBytes(binMan.BaseStream.Length);
-                if (SpikeSoft.UtilityManager.Properties.Settings.Default.WIIMODE) Array.Reverse(FileOffset);
-                binMan.Write(FileOffset); // Write Current File Length for Empty Dummy Files
             }
 
             if (string.IsNullOrEmpty(tmpPath))
