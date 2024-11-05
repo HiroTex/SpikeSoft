@@ -39,6 +39,7 @@ namespace SpikeSoft.DataTypes
             }
             return result;
         }
+
         public static Dictionary<string, Func<string, Type>> ReadFuncDictionary(string filePath)
         {
             Dictionary<string, Func<string, Type>> result = new Dictionary<string, Func<string, Type>>();
@@ -47,6 +48,8 @@ namespace SpikeSoft.DataTypes
                 while (!sr.EndOfStream)
                 {
                     var line = sr.ReadLine();
+
+                    if (line.Split(',').Count() > 2) continue;
 
                     MethodInfo m = typeof(SupportedTypes).GetMethod(line.Split(',')[1].Replace(" ", string.Empty));
                     if ( m == null && !m.ReturnType.Equals(typeof(Type)))
