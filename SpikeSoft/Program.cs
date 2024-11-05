@@ -22,7 +22,7 @@ namespace SpikeSoft
         }
         private static Assembly MyHandler(object source, ResolveEventArgs e)
         {
-            string assemblypath = AppDomain.CurrentDomain.BaseDirectory + "resources/lib/" + e.Name.Split(",".ToCharArray(), 2)[0] + ".dll";
+            string assemblypath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "lib", e.Name.Split(",".ToCharArray(), 2)[0] + ".dll");
             if (File.Exists(assemblypath)) return Assembly.LoadFile(assemblypath);
             return null;
         }

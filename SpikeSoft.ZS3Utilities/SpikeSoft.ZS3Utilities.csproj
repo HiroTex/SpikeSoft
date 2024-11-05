@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DA7CFB84-9800-4D2E-9984-0E62301AD416}</ProjectGuid>
+    <ProjectGuid>{121D9B6A-5D1C-4DD2-92E5-0D44690C8211}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpikeSoft.ZLib</RootNamespace>
-    <AssemblyName>SpikeSoft.ZLib</AssemblyName>
+    <RootNamespace>SpikeSoft.ZS3Utilities</RootNamespace>
+    <AssemblyName>SpikeSoft.ZS3Utilities</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -24,14 +24,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\SpikeSoft\resources\lib\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,20 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnalysisMan.cs" />
-    <Compile Include="BPE.cs" />
-    <Compile Include="Common\IPak.cs" />
-    <Compile Include="Common\PAK.cs" />
-    <Compile Include="Common\PCK.cs" />
-    <Compile Include="PakMan.cs" />
+    <Compile Include="ToolHandler.cs" />
+    <Compile Include="Tools\Meteor\CharacterSwap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\Compression\CompressAll.cs" />
+    <Compile Include="Tools\Compression\CompressSingle.cs" />
+    <Compile Include="Tools\Compression\DecompressAll.cs" />
+    <Compile Include="Tools\Compression\DecompressSingle.cs" />
+    <Compile Include="Tools\Packaging\RepackAll.cs" />
+    <Compile Include="Tools\Packaging\RepackSingle.cs" />
+    <Compile Include="Tools\Packaging\UnpackAll.cs" />
+    <Compile Include="Tools\Packaging\UnpackSingle.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BPE\SpikeSoft.ZLib.csproj">
+      <Project>{da7cfb84-9800-4d2e-9984-0e62301ad416}</Project>
+      <Name>SpikeSoft.ZLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataMan\SpikeSoft.UtilityManager.csproj">
       <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
       <Name>SpikeSoft.UtilityManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpikeSoft.UiUtils\SpikeSoft.UiUtils.csproj">
+      <Project>{6c54405e-c7b6-4386-96b2-ed76cac834ca}</Project>
+      <Name>SpikeSoft.UiUtils</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

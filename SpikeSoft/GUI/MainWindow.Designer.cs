@@ -37,18 +37,8 @@
             this.toolBtnOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBtnSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.packagingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnUnpackSingle = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnUnpackAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnRepackSingle = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnRepackAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.utilsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.toolBtnBpeTop = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnBpeSingle = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnBpeAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnZBpeSingle = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolBtnZBpeAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStrip.SuspendLayout();
             this.mainMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -92,7 +82,7 @@
             this.mainMenuStrip.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.packagingToolStripMenuItem});
+            this.utilsToolStripMenuItem});
             this.mainMenuStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
@@ -116,7 +106,7 @@
             this.toolBtnOpen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.toolBtnOpen.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.toolBtnOpen.Name = "toolBtnOpen";
-            this.toolBtnOpen.Size = new System.Drawing.Size(123, 22);
+            this.toolBtnOpen.Size = new System.Drawing.Size(152, 22);
             this.toolBtnOpen.Text = "Open";
             this.toolBtnOpen.Click += new System.EventHandler(this.OpenFile);
             // 
@@ -126,7 +116,7 @@
             this.toolBtnSaveAs.Enabled = false;
             this.toolBtnSaveAs.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.toolBtnSaveAs.Name = "toolBtnSaveAs";
-            this.toolBtnSaveAs.Size = new System.Drawing.Size(123, 22);
+            this.toolBtnSaveAs.Size = new System.Drawing.Size(152, 22);
             this.toolBtnSaveAs.Text = "Save As...";
             this.toolBtnSaveAs.Click += new System.EventHandler(this.SaveNewFile);
             // 
@@ -135,69 +125,17 @@
             this.toolBtnSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
             this.toolBtnSettings.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.toolBtnSettings.Name = "toolBtnSettings";
-            this.toolBtnSettings.Size = new System.Drawing.Size(123, 22);
+            this.toolBtnSettings.Size = new System.Drawing.Size(152, 22);
             this.toolBtnSettings.Text = "Settings";
             this.toolBtnSettings.Click += new System.EventHandler(this.OpenSettings);
             // 
-            // packagingToolStripMenuItem
+            // utilsToolStripMenuItem
             // 
-            this.packagingToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.packagingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolBtnUnpackSingle,
-            this.toolBtnBpeTop});
-            this.packagingToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.packagingToolStripMenuItem.Name = "packagingToolStripMenuItem";
-            this.packagingToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
-            this.packagingToolStripMenuItem.Text = "Utils";
-            // 
-            // toolBtnUnpackSingle
-            // 
-            this.toolBtnUnpackSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnUnpackSingle.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
-            this.toolBtnUnpackAll,
-            this.toolBtnRepackSingle,
-            this.toolBtnRepackAll});
-            this.toolBtnUnpackSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnUnpackSingle.Name = "toolBtnUnpackSingle";
-            this.toolBtnUnpackSingle.Size = new System.Drawing.Size(152, 22);
-            this.toolBtnUnpackSingle.Text = "Packaging";
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolStripMenuItem1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.toolStripMenuItem1.Text = "Unpack File";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolBtnUnpackSingle_Click);
-            // 
-            // toolBtnUnpackAll
-            // 
-            this.toolBtnUnpackAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnUnpackAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnUnpackAll.Name = "toolBtnUnpackAll";
-            this.toolBtnUnpackAll.Size = new System.Drawing.Size(180, 22);
-            this.toolBtnUnpackAll.Text = "Unpack All in Folder";
-            this.toolBtnUnpackAll.Click += new System.EventHandler(this.toolBtnUnpackAll_Click);
-            // 
-            // toolBtnRepackSingle
-            // 
-            this.toolBtnRepackSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnRepackSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnRepackSingle.Name = "toolBtnRepackSingle";
-            this.toolBtnRepackSingle.Size = new System.Drawing.Size(180, 22);
-            this.toolBtnRepackSingle.Text = "Repack";
-            this.toolBtnRepackSingle.Click += new System.EventHandler(this.toolBtnRepackSingle_Click);
-            // 
-            // toolBtnRepackAll
-            // 
-            this.toolBtnRepackAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnRepackAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnRepackAll.Name = "toolBtnRepackAll";
-            this.toolBtnRepackAll.Size = new System.Drawing.Size(180, 22);
-            this.toolBtnRepackAll.Text = "Repack All in Folder";
-            this.toolBtnRepackAll.Click += new System.EventHandler(this.toolBtnRepackAll_Click);
+            this.utilsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.utilsToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.utilsToolStripMenuItem.Name = "utilsToolStripMenuItem";
+            this.utilsToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
+            this.utilsToolStripMenuItem.Text = "Utils";
             // 
             // mainPanel
             // 
@@ -212,55 +150,6 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(466, 160);
             this.mainPanel.TabIndex = 1;
-            // 
-            // toolBtnBpeTop
-            // 
-            this.toolBtnBpeTop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnBpeTop.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolBtnBpeSingle,
-            this.toolBtnBpeAll,
-            this.toolBtnZBpeSingle,
-            this.toolBtnZBpeAll});
-            this.toolBtnBpeTop.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnBpeTop.Name = "toolBtnBpeTop";
-            this.toolBtnBpeTop.Size = new System.Drawing.Size(152, 22);
-            this.toolBtnBpeTop.Text = "Compression";
-            // 
-            // toolBtnBpeSingle
-            // 
-            this.toolBtnBpeSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnBpeSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnBpeSingle.Name = "toolBtnBpeSingle";
-            this.toolBtnBpeSingle.Size = new System.Drawing.Size(205, 22);
-            this.toolBtnBpeSingle.Text = "Decompress File";
-            this.toolBtnBpeSingle.Click += new System.EventHandler(this.toolBtnBpeSingle_Click);
-            // 
-            // toolBtnBpeAll
-            // 
-            this.toolBtnBpeAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnBpeAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnBpeAll.Name = "toolBtnBpeAll";
-            this.toolBtnBpeAll.Size = new System.Drawing.Size(205, 22);
-            this.toolBtnBpeAll.Text = "Decompress All in Folder";
-            this.toolBtnBpeAll.Click += new System.EventHandler(this.toolBtnBpeAll_Click);
-            // 
-            // toolBtnZBpeSingle
-            // 
-            this.toolBtnZBpeSingle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnZBpeSingle.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnZBpeSingle.Name = "toolBtnZBpeSingle";
-            this.toolBtnZBpeSingle.Size = new System.Drawing.Size(205, 22);
-            this.toolBtnZBpeSingle.Text = "Compress File";
-            this.toolBtnZBpeSingle.Click += new System.EventHandler(this.toolBtnZBpeSingle_Click);
-            // 
-            // toolBtnZBpeAll
-            // 
-            this.toolBtnZBpeAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.toolBtnZBpeAll.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.toolBtnZBpeAll.Name = "toolBtnZBpeAll";
-            this.toolBtnZBpeAll.Size = new System.Drawing.Size(205, 22);
-            this.toolBtnZBpeAll.Text = "Decompress All in Folder";
-            this.toolBtnZBpeAll.Click += new System.EventHandler(this.toolBtnZBpeAll_Click);
             // 
             // MainWindow
             // 
@@ -299,17 +188,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolBtnOpen;
         private System.Windows.Forms.ToolStripMenuItem toolBtnSaveAs;
         private System.Windows.Forms.ToolStripMenuItem toolBtnSettings;
-        private System.Windows.Forms.ToolStripMenuItem packagingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnUnpackSingle;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnUnpackAll;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnRepackSingle;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnRepackAll;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnBpeTop;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnBpeSingle;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnBpeAll;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnZBpeSingle;
-        private System.Windows.Forms.ToolStripMenuItem toolBtnZBpeAll;
+        private System.Windows.Forms.ToolStripMenuItem utilsToolStripMenuItem;
     }
 }
 

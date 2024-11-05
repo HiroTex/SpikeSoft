@@ -63,14 +63,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes\Common\IPak.cs" />
-    <Compile Include="DataTypes\Common\PAK.cs" />
-    <Compile Include="DataTypes\Common\PCK.cs" />
-    <Compile Include="DataTypes\PakMan.cs" />
-    <Compile Include="DataTypes\IFunType.cs" />
     <Compile Include="DataTypes\SupportedTypes.cs" />
     <Compile Include="FileManager\AnalysisMan.cs" />
     <Compile Include="FileManager\FunMan.cs" />
+    <Compile Include="FileManager\ToolMan.cs" />
     <Compile Include="GUI\SettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -236,6 +232,9 @@
     <Content Include="resources\lib\EPPlus.System.Drawing.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib\SpikeSoft.FileAnalyzer.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\lib\SpikeSoft.GenericItemList.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -252,6 +251,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\lib\SpikeSoft.ZS3Editor.TourUnlockables.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\lib\SpikeSoft.ZS3Utilities.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\txt\ZS3\character_id.txt">

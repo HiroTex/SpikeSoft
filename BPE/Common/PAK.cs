@@ -6,7 +6,7 @@ using SpikeSoft.UtilityManager;
 using SpikeSoft.ZLib;
 using SpikeSoft.UtilityManager.TaskProgress;
 
-namespace SpikeSoft.DataTypes.Common
+namespace SpikeSoft.ZLib.Common
 {
     public class PAK : IPak
     {
@@ -384,7 +384,7 @@ namespace SpikeSoft.DataTypes.Common
             for (int i = 0; i < MatchList.Count; i++)
             {
                 if (fNameMatch[i] == "*" ||
-                    fNameMatch[i] == FileManager.AnalysisMan.GetMostSimilarString(pakFname, fNameMatch.ToArray()))
+                    fNameMatch[i] == AnalysisMan.GetMostSimilarString(pakFname, fNameMatch.ToArray()))
                 {
                     newList.Add(MatchList[i]);
                 }
@@ -508,7 +508,7 @@ namespace SpikeSoft.DataTypes.Common
                 }
 
                 // Get File to Array and Analyse it to get FileName and Extension
-                result.Add((i + 1).ToString(format) + "_" + FileManager.AnalysisMan.RunFileAnalysis(BinMan.GetBytes(filePath, NextOffset - fOffset, fOffset)));
+                result.Add((i + 1).ToString(format) + "_" + AnalysisMan.RunFileAnalysis(BinMan.GetBytes(filePath, NextOffset - fOffset, fOffset)));
             }
 
             return result;

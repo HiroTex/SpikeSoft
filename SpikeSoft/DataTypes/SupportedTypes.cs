@@ -82,10 +82,5 @@ namespace SpikeSoft.DataTypes
 
             return null;
         }
-
-        public static Type Package(string filePath)
-        {
-            return typeof(PakMan);
-        }
     }
 }

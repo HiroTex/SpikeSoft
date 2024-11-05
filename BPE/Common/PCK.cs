@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SpikeSoft.UtilityManager;
 using SpikeSoft.UtilityManager.TaskProgress;
 
-namespace SpikeSoft.DataTypes.Common
+namespace SpikeSoft.ZLib.Common
 {
     class PCK : PAK, IPak
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SpikeSoft.UtilityManager.TaskProgress;
 
-namespace SpikeSoft.DataTypes.Common
+namespace SpikeSoft.ZLib.Common
 {
     interface IPak
     {

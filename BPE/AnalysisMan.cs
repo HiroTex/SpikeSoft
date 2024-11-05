@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using SpikeSoft.UtilityManager;
-using SpikeSoft.ZLib;
 
-namespace SpikeSoft.FileAnalyzer
+namespace SpikeSoft.ZLib
 {
     static public class AnalysisMan
     {
@@ -150,7 +149,6 @@ namespace SpikeSoft.FileAnalyzer
 
             return string.Empty;
         }
-
         static public string GetMostSimilarString(string fullString, string[] stringArray)
         {
             int minDistance = int.MaxValue;

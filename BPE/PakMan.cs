@@ -3,11 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SpikeSoft.UtilityManager;
-using SpikeSoft.ZLib;
 using System.Collections.Generic;
 using SpikeSoft.UtilityManager.TaskProgress;
 
-namespace SpikeSoft.DataTypes
+namespace SpikeSoft.ZLib
 {
     public class PakMan : IFunType
     {
@@ -16,7 +15,7 @@ namespace SpikeSoft.DataTypes
 
         public async Task InitializeHandler(string filePath)
         {
-            FileManager.FunMan FUN = new FileManager.FunMan();
+            FunMan FUN = new FunMan();
             await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<ProgressInfo>>(Work_Handler), new object[] { filePath }, !ShowProgressWindow);
         }
 
@@ -33,7 +32,11 @@ namespace SpikeSoft.DataTypes
                         return;
                     case ".zpak":
                         // Decompress BPE File to a Temporary File and replace "filePath" Variable with it.
-                        progress.Report(new ProgressInfo { Value = 0, Message = "Decrypting File..." });
+                        if (progress != null)
+                        {
+                            progress.Report(new ProgressInfo { Value = 0, Message = "Decrypting File..." });
+                        }
+
                         var BPEMan = new BPE();
                         TmpMan.SetNewAssociatedPath(filePath);
                         string tmpPath = TmpMan.GetTmpFilePath(filePath);
@@ -53,7 +56,11 @@ namespace SpikeSoft.DataTypes
                         File.WriteAllBytes(tmpPath, zfile);
 
                         // Then Create PAK File Handler.
-                        progress.Report(new ProgressInfo { Value = 0, Message = "Executing Package Work, Please Wait..." });
+                        if (progress != null)
+                        {
+                            progress.Report(new ProgressInfo { Value = 0, Message = "Executing Package Work, Please Wait..." });
+                        }
+
                         Unpack_Handler(typeof(Common.PAK), tmpPath, filePath, true, progress);
 
                         // Then Delete Temporary File Created.
@@ -130,7 +137,7 @@ namespace SpikeSoft.DataTypes
             }
 
             var idxFile = new StreamReader(filePath);
-            var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), Type.GetType("SpikeSoft.DataTypes.Common." + idxFile.ReadLine())) as Common.IPak);
+            var Package = (CommonMan.GetInterfaceObject(typeof(Common.IPak), Type.GetType("SpikeSoft.ZLib.Common." + idxFile.ReadLine())) as Common.IPak);
             Package.FileCount = int.Parse(idxFile.ReadLine());
             Package.ZBPE = bool.Parse(idxFile.ReadLine().ToLowerInvariant());
 

@@ -9,16 +9,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpikeSoft.UtilityManager;
 using SpikeSoft.UiUtils;
+using System.Reflection;
+using System.Linq;
 
 namespace SpikeSoft
 {
     public partial class MainWindow : Form
     {
         Dictionary<string, System.Reflection.MethodInfo> customMethods = new Dictionary<string, System.Reflection.MethodInfo>();
+        ToolMan toolMan;
 
         public MainWindow()
         {
             InitializeComponent();
+            LoadExternalTools();
+            InitializeToolRegistry();
             InitializeDefaults();
         }
 
@@ -34,6 +39,70 @@ namespace SpikeSoft
             {
                 ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
             }
+        }
+
+        private void LoadExternalTools()
+        {
+            // Define the path to the DLL folder relative to the executable's location
+            string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "lib");
+
+            if (!Directory.Exists(dllPath))
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { "The library folder does not exist: " + dllPath });
+                return;
+            }
+
+            // Iterate over each DLL in the directory
+            foreach (string dllFile in Directory.GetFiles(dllPath, "*.dll"))
+            {
+                try
+                {
+                    // Load the assembly
+                    Assembly assembly = Assembly.LoadFrom(dllFile);
+
+                    // Search for the ToolHandler class
+                    var toolHandlerType = assembly.GetTypes()
+                                                  .FirstOrDefault(t => t.IsClass && t.Name == "ToolHandler");
+
+                    if (toolHandlerType != null)
+                    {
+                        // Create an instance of ToolHandler
+                        var toolHandlerInstance = Activator.CreateInstance(toolHandlerType);
+
+                        // Find the GetTools method
+                        var getToolsMethod = toolHandlerType.GetMethod("GetTools", BindingFlags.Public | BindingFlags.Instance);
+
+                        if (getToolsMethod != null)
+                        {
+                            // Invoke GetTools to get the list of ToolStripMenuItems
+                            var toolItems = getToolsMethod.Invoke(toolHandlerInstance, null) as List<ToolStripMenuItem>;
+
+                            // Add each ToolStripMenuItem to the main menuStrip
+                            if (toolItems != null)
+                            {
+                                foreach (var toolItem in toolItems)
+                                {
+                                    utilsToolStripMenuItem.DropDownItems.Add(toolItem);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors that occur during DLL loading or reflection
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { $"Error loading tools from {dllFile}: {ex.Message}" });
+                }
+            }
+        }
+
+        private void InitializeToolRegistry()
+        {
+            toolMan = new ToolMan();
+
+            // Load external plugins from configuration file
+            string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ExtType.txt");
+            toolMan.LoadPlugins(configFilePath);
         }
 
         private void SetSaveBtn(bool set)
@@ -68,10 +137,54 @@ namespace SpikeSoft
                     ExceptionMan.ThrowMessage(0x1000, new string[] { filepath }); continue;
                 }
 
+                string extension = Path.GetExtension(filepath);
+
+                // Get the tool type for this file extension
+                Type toolType = toolMan.GetToolForExtension(extension);
+
+                if (toolType != null)
+                {
+                    ExecuteTask(toolType, filepath);
+                    continue;
+                }
+
+                // Search and Execute File Specific Functionality
+                FileManager.FunMan Fun = new FileManager.FunMan();
+                if (Fun.ExecuteFileFunction(filepath))
+                {
+                    continue;
+                }
+
                 SetEditorUI(filepath);
             }
 
             this.Focus();
+        }
+
+        private void ExecuteTask(Type toolType, string filePath)
+        {
+            try
+            {
+                // Create an instance of the tool class
+                var toolInstance = Activator.CreateInstance(toolType);
+
+                // Find the 'task' method that takes a string parameter
+                MethodInfo taskMethod = toolType.GetMethod("task", BindingFlags.Public | BindingFlags.Instance);
+
+                if (taskMethod != null)
+                {
+                    // Invoke the 'task' method with the file path as the argument
+                    taskMethod.Invoke(toolInstance, new object[] { filePath });
+                }
+                else
+                {
+                    ExceptionMan.ThrowMessage(0x2000, new string[] { $"The tool '{toolType.Name}' does not have a compatible 'task' method." });
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionMan.ThrowMessage(0x2000, new string[] { $"Error executing task for {filePath}: {ex.Message}" });
+            }
         }
 
         private void OpenFile(object sender, EventArgs e)
@@ -92,13 +205,6 @@ namespace SpikeSoft
         {
             UIMan UI = new UIMan();
             Control MainEditor = new Control();
-
-            // Search and Execute File Specific Functionality
-            FunMan Fun = new FunMan();
-            if (Fun.ExecuteFileFunction(filePath))
-            {
-                return;
-            }
 
             // If File does not have a Functionality, try to get a File Editor
             // Get Main Editor Window
@@ -218,276 +324,5 @@ namespace SpikeSoft
                 MessageBox.Show("File/s Saved Successfully", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
-        #region Packaging
-
-        private async void toolBtnUnpackSingle_Click(object sender, EventArgs e)
-        {
-            List<string> FilterNames = new List<string>();
-            List<string> FilterExt = new List<string>();
-
-            FilterNames.Add("Package");
-            FilterExt.Add("*.pak;*.zpak;*.pck");
-
-            string FilePath = FileMan.GetFilePath("Select an appropriate Package File", FilterNames, FilterExt);
-            if (string.IsNullOrEmpty(FilePath))
-            {
-                return;
-            }
-
-            PakMan worker = new PakMan();
-            await worker.InitializeHandler(FilePath);
-        }
-
-        private async void toolBtnUnpackAll_Click(object sender, EventArgs e)
-        {
-            string FilePath = FileMan.GetDirectoryPath("Select a Folder containing Package Files");
-            if (string.IsNullOrEmpty(FilePath))
-            {
-                return;
-            }
-
-            FunMan FUN = new FunMan();
-            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnUnpackAll_Click_DoWork), new object[] { FilePath }, false);
-        }
-
-        private void toolBtnUnpackAll_Click_DoWork(object[] fpath, IProgress<int> progress)
-        {
-            string filePath = fpath[0] as string;
-            string[] args = new string[] { "*.pak", "*.zpak", "*.pck" };
-
-            if (!Directory.Exists(filePath)) return;
-
-            foreach (var arg in args)
-            {
-                int ID = 1;
-                float maxValue = Directory.GetFiles(filePath, arg).Length;
-
-                foreach (var file in Directory.EnumerateFiles(filePath, arg))
-                {
-                    progress.Report((int)((ID++ / maxValue) * 100));
-                    DataTypes.PakMan pak = new PakMan();
-                    pak.ShowProgressWindow = false;
-                    var t = Task.Run(async () => await pak.InitializeHandler(file));
-                }
-            }
-        }
-
-        private async void toolBtnRepackSingle_Click(object sender, EventArgs e)
-        {
-            List<string> FilterNames = new List<string>();
-            List<string> FilterExt = new List<string>();
-
-            FilterNames.Add("Package Info");
-            FilterExt.Add("*.idx");
-
-            string FilePath = FileMan.GetFilePath("Select an appropriate Info.Idx File", FilterNames, FilterExt);
-            if (string.IsNullOrEmpty(FilePath))
-            {
-                return;
-            }
-
-            DataTypes.PakMan worker = new PakMan();
-            await worker.InitializeHandler(FilePath);
-        }
-
-        private async void toolBtnRepackAll_Click(object sender, EventArgs e)
-        {
-            string FilePath = FileMan.GetDirectoryPath("Select a Folder with Packages");
-            if (string.IsNullOrEmpty(FilePath))
-            {
-                return;
-            }
-
-            FunMan FUN = new FunMan();
-            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnRepackAll_Click_DoWork), new object[] { FilePath }, false);
-        }
-
-        private void toolBtnRepackAll_Click_DoWork(object[] fpath, IProgress<int> progress)
-        {
-            string filePath = fpath[0] as string;
-            if (!Directory.Exists(filePath)) return;
-
-            int ID = 1;
-            foreach (var dir in Directory.EnumerateDirectories(filePath))
-            {
-                progress.Report((int)((ID++ / (float)Directory.GetDirectories(filePath).Length) * 100));
-                foreach (var file in Directory.EnumerateFiles(dir, "*.idx"))
-                {
-                    PakMan pak = new PakMan();
-                    pak.ShowProgressWindow = false;
-                    var t = Task.Run(async () => await pak.InitializeHandler(file));
-                }
-            }
-        }
-
-        #endregion
-
-        #region "Compression"
-        private async void toolBtnBpeSingle_Click(object sender, EventArgs e)
-        {
-            List<string> FilterNames = new List<string>();
-            List<string> FilterExt = new List<string>();
-
-            FilterNames.Add("Compressed File");
-            FilterExt.Add("*.z*");
-
-            string FilePath = FileMan.GetFilePath("Select an appropriate Compressed File", FilterNames, FilterExt);
-            if (string.IsNullOrEmpty(FilePath))
-            {
-                return;
-            }
-
-            try
-            {
-                ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.decompress(File.ReadAllBytes(FilePath), null))
-                    .ContinueWith(antecedent =>
-                    {
-                        if (antecedent.Result == null)
-                        {
-                            throw new Exception("Decompression Issue, Result is NULL");
-                        }
-                        else
-                        {
-                            var dir = Path.GetDirectoryName(FilePath);
-                            var fname = Path.GetFileNameWithoutExtension(FilePath);
-                            var ext = Path.GetExtension(FilePath).Replace("z", string.Empty);
-                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
-                        }
-                    });
-
-                MessageBox.Show("Decompression was performed successfully", "Process Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
-            }
-        }
-
-        private async void toolBtnZBpeSingle_Click(object sender, EventArgs e)
-        {
-            List<string> FilterNames = new List<string>();
-            List<string> FilterExt = new List<string>();
-
-            string FilePath = FileMan.GetFilePath("Select a File", FilterNames, FilterExt);
-            if (string.IsNullOrEmpty(FilePath))
-            {
-                return;
-            }
-
-            try
-            {
-                ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.compress(File.ReadAllBytes(FilePath), null))
-                    .ContinueWith(antecedent =>
-                    {
-                        if (antecedent.Result == null)
-                        {
-                            throw new Exception("Compression Issue, Result is NULL");
-                        }
-                        else
-                        {
-                            var dir = Path.GetDirectoryName(FilePath);
-                            var fname = Path.GetFileNameWithoutExtension(FilePath);
-                            var ext = $".z{Path.GetExtension(FilePath).Replace(".", string.Empty)}";
-                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
-                        }
-                    });
-
-                MessageBox.Show("Compression was performed successfully", "Process Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                ExceptionMan.ThrowMessage(0x2000, new string[] { ex.Message });
-            }
-        }
-
-        private async void toolBtnBpeAll_Click(object sender, EventArgs e)
-        {
-            string Dir = FileMan.GetDirectoryPath("Select a Folder containing Compressed Files");
-            if (string.IsNullOrEmpty(Dir))
-            {
-                return;
-            }
-
-            FunMan FUN = new FunMan();
-            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnBpeAll_Work), new object[] { Dir }, false);
-        }
-
-        private async void toolBtnBpeAll_Work(object[] args, IProgress<int> progress)
-        {
-            string baseDir = args[0] as string;
-
-            if (!Directory.Exists(baseDir)) return;
-
-            int ID = 1;
-            float maxValue = Directory.GetFiles(baseDir, "*.z*").Length;
-
-            foreach (var file in Directory.EnumerateFiles(baseDir, "*.z*"))
-            {
-                progress.Report((int)((ID++ / maxValue) * 100));
-                ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.decompress(File.ReadAllBytes(file), null))
-                    .ContinueWith(antecedent =>
-                    {
-                        if (antecedent.Result == null)
-                        {
-                            throw new Exception("Decompression Issue, Result is NULL");
-                        }
-                        else
-                        {
-                            var dir = Path.GetDirectoryName(file);
-                            var fname = Path.GetFileNameWithoutExtension(file);
-                            var ext = Path.GetExtension(file).Replace("z", string.Empty);
-                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
-                        }
-                    });
-            }
-        }
-
-        private async void toolBtnZBpeAll_Click(object sender, EventArgs e)
-        {
-            string Dir = FileMan.GetDirectoryPath("Select a Folder containing Files");
-            if (string.IsNullOrEmpty(Dir))
-            {
-                return;
-            }
-
-            FunMan FUN = new FunMan();
-            await FUN.InitializeTask("Executing Package Work, Please Wait", new Action<object[], IProgress<int>>(toolBtnZBpeAll_Work), new object[] { Dir }, false);
-        }
-
-        private async void toolBtnZBpeAll_Work(object[] args, IProgress<int> progress)
-        {
-            string baseDir = args[0] as string;
-
-            if (!Directory.Exists(baseDir)) return;
-
-            int ID = 1;
-            float maxValue = Directory.GetFiles(baseDir).Length;
-
-            foreach (var file in Directory.EnumerateFiles(baseDir))
-            {
-                progress.Report((int)((ID++ / maxValue) * 100));
-                ZLib.BPE worker = new ZLib.BPE();
-                await Task.Run(() => worker.compress(File.ReadAllBytes(file), null))
-                    .ContinueWith(antecedent =>
-                    {
-                        if (antecedent.Result == null)
-                        {
-                            throw new Exception("Compression Issue, Result is NULL");
-                        }
-                        else
-                        {
-                            var dir = Path.GetDirectoryName(file);
-                            var fname = Path.GetFileNameWithoutExtension(file);
-                            var ext = $".z{Path.GetExtension(file).Replace(".", string.Empty)}";
-                            File.WriteAllBytes(Path.Combine(dir, fname + ext), antecedent.Result);
-                        }
-                    });
-            }
-        }
-        #endregion
     }
 }

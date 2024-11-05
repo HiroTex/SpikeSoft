@@ -23,7 +23,7 @@ namespace SpikeSoft.FileManager
 
                 try
                 {
-                    DataTypes.IFunType Interface = (CommonMan.GetInterfaceObject(typeof(DataTypes.IFunType), ResultType) as DataTypes.IFunType);
+                    IFunType Interface = (CommonMan.GetInterfaceObject(typeof(IFunType), ResultType) as IFunType);
                     Interface.InitializeHandler(filePath);
                     return true;
                 }
@@ -45,12 +45,6 @@ namespace SpikeSoft.FileManager
         }
 
         public async Task InitializeTask(string title, Action<object[], IProgress<int>> AsyncMethod, object[] args, bool hidden)
-        {
-            var Worker = new BWorkWindow();
-            await Worker.InitializeNewTask(title, AsyncMethod, args, hidden);
-        }
-
-        public async Task InitializeTask(string title, Action<object[], IProgress<ProgressInfo>> AsyncMethod, object[] args, bool hidden)
         {
             var Worker = new BWorkWindow();
             await Worker.InitializeNewTask(title, AsyncMethod, args, hidden);

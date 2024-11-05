@@ -1,5 +1,5 @@
 ﻿.dat, Generic
-.pck, Package
-.pak, Package
-.zpak, Package
-.idx, Package
+.bin, Generic
+.pak, SpikeSoft.ZS3Utilities.dll, SpikeSoft.ZS3Utilities.Tools.Packaging.UnpackSingle
+.zpak, SpikeSoft.ZS3Utilities.dll, SpikeSoft.ZS3Utilities.Tools.Packaging.UnpackSingle
+.idx, SpikeSoft.ZS3Utilities.dll, SpikeSoft.ZS3Utilities.Tools.Packaging.RepackSingle
