@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic.FileIO;
-using SpikeSoft.UtilityManager;
+﻿using Microsoft.VisualBasic.FileIO;
 using SpikeSoft.UiUtils;
-using SpikeSoft.ZLib;
+using SpikeSoft.UtilityManager;
 using SpikeSoft.UtilityManager.TaskProgress;
+using SpikeSoft.ZLib;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SpikeSoft.ZS3Utilities.Tools.Meteor
 {
     public class CharacterSwap : GenericToolMenuItem<CharacterSwap>
     {
-        public CharacterSwap() : base("Unify Character Resources") {}
-        
+        public CharacterSwap() : base("Unify Character Resources") { }
+
         protected override void OnToolBtnClick(object sender, EventArgs e)
         {
             var TopText = "Select Base File Pak";
