@@ -1,19 +1,16 @@
-﻿using System;
+﻿using SpikeSoft.UtilityManager;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Drawing;
 using System.IO;
-using SpikeSoft.UtilityManager;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace SpikeSoft.ZS3Editor.TourUnlockables
 {
-    public partial class ZS3EditorTourUnlockables: UserControl
+    public partial class ZS3EditorTourUnlockables : UserControl
     {
         private StructMan<TourUnlockables> Data;
 
@@ -190,7 +187,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
                 ExceptionMan.ThrowMessage(0x2001);
             }
         }
-        
+
         private bool IsValidEventArgs(object sender)
         {
             if (sender == null || !(sender is ComboBox))

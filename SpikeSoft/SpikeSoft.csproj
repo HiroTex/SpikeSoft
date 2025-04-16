@@ -248,6 +248,9 @@
     <Content Include="resources\lib\SpikeSoft.ZS3Editor.Mission.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\lib\SpikeSoft.ZS3Editor.TourOpponentInfo.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\lib\SpikeSoft.ZS3Editor.TourUnlockables.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

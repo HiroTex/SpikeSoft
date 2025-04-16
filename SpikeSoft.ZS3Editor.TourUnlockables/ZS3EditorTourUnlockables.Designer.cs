@@ -559,7 +559,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Consolas", 14F);
-            this.label7.Location = new System.Drawing.Point(379, 71);
+            this.label7.Location = new System.Drawing.Point(382, 74);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(140, 22);
             this.label7.TabIndex = 7;
@@ -569,7 +569,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Consolas", 14F);
-            this.label5.Location = new System.Drawing.Point(379, 32);
+            this.label5.Location = new System.Drawing.Point(382, 32);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(70, 22);
             this.label5.TabIndex = 5;

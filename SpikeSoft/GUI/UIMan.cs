@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SpikeSoft.UtilityManager;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using SpikeSoft.UtilityManager;
 
 namespace SpikeSoft.GUI
 {
@@ -50,7 +50,7 @@ namespace SpikeSoft.GUI
             {
                 throw new ArgumentNullException("WindowSize", "Unrecognized Editor");
             }
-            return Interface.UISize;
+            return new Size(Interface.UISize.Width + 15, Interface.UISize.Height + 85);
         }
 
         public System.Reflection.MethodInfo GetEditorCustomMethod(string methodName)
