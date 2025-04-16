@@ -1,0 +1,61 @@
+name: Build and Release SpikeSoft
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.cs'
+      - '**.resx'
+      - '**.csproj'
+      - '**.sln'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    name: Build and Package SpikeSoft
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Git identity
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build project
+      run: |
+        msbuild SpikeSoft.sln /p:Configuration=Release
+
+    - name: Create release directory and copy files
+      run: |
+        mkdir release
+        xcopy /Y /E /I ".\SpikeSoft\bin\Release" ".\release"
+        del ".\release\SpikeSoft.exe.config"
+
+    - name: Create or update 'latest' tag
+      run: |
+        git tag -f latest
+        git push origin latest --force
+
+    - name: Create ZIP archive
+      run: |
+        powershell Compress-Archive -Path .\release\* -DestinationPath .\SpikeSoft.zip
+
+    - name: Upload ZIP to GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: latest
+        name: Latest SpikeSoft Build
+        body: |
+          ⚠️ This is an automated build from the latest commit on `main`. Use with caution.
+        files: SpikeSoft.zip
+        draft: false
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
