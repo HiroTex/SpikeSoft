@@ -8,9 +8,10 @@ namespace SpikeSoft.UtilityManager
 {
     public static class TmpMan
     {
-        // Key: Original File Path 
+        // Key: Original File Path
         // Value: Temp File Path
         private static Dictionary<string, string> TmpFilePaths;
+        private static Dictionary<string, string> bak;
 
         /// <summary>
         /// Sets Current Working File Path and Creates Temp File
@@ -24,11 +25,26 @@ namespace SpikeSoft.UtilityManager
                 return;
             }
 
+            if (TmpFilePaths != null && TmpFilePaths.Count > 0)
+            {
+                bak = TmpFilePaths;
+            }
+
             // Reset Links
             TmpFilePaths = new Dictionary<string, string>();
 
             // Set new Default Working File
             SetNewAssociatedPath(filePath);
+        }
+
+        public static void RestorePrevTmpLinks()
+        {
+            if (bak == null)
+            {
+                return;
+            }
+
+            TmpFilePaths = bak;
         }
 
         public static void SetNewAssociatedPath(string filePath)
@@ -91,7 +107,7 @@ namespace SpikeSoft.UtilityManager
         {
             if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(filePath))
             {
-                // No Tmp file was Initialized or all are already erased, or there is no Tmp Path that matches 
+                // No Tmp file was Initialized or all are already erased, or there is no Tmp Path that matches
                 return;
             }
 
@@ -118,7 +134,7 @@ namespace SpikeSoft.UtilityManager
                 return;
             }
 
-            CleanDirectoryItem:
+        CleanDirectoryItem:
             TmpFilePaths.Remove(filePath);
         }
 
@@ -158,7 +174,7 @@ namespace SpikeSoft.UtilityManager
         {
             if (!ValidateTmpNull(0) || !TmpFilePaths.Keys.Contains(filePath))
             {
-                // No Tmp file was Initialized, or there is no Tmp Path that matches 
+                // No Tmp file was Initialized, or there is no Tmp Path that matches
                 return "";
             }
 

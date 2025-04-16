@@ -1,6 +1,5 @@
 ﻿using SpikeSoft.UtilityManager;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -11,7 +10,7 @@ namespace SpikeSoft.ZS3Editor.Mission
     {
         public ZS3EditorMission Editor;
         public Control UIEditor { get { return Editor; } }
-        public Size UISize { get { return new Size(925, 688); } set { } }
+
         public static string[] FileNamePatterns = new string[] { "battle_info" };
 
         /// <summary>
@@ -57,7 +56,6 @@ namespace SpikeSoft.ZS3Editor.Mission
                 var enemyDataPath = Path.Combine(fDir, enemyDatafName);
 
                 // Initialize new Temp Files to Work with
-                TmpMan.InitializeMainTmpFile(filePath);
                 TmpMan.SetNewAssociatedPath(enemyDataPath);
 
                 dynamic battleInfo = null;

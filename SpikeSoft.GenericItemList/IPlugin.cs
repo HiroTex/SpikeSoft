@@ -10,7 +10,7 @@ namespace SpikeSoft.GenericItemList
     {
         public GenericItemListUI Editor;
         public Control UIEditor { get { return Editor; } }
-        public Size UISize { get { return new Size(1035, 575); } set { } }
+
         public static string[] FileNamePatterns = new string[]
         {
             "random_chara_list",

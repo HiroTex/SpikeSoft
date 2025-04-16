@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace SpikeSoft.ZS3Editor.CharaInfo
 {
@@ -7,7 +6,7 @@ namespace SpikeSoft.ZS3Editor.CharaInfo
     {
         public ZS3EditorCharaInfo Editor;
         public Control UIEditor { get { return Editor; } }
-        public Size UISize { get { return new Size(770, 375); } set { } }
+
         public static string[] FileNamePatterns = new string[] { "common_character_info" };
 
         public void Initialize(string filePath)

@@ -204,12 +204,17 @@ namespace SpikeSoft
         {
             UIMan UI = new UIMan();
 
+            // Update Current Work Files
+            TmpMan.InitializeMainTmpFile(filePath);
+
             // If File does not have a Functionality, try to get a File Editor
             // Get Main Editor Window
             Control MainEditor = UI.GetEditorUI(filePath);
             if (MainEditor == null)
             {
-                ExceptionMan.ThrowMessage(0x1001); return;
+                ExceptionMan.ThrowMessage(0x1001);
+                TmpMan.RestorePrevTmpLinks();
+                return;
             }
 
             mainPanel.SuspendLayout();
@@ -218,9 +223,6 @@ namespace SpikeSoft
             Size WindowSize = UI.GetEditorUISize();
             MinimumSize = WindowSize;
             Size = WindowSize;
-
-            // Update Current Work Files
-            TmpMan.InitializeMainTmpFile(filePath);
 
             // Set Custom Save Method
             customMethods.Clear();

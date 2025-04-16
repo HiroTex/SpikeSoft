@@ -94,6 +94,7 @@ namespace SpikeSoft.ZS3Editor.TourOpponentInfo
                 ExceptionMan.ThrowMessage(0x2001);
             }
         }
+
         private void ValueChanged(object sender, EventArgs e)
         {
             if (TmpMan.GetDefaultTmpFile() == string.Empty)

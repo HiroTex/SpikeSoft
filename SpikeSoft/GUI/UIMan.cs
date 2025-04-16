@@ -50,7 +50,7 @@ namespace SpikeSoft.GUI
             {
                 throw new ArgumentNullException("WindowSize", "Unrecognized Editor");
             }
-            return new Size(Interface.UISize.Width + 15, Interface.UISize.Height + 85);
+            return new Size(Interface.UIEditor.Size.Width + 15, Interface.UIEditor.Size.Height + 85);
         }
 
         public System.Reflection.MethodInfo GetEditorCustomMethod(string methodName)

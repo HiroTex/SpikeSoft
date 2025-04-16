@@ -66,6 +66,7 @@
             this.boxSelectDiff.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.boxSelectDiff.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.boxSelectDiff.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.boxSelectDiff.Enabled = false;
             this.boxSelectDiff.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.boxSelectDiff.Font = new System.Drawing.Font("Consolas", 14F);
             this.boxSelectDiff.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -132,6 +133,7 @@
             this.boxSelectRound.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.boxSelectRound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.boxSelectRound.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.boxSelectRound.Enabled = false;
             this.boxSelectRound.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.boxSelectRound.Font = new System.Drawing.Font("Consolas", 14F);
             this.boxSelectRound.ForeColor = System.Drawing.SystemColors.ControlLightLight;
