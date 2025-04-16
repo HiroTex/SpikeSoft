@@ -1,7 +1,7 @@
 ﻿using SpikeSoft.UtilityManager;
-using System.Windows.Forms;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace SpikeSoft.ZS3Editor.TourUnlockables
 {
@@ -10,6 +10,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
         public ZS3EditorTourUnlockables Editor;
         public Control UIEditor { get { return Editor; } }
         public Size UISize { get { return new Size(605, 670); } set { } }
+        public static string[] FileNamePatterns = new string[] { "unlock_item_param" };
 
         public void Initialize(string filePath)
         {

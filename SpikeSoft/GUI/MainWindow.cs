@@ -1,16 +1,15 @@
 ﻿using SpikeSoft.DataTypes;
 using SpikeSoft.FileManager;
 using SpikeSoft.GUI;
+using SpikeSoft.UiUtils;
+using SpikeSoft.UtilityManager;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using SpikeSoft.UtilityManager;
-using SpikeSoft.UiUtils;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace SpikeSoft
 {
@@ -204,11 +203,10 @@ namespace SpikeSoft
         private void SetEditorUI(string filePath)
         {
             UIMan UI = new UIMan();
-            Control MainEditor = new Control();
 
             // If File does not have a Functionality, try to get a File Editor
             // Get Main Editor Window
-            MainEditor = UI.GetEditorUI(filePath);
+            Control MainEditor = UI.GetEditorUI(filePath);
             if (MainEditor == null)
             {
                 ExceptionMan.ThrowMessage(0x1001); return;

@@ -1,8 +1,8 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace SpikeSoft.GenericItemList
 {
@@ -11,6 +11,13 @@ namespace SpikeSoft.GenericItemList
         public GenericItemListUI Editor;
         public Control UIEditor { get { return Editor; } }
         public Size UISize { get { return new Size(1035, 575); } set { } }
+        public static string[] FileNamePatterns = new string[]
+        {
+            "random_chara_list",
+            "random_map_list",
+            "random_bgm_list",
+            "character_select_order"
+        };
 
         public void Initialize(string filePath)
         {

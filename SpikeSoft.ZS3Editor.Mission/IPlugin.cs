@@ -1,11 +1,9 @@
 ﻿using SpikeSoft.UtilityManager;
-using System.Windows.Forms;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using System;
-using System.Linq;
+using System.Windows.Forms;
 
 namespace SpikeSoft.ZS3Editor.Mission
 {
@@ -14,6 +12,7 @@ namespace SpikeSoft.ZS3Editor.Mission
         public ZS3EditorMission Editor;
         public Control UIEditor { get { return Editor; } }
         public Size UISize { get { return new Size(925, 688); } set { } }
+        public static string[] FileNamePatterns = new string[] { "battle_info" };
 
         /// <summary>
         /// Dictionary to get Path of Opponent Data of Mission Type

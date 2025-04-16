@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpikeSoft.DataTypes
 {
@@ -15,11 +13,6 @@ namespace SpikeSoft.DataTypes
         // Key: Type of File
         // Value: File Extension Filter for Data Type
         public static readonly Dictionary<string, string> MainFilterList = ReadTxtDictionary("SupportedTypes.txt");
-
-        // Dictionary that contains:
-        // Key: Hardcoded File Name for specific editable File parsing
-        // Value: Type of UI Editor that Edits that File
-        public static readonly Dictionary<string, string> FileNameIds = ReadTxtDictionary("Libs.txt");
 
         // Dictionary that contains:
         // Key: Valid Editable File Extension
@@ -52,7 +45,7 @@ namespace SpikeSoft.DataTypes
                     if (line.Split(',').Count() > 2) continue;
 
                     MethodInfo m = typeof(SupportedTypes).GetMethod(line.Split(',')[1].Replace(" ", string.Empty));
-                    if ( m == null && !m.ReturnType.Equals(typeof(Type)))
+                    if (m == null && !m.ReturnType.Equals(typeof(Type)))
                     {
                         continue;
                     }
@@ -69,12 +62,29 @@ namespace SpikeSoft.DataTypes
         {
             try
             {
-                foreach (var Identifier in FileNameIds)
+                string fileName = Path.GetFileName(filePath);
+
+                var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+
+                foreach (var assembly in loadedAssemblies)
                 {
-                    if (Path.GetFileName(filePath).Contains(Identifier.Key))
+                    // Look for type called "IPlugin" inheriting IEditor
+                    var pluginType = assembly.GetTypes()
+                        .FirstOrDefault(t => t.Name == "IPlugin" && typeof(IEditor).IsAssignableFrom(t));
+
+                    if (pluginType == null)
+                        continue;
+
+                    // Check for static 'FileNamePatterns' property/field
+                    var patternsField = pluginType.GetField("FileNamePatterns", BindingFlags.Public | BindingFlags.Static);
+                    if (patternsField == null)
+                        continue;
+
+                    var patterns = (string[])patternsField.GetValue(null);
+
+                    if (patterns != null && patterns.Any(pattern => fileName.Contains(pattern)))
                     {
-                        AppDomain.CurrentDomain.GetAssemblies();
-                        return Type.GetType($"{Identifier.Value}.IPlugin, {Identifier.Value}");
+                        return pluginType;
                     }
                 }
             }
