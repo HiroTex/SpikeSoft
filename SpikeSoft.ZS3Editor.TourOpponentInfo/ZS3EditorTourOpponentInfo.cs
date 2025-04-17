@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -15,45 +16,46 @@ namespace SpikeSoft.ZS3Editor.TourOpponentInfo
         {
             Data = new StructMan<TourOpponentInfo>(filepath);
             InitializeComponent();
-            boxZItem1.DataSource = new List<string>(zItemList);
-            boxZItem2.DataSource = new List<string>(zItemList);
-            boxZItem3.DataSource = new List<string>(zItemList);
-            boxZItem4.DataSource = new List<string>(zItemList);
-            boxZItem5.DataSource = new List<string>(zItemList);
-            boxZItem6.DataSource = new List<string>(zItemList);
-            boxZItem7.DataSource = new List<string>(zItemList);
-            boxZItem8.DataSource = new List<string>(zItemList);
+            int boxIndex = 0;
+            foreach (ComboBox box in zItemPanel.Controls.OfType<ComboBox>().OrderBy(c => c.Name))
+            {
+                box.Tag = boxIndex++;
+                box.DataSource = new List<string>(zItemList);
+                box.Enabled = true;
+            }
+
             Location = new System.Drawing.Point(0, 0);
             Dock = DockStyle.Fill;
             Enabled = true;
             Visible = true;
             InitializeDefaults();
-
-            foreach (Control control in this.Controls)
-            {
-                if (control is ComboBox || control is NumericUpDown)
-                {
-                    control.Enabled = true;
-                }
-            }
         }
 
         private void InitializeDefaults()
         {
-            boxSelectDiff.SelectedIndex = 0;
-            boxSelectRound.SelectedIndex = 0;
+            SelectIndexOrDefault(boxSelectDiff, 0);
+            SelectIndexOrDefault(boxSelectRound, 0);
         }
+
+        private void SelectIndexOrDefault(ComboBox combo, int defaultIndex)
+        {
+            if (combo.Items.Count > defaultIndex)
+            {
+                combo.SelectedIndex = defaultIndex;
+            }
+            else if (combo.Items.Count > 0)
+            {
+                combo.SelectedIndex = 0;
+            }
+            else
+            {
+                combo.SelectedIndex = -1;
+            }
+        }
+
         private void UpdateEditorData(object sender, EventArgs e)
         {
-            if (!IsValidEventArgs(sender))
-            {
-                return;
-            }
-
-            int selectedDiff = boxSelectDiff.SelectedIndex;
-            int selectedRound = boxSelectRound.SelectedIndex;
-
-            if (selectedDiff < 0 || selectedRound < 0)
+            if (!IsValidEventArgs(sender) || !TryGetSelectedIndex(out int selectedDiff, out int selectedRound))
             {
                 return;
             }
@@ -80,39 +82,25 @@ namespace SpikeSoft.ZS3Editor.TourOpponentInfo
             try
             {
                 aiNumeric.Value = item.AI;
-                boxZItem1.SelectedIndex = (item.ZItems[0] == -1) ? boxZItem1.Items.Count - 1 : item.ZItems[0];
-                boxZItem2.SelectedIndex = (item.ZItems[1] == -1) ? boxZItem2.Items.Count - 1 : item.ZItems[1];
-                boxZItem3.SelectedIndex = (item.ZItems[2] == -1) ? boxZItem3.Items.Count - 1 : item.ZItems[2];
-                boxZItem4.SelectedIndex = (item.ZItems[3] == -1) ? boxZItem4.Items.Count - 1 : item.ZItems[3];
-                boxZItem5.SelectedIndex = (item.ZItems[4] == -1) ? boxZItem5.Items.Count - 1 : item.ZItems[4];
-                boxZItem6.SelectedIndex = (item.ZItems[5] == -1) ? boxZItem6.Items.Count - 1 : item.ZItems[5];
-                boxZItem7.SelectedIndex = (item.ZItems[6] == -1) ? boxZItem7.Items.Count - 1 : item.ZItems[6];
-                boxZItem8.SelectedIndex = (item.ZItems[7] == -1) ? boxZItem8.Items.Count - 1 : item.ZItems[7];
+
+                int boxIndex = 0;
+                foreach (ComboBox box in zItemPanel.Controls.OfType<ComboBox>().OrderBy(c => c.Name))
+                {
+                    box.SelectedIndex = (item.ZItems[boxIndex] == -1) ? box.Items.Count - 1 : item.ZItems[boxIndex];
+                    boxIndex++;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ExceptionMan.ThrowMessage(0x2001);
+                ExceptionMan.ThrowMessage(0x2001, new string[] { ex.Message });
             }
         }
 
         private void ValueChanged(object sender, EventArgs e)
         {
-            if (TmpMan.GetDefaultTmpFile() == string.Empty)
-            {
-                return;
-            }
-
             var control = sender as Control;
 
-            if (!(control is NumericUpDown) && !(control is ComboBox))
-            {
-                return;
-            }
-
-            int selectedDiff = boxSelectDiff.SelectedIndex;
-            int selectedRound = boxSelectRound.SelectedIndex;
-
-            if (selectedDiff < 0 || selectedRound < 0)
+            if (TmpMan.GetDefaultTmpFile() == string.Empty || (!(control is NumericUpDown) && !(control is ComboBox)) || !TryGetSelectedIndex(out int selectedDiff, out int selectedRound))
             {
                 return;
             }
@@ -135,26 +123,25 @@ namespace SpikeSoft.ZS3Editor.TourOpponentInfo
 
             // Update Item Data
 
-            if (control is NumericUpDown)
+            if (control is NumericUpDown numeric)
             {
-                Obj.AI = (int)(control as NumericUpDown).Value;
+                Obj.AI = (int)numeric.Value;
             }
-            else if (control is ComboBox)
+            else if (control is ComboBox box)
             {
-                int index = (control as ComboBox).SelectedIndex;
+                int index = box.SelectedIndex;
                 if (index == -1)
                 {
                     return;
                 }
                 if (control.Name.Contains("ZItem"))
                 {
-                    if (index == (control as ComboBox).Items.Count - 1)
+                    if (index == box.Items.Count - 1)
                     {
                         index = -1;
                     }
-
-                    var item = control.Name.Substring(control.Name.Length - 1, 1);
-                    Obj.ZItems[int.Parse(item) - 1] = (short)index;
+                    var zIndex = (int)control.Tag;
+                    Obj.ZItems[zIndex] = (short)index;
                 }
             }
 
@@ -168,11 +155,18 @@ namespace SpikeSoft.ZS3Editor.TourOpponentInfo
         {
             UpdateEditorData(sender, e);
 
-            var newImg = Properties.Resources.ResourceManager.GetObject($"Level_{boxSelectDiff.SelectedIndex + 1}") as Image;
+            Image newImg = Properties.Resources.ResourceManager.GetObject($"Level_{boxSelectDiff.SelectedIndex + 1}") as Image;
             if (newImg != null)
             {
                 pictureLevel.Image = newImg;
             }
+        }
+        private bool TryGetSelectedIndex(out int diff, out int round)
+        {
+            diff = boxSelectDiff.SelectedIndex;
+            round = boxSelectRound.SelectedIndex;
+
+            return diff >= 0 && round >= 0;
         }
 
         private bool IsValidEventArgs(object sender)

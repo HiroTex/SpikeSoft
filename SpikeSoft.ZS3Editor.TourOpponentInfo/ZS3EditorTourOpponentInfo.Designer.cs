@@ -38,14 +38,16 @@
             this.boxZItem7 = new System.Windows.Forms.ComboBox();
             this.boxZItem6 = new System.Windows.Forms.ComboBox();
             this.boxZItem5 = new System.Windows.Forms.ComboBox();
-            this.boxZItem4 = new System.Windows.Forms.ComboBox();
             this.boxZItem3 = new System.Windows.Forms.ComboBox();
             this.boxZItem2 = new System.Windows.Forms.ComboBox();
             this.boxZItem1 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.pictureLevel = new System.Windows.Forms.PictureBox();
+            this.zItemPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.boxZItem4 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.aiNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureLevel)).BeginInit();
+            this.zItemPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -66,7 +68,6 @@
             this.boxSelectDiff.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.boxSelectDiff.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.boxSelectDiff.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.boxSelectDiff.Enabled = false;
             this.boxSelectDiff.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.boxSelectDiff.Font = new System.Drawing.Font("Consolas", 14F);
             this.boxSelectDiff.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -133,7 +134,6 @@
             this.boxSelectRound.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.boxSelectRound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
             this.boxSelectRound.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.boxSelectRound.Enabled = false;
             this.boxSelectRound.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.boxSelectRound.Font = new System.Drawing.Font("Consolas", 14F);
             this.boxSelectRound.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -159,7 +159,7 @@
             this.boxZItem8.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem8.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem8.IntegralHeight = false;
-            this.boxZItem8.Location = new System.Drawing.Point(8, 442);
+            this.boxZItem8.Location = new System.Drawing.Point(4, 249);
             this.boxZItem8.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem8.Name = "boxZItem8";
             this.boxZItem8.Size = new System.Drawing.Size(351, 27);
@@ -174,7 +174,7 @@
             this.boxZItem7.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem7.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem7.IntegralHeight = false;
-            this.boxZItem7.Location = new System.Drawing.Point(8, 407);
+            this.boxZItem7.Location = new System.Drawing.Point(4, 214);
             this.boxZItem7.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem7.Name = "boxZItem7";
             this.boxZItem7.Size = new System.Drawing.Size(351, 27);
@@ -189,7 +189,7 @@
             this.boxZItem6.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem6.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem6.IntegralHeight = false;
-            this.boxZItem6.Location = new System.Drawing.Point(8, 372);
+            this.boxZItem6.Location = new System.Drawing.Point(4, 179);
             this.boxZItem6.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem6.Name = "boxZItem6";
             this.boxZItem6.Size = new System.Drawing.Size(351, 27);
@@ -204,27 +204,12 @@
             this.boxZItem5.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem5.IntegralHeight = false;
-            this.boxZItem5.Location = new System.Drawing.Point(8, 337);
+            this.boxZItem5.Location = new System.Drawing.Point(4, 144);
             this.boxZItem5.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem5.Name = "boxZItem5";
             this.boxZItem5.Size = new System.Drawing.Size(351, 27);
             this.boxZItem5.TabIndex = 40;
             this.boxZItem5.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
-            // 
-            // boxZItem4
-            // 
-            this.boxZItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.boxZItem4.Enabled = false;
-            this.boxZItem4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.boxZItem4.Font = new System.Drawing.Font("Consolas", 12F);
-            this.boxZItem4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.boxZItem4.IntegralHeight = false;
-            this.boxZItem4.Location = new System.Drawing.Point(8, 302);
-            this.boxZItem4.Margin = new System.Windows.Forms.Padding(4);
-            this.boxZItem4.Name = "boxZItem4";
-            this.boxZItem4.Size = new System.Drawing.Size(351, 27);
-            this.boxZItem4.TabIndex = 39;
-            this.boxZItem4.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
             // 
             // boxZItem3
             // 
@@ -234,7 +219,7 @@
             this.boxZItem3.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem3.IntegralHeight = false;
-            this.boxZItem3.Location = new System.Drawing.Point(8, 267);
+            this.boxZItem3.Location = new System.Drawing.Point(4, 74);
             this.boxZItem3.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem3.Name = "boxZItem3";
             this.boxZItem3.Size = new System.Drawing.Size(351, 27);
@@ -249,7 +234,7 @@
             this.boxZItem2.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem2.IntegralHeight = false;
-            this.boxZItem2.Location = new System.Drawing.Point(8, 232);
+            this.boxZItem2.Location = new System.Drawing.Point(4, 39);
             this.boxZItem2.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem2.Name = "boxZItem2";
             this.boxZItem2.Size = new System.Drawing.Size(351, 27);
@@ -264,7 +249,7 @@
             this.boxZItem1.Font = new System.Drawing.Font("Consolas", 12F);
             this.boxZItem1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.boxZItem1.IntegralHeight = false;
-            this.boxZItem1.Location = new System.Drawing.Point(8, 197);
+            this.boxZItem1.Location = new System.Drawing.Point(4, 4);
             this.boxZItem1.Margin = new System.Windows.Forms.Padding(4);
             this.boxZItem1.Name = "boxZItem1";
             this.boxZItem1.Size = new System.Drawing.Size(351, 27);
@@ -293,20 +278,54 @@
             this.pictureLevel.TabIndex = 30;
             this.pictureLevel.TabStop = false;
             // 
+            // zItemPanel
+            // 
+            this.zItemPanel.ColumnCount = 1;
+            this.zItemPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.zItemPanel.Controls.Add(this.boxZItem1, 0, 0);
+            this.zItemPanel.Controls.Add(this.boxZItem2, 0, 1);
+            this.zItemPanel.Controls.Add(this.boxZItem8, 0, 7);
+            this.zItemPanel.Controls.Add(this.boxZItem3, 0, 2);
+            this.zItemPanel.Controls.Add(this.boxZItem7, 0, 6);
+            this.zItemPanel.Controls.Add(this.boxZItem4, 0, 3);
+            this.zItemPanel.Controls.Add(this.boxZItem6, 0, 5);
+            this.zItemPanel.Controls.Add(this.boxZItem5, 0, 4);
+            this.zItemPanel.Location = new System.Drawing.Point(8, 194);
+            this.zItemPanel.Name = "zItemPanel";
+            this.zItemPanel.RowCount = 8;
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.zItemPanel.Size = new System.Drawing.Size(362, 286);
+            this.zItemPanel.TabIndex = 45;
+            // 
+            // boxZItem4
+            // 
+            this.boxZItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.boxZItem4.Enabled = false;
+            this.boxZItem4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.boxZItem4.Font = new System.Drawing.Font("Consolas", 12F);
+            this.boxZItem4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.boxZItem4.IntegralHeight = false;
+            this.boxZItem4.Location = new System.Drawing.Point(4, 109);
+            this.boxZItem4.Margin = new System.Windows.Forms.Padding(4);
+            this.boxZItem4.Name = "boxZItem4";
+            this.boxZItem4.Size = new System.Drawing.Size(351, 27);
+            this.boxZItem4.TabIndex = 39;
+            this.boxZItem4.SelectedIndexChanged += new System.EventHandler(this.ValueChanged);
+            // 
             // ZS3EditorTourOpponentInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
+            this.Controls.Add(this.zItemPanel);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.boxZItem8);
-            this.Controls.Add(this.boxZItem7);
-            this.Controls.Add(this.boxZItem6);
-            this.Controls.Add(this.boxZItem5);
-            this.Controls.Add(this.boxZItem4);
-            this.Controls.Add(this.boxZItem3);
-            this.Controls.Add(this.boxZItem2);
-            this.Controls.Add(this.boxZItem1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.boxSelectRound);
             this.Controls.Add(this.aiNumeric);
@@ -318,9 +337,10 @@
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "ZS3EditorTourOpponentInfo";
-            this.Size = new System.Drawing.Size(368, 480);
+            this.Size = new System.Drawing.Size(372, 480);
             ((System.ComponentModel.ISupportInitialize)(this.aiNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureLevel)).EndInit();
+            this.zItemPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -339,10 +359,11 @@
         private System.Windows.Forms.ComboBox boxZItem7;
         private System.Windows.Forms.ComboBox boxZItem6;
         private System.Windows.Forms.ComboBox boxZItem5;
-        private System.Windows.Forms.ComboBox boxZItem4;
         private System.Windows.Forms.ComboBox boxZItem3;
         private System.Windows.Forms.ComboBox boxZItem2;
         private System.Windows.Forms.ComboBox boxZItem1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TableLayoutPanel zItemPanel;
+        private System.Windows.Forms.ComboBox boxZItem4;
     }
 }
