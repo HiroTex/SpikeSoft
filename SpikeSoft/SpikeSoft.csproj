@@ -803,16 +803,6 @@
     <Folder Include="resources\txt\ZS2\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BPE\SpikeSoft.ZLib.csproj">
-      <Project>{da7cfb84-9800-4d2e-9984-0e62301ad416}</Project>
-      <Name>SpikeSoft.ZLib</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DataMan\SpikeSoft.UtilityManager.csproj">
-      <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
-      <Name>SpikeSoft.UtilityManager</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\SpikeSoft.UiUtils\SpikeSoft.UiUtils.csproj">
       <Project>{6c54405e-c7b6-4386-96b2-ed76cac834ca}</Project>
       <Name>SpikeSoft.UiUtils</Name>

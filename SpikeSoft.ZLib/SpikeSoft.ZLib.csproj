@@ -4,19 +4,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{507D6303-617C-4216-A703-530848CAD6FA}</ProjectGuid>
+    <ProjectGuid>{DA7CFB84-9800-4D2E-9984-0E62301AD416}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpikeSoft.FileAnalyzer</RootNamespace>
-    <AssemblyName>SpikeSoft.FileAnalyzer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>SpikeSoft.ZLib</RootNamespace>
+    <AssemblyName>SpikeSoft.ZLib</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\SpikeSoft\resources\lib\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,14 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalysisMan.cs" />
+    <Compile Include="BPE.cs" />
+    <Compile Include="Common\IPak.cs" />
+    <Compile Include="Common\PAK.cs" />
+    <Compile Include="Common\PCK.cs" />
+    <Compile Include="PakMan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BPE\SpikeSoft.ZLib.csproj">
-      <Project>{da7cfb84-9800-4d2e-9984-0e62301ad416}</Project>
-      <Name>SpikeSoft.ZLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataMan\SpikeSoft.UtilityManager.csproj">
+    <ProjectReference Include="..\SpikeSoft.UtilityManager\SpikeSoft.UtilityManager.csproj">
       <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
       <Name>SpikeSoft.UtilityManager</Name>
     </ProjectReference>

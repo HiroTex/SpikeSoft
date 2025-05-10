@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35913.81 d17.13
+VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft", "SpikeSoft\SpikeSoft.csproj", "{D35974EB-7C1C-4873-8805-E0202FF328D2}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -18,10 +18,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZS3Editor.TourUnl
 		{C131EE68-4C2B-45E5-922D-E85710DF51DA} = {C131EE68-4C2B-45E5-922D-E85710DF51DA}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.UtilityManager", "DataMan\SpikeSoft.UtilityManager.csproj", "{C131EE68-4C2B-45E5-922D-E85710DF51DA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZLib", "BPE\SpikeSoft.ZLib.csproj", "{DA7CFB84-9800-4D2E-9984-0E62301AD416}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.DBTManager", "SpikeSoft.DBTManager\SpikeSoft.DBTManager.csproj", "{74B62427-7394-42F2-B6FA-DB84C93857C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.GenericItemList", "SpikeSoft.GenericItemList\SpikeSoft.GenericItemList.csproj", "{06BEA5CC-6BB5-4CB9-8F0C-9E43728A4CFA}"
@@ -33,6 +29,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZS3Utilities", "SpikeSoft.ZS3Utilities\SpikeSoft.ZS3Utilities.csproj", "{121D9B6A-5D1C-4DD2-92E5-0D44690C8211}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZS3Editor.TourOpponentInfo", "SpikeSoft.ZS3Editor.TourOpponentInfo\SpikeSoft.ZS3Editor.TourOpponentInfo.csproj", "{D882B956-8FAF-43F1-B6FD-52F3A57310B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.UtilityManager", "SpikeSoft.UtilityManager\SpikeSoft.UtilityManager.csproj", "{C131EE68-4C2B-45E5-922D-E85710DF51DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeSoft.ZLib", "SpikeSoft.ZLib\SpikeSoft.ZLib.csproj", "{DA7CFB84-9800-4D2E-9984-0E62301AD416}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,14 +52,6 @@ Global
 		{6384986F-BCF7-4FE9-AFCB-38709686E6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6384986F-BCF7-4FE9-AFCB-38709686E6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6384986F-BCF7-4FE9-AFCB-38709686E6AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74B62427-7394-42F2-B6FA-DB84C93857C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{74B62427-7394-42F2-B6FA-DB84C93857C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74B62427-7394-42F2-B6FA-DB84C93857C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -84,6 +76,14 @@ Global
 		{D882B956-8FAF-43F1-B6FD-52F3A57310B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D882B956-8FAF-43F1-B6FD-52F3A57310B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D882B956-8FAF-43F1-B6FD-52F3A57310B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C131EE68-4C2B-45E5-922D-E85710DF51DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7CFB84-9800-4D2E-9984-0E62301AD416}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

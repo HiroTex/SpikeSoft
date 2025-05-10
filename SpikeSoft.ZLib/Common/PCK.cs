@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SpikeSoft.UtilityManager;
+﻿using SpikeSoft.UtilityManager;
 using SpikeSoft.UtilityManager.TaskProgress;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SpikeSoft.ZLib.Common
 {
@@ -40,14 +36,14 @@ namespace SpikeSoft.ZLib.Common
             EOF = File.ReadAllBytes(filePath).Length;
         }
 
-        public override void InitializeFilenamesList(string filePath, int subFileCount)
+        public override void InitializeFilenamesList(string filePath, string tmpPath)
         {
             FileNames = new List<string>();
             int ModelCount = 1;
             string format = "D2";
-            if (subFileCount.ToString().Length > 2)
-                format = "D" + subFileCount.ToString().Length;
-            for (int i = 0; i < subFileCount; i++)
+            if (FileCount.ToString().Length > 2)
+                format = "D" + FileCount.ToString().Length;
+            for (int i = 0; i < FileCount; i++)
             {
                 string basename = $"_Model_{ModelCount}";
                 string extension = ".dbt";

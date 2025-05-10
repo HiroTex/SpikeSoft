@@ -1,10 +1,9 @@
-﻿using System;
+﻿using SpikeSoft.UtilityManager;
+using SpikeSoft.UtilityManager.TaskProgress;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SpikeSoft.UtilityManager;
-using SpikeSoft.ZLib;
-using SpikeSoft.UtilityManager.TaskProgress;
 
 namespace SpikeSoft.ZLib.Common
 {
@@ -26,7 +25,7 @@ namespace SpikeSoft.ZLib.Common
             InitializeSubFileCount(filePath);
             InitializeFilePointersList(filePath);
             InitializeEndOfFilePointer(filePath);
-            InitializeFilenamesList(originalPath, FileCount);
+            InitializeFilenamesList(originalPath, filePath);
         }
 
         public virtual bool Unpack(IProgress<ProgressInfo> progress)
@@ -298,7 +297,7 @@ namespace SpikeSoft.ZLib.Common
             EOF = BinMan.GetBinaryData<int>(filePath, total * 4 + 4);
         }
 
-        public virtual void InitializeFilenamesList(string filePath, int subFileCount)
+        public virtual void InitializeFilenamesList(string filePath, string tmpPath)
         {
             // Initialize List to Store Matches
             var MatchList = new List<int>();
@@ -346,14 +345,14 @@ namespace SpikeSoft.ZLib.Common
                     MatchList.Add(linePos);
 
                 } while (!sr.EndOfStream);
-                
+
                 // Find Matches and Create File Name List
-                FileNames = FindFileListMatch(filePath, subFileCount, sr, MatchList);
+                FileNames = FindFileListMatch(filePath, FileCount, sr, MatchList);
 
                 if (FileNames != null) return;
 
                 // If no match was found, return a Default File Name List with partially identified extensions
-                FileNames = GenerateDefaultFilenamesList(filePath, subFileCount);
+                FileNames = GenerateDefaultFilenamesList(tmpPath, FileCount);
             }
         }
 
@@ -449,9 +448,9 @@ namespace SpikeSoft.ZLib.Common
 
                     continue;
                 }
-                
-                // Return the Matching File List
-                MatchFound:
+
+            // Return the Matching File List
+            MatchFound:
                 return FillNameList(sr, id);
             }
 
@@ -512,6 +511,11 @@ namespace SpikeSoft.ZLib.Common
             }
 
             return result;
+        }
+
+        public void InitializeFilenamesList(string filePath, int subFileCount)
+        {
+            throw new NotImplementedException();
         }
     }
 }

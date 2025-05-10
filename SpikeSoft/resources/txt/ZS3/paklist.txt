@@ -4,7 +4,7 @@ common_002_.dat
 common_animation_info.dat
 com_think.bin
 common_camera_info.dat
-common_audio_info_.dat
+common_audio_info.dat
 common_combo_info.dat
 common_character_info.dat
 common_009_.dat

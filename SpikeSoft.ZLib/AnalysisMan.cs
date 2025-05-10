@@ -1,9 +1,8 @@
-﻿using System;
+﻿using SpikeSoft.UtilityManager;
+using System;
 using System.Collections.Generic;
-using SpikeSoft.UtilityManager;
-using SpikeSoft.ZLib;
 
-namespace SpikeSoft.FileManager
+namespace SpikeSoft.ZLib
 {
     static public class AnalysisMan
     {
@@ -18,7 +17,7 @@ namespace SpikeSoft.FileManager
 
         // Dictionary for Magic Header Values.
         // Key: Magic Header Identifier.
-        // Value: File Name. 
+        // Value: File Name.
         static Dictionary<string, string> MAGICHEADER = new Dictionary<string, string>()
         {
             {"FOD", "config.fod"},
@@ -57,7 +56,7 @@ namespace SpikeSoft.FileManager
             {
                 return "text.txt";
             }
-            
+
             foreach (var identifier in MAGICHEADER)
             {
                 if (MAGIC.Contains(identifier.Key))
@@ -82,7 +81,7 @@ namespace SpikeSoft.FileManager
                 if (source[i - 1] != 0) break;
                 PaddingCount++;
             }
-            
+
             // Compare if ZSize Does not Matches File Length without Header and Padding Bytes.
             if (ZSize != (source.Length - HeaderLength - PaddingCount))
             {
@@ -93,7 +92,7 @@ namespace SpikeSoft.FileManager
             int UZSize = BinMan.GetBinaryData<int>(source, 0);
             if (UZSize <= ZSize)
             {
-                return string.Empty;  
+                return string.Empty;
             }
 
             // Decompress File and re-analyze again to determine which kind of compressed file is.
@@ -135,7 +134,7 @@ namespace SpikeSoft.FileManager
         {
             byte[] dbtPattern = new byte[] { 0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-            
+
             var limit = source.Length - dbtPattern.Length;
             for (var i = 0; i <= limit; i++)
             {
@@ -149,6 +148,55 @@ namespace SpikeSoft.FileManager
             }
 
             return string.Empty;
+        }
+        public static string GetMostSimilarString(string fullString, string[] stringArray)
+        {
+            double minSimilarity = 0.7;
+            int minDistance = int.MaxValue;
+            string mostSimilarString = null;
+
+            foreach (string candidate in stringArray)
+            {
+                int distance = LevenshteinDistance(fullString, candidate);
+                int maxLen = Math.Max(fullString.Length, candidate.Length);
+
+                if (maxLen == 0) continue; // Avoid division by zero
+
+                double similarityRatio = 1.0 - (double)distance / maxLen;
+
+                if (similarityRatio >= minSimilarity && distance < minDistance)
+                {
+                    minDistance = distance;
+                    mostSimilarString = candidate;
+                }
+            }
+
+            return mostSimilarString;
+        }
+
+        static public int LevenshteinDistance(string s1, string s2)
+        {
+            int[,] distance = new int[s1.Length + 1, s2.Length + 1];
+
+            for (int i = 0; i <= s1.Length; i++)
+                distance[i, 0] = i;
+
+            for (int j = 0; j <= s2.Length; j++)
+                distance[0, j] = j;
+
+            for (int i = 1; i <= s1.Length; i++)
+            {
+                for (int j = 1; j <= s2.Length; j++)
+                {
+                    int cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
+                    distance[i, j] = Math.Min(
+                        Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1),
+                        distance[i - 1, j - 1] + cost
+                    );
+                }
+            }
+
+            return distance[s1.Length, s2.Length];
         }
     }
 }
