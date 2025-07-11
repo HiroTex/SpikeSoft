@@ -9,7 +9,7 @@ namespace SpikeSoft.ZS3Editor.TourOpponentInfo
         public ZS3EditorTourOpponentInfo Editor;
         public Control UIEditor { get { return Editor; } }
 
-        public static string[] FileNamePatterns = new string[] { "opponent_param" };
+        public string[] FileNamePatterns => new string[] { "opponent_param" };
 
         public void Initialize(string filePath)
         {

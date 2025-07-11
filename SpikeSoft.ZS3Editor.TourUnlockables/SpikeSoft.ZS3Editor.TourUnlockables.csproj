@@ -107,6 +107,12 @@
   <ItemGroup>
     <None Include="Resources\Tour_5.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpikeSoft.UtilityManager\SpikeSoft.UtilityManager.csproj">
+      <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
+      <Name>SpikeSoft.UtilityManager</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

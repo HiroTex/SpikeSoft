@@ -9,7 +9,7 @@ namespace SpikeSoft.ZS3Editor.TourUnlockables
         public ZS3EditorTourUnlockables Editor;
         public Control UIEditor { get { return Editor; } }
 
-        public static string[] FileNamePatterns = new string[] { "unlock_item_param" };
+        public string[] FileNamePatterns => new string[] { "unlock_item_param" };
 
         public void Initialize(string filePath)
         {

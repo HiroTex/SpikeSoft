@@ -42,17 +42,52 @@ namespace SpikeSoft.DataTypes
                 {
                     var line = sr.ReadLine();
 
-                    if (line.Split(',').Count() > 2) continue;
-
-                    MethodInfo m = typeof(SupportedTypes).GetMethod(line.Split(',')[1].Replace(" ", string.Empty));
-                    if (m == null && !m.ReturnType.Equals(typeof(Type)))
+                    if (line.Split(',').Count() > 2)
                     {
                         continue;
                     }
+                    else if (line.Split(',').Count() < 2)
+                    {
+                        result.Add(line.Trim(), Generic);
+                        continue;
+                    }
 
-                    Func<string, Type> func = (Func<string, Type>)Delegate.CreateDelegate(typeof(Func<string, Type>), m);
+                    var parts = line.Split(',');
 
-                    result.Add(line.Split(',')[0], func);
+                    if ((parts.Length == 2) && (parts[1].Trim() != "Generic"))
+                    {
+                        string extension = parts[0].Trim();
+                        string dllName = parts[1].Trim();
+
+                        // Load the DLL and register the type
+                        try
+                        {
+                            string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "lib", dllName);
+                            if (File.Exists(dllPath))
+                            {
+                                Assembly assembly = Assembly.LoadFrom(dllPath);
+                                Type toolType = assembly.GetType(Path.GetFileNameWithoutExtension(dllName) + ".IPlugin");
+
+                                if (toolType != null)
+                                {
+                                    Type customDelegate(string filepath) { return toolType; }
+                                    result.Add(line.Split(',')[0], customDelegate);
+                                }
+                                else
+                                {
+                                    ExceptionMan.ThrowMessage(0x1002, new string[] { $"Type IPlugin in '{dllName}'." });
+                                }
+                            }
+                            else
+                            {
+                                ExceptionMan.ThrowMessage(0x1002, new string[] { dllName });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionMan.ThrowMessage(0x2000, new string[] { $"Failed to load plugin for '{extension}': {ex.Message}" });
+                        }
+                    }
                 }
             }
             return result;

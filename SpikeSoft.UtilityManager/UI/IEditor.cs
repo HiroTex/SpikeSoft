@@ -6,5 +6,6 @@ namespace SpikeSoft.UtilityManager
     {
         Control UIEditor { get; }
         void Initialize(string filePath);
+        string[] FileNamePatterns { get; }
     }
 }

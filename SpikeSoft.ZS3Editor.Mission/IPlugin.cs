@@ -11,7 +11,7 @@ namespace SpikeSoft.ZS3Editor.Mission
         public ZS3EditorMission Editor;
         public Control UIEditor { get { return Editor; } }
 
-        public static string[] FileNamePatterns = new string[] { "battle_info" };
+        public string[] FileNamePatterns => new string[] { "battle_info" };
 
         /// <summary>
         /// Dictionary to get Path of Opponent Data of Mission Type

@@ -2,11 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace SpikeSoft.FileManager
 {
@@ -26,7 +22,7 @@ namespace SpikeSoft.FileManager
                 extensionToolMap[extension.ToLower()] = toolType;
             }
         }
-        
+
         /// <summary>
         /// Method to get the tool type for a given file extension
         /// </summary>
