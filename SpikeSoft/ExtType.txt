@@ -1,7 +1,5 @@
 ﻿.dat
 .bin
-.fod, SpikeSoft.ZS3Editor.Mission.dll
-.cdbt, SpikeSoft.ZS3Editor.CharaInfo.dll
 .pak, SpikeSoft.ZS3Utilities.dll, SpikeSoft.ZS3Utilities.Tools.Packaging.UnpackSingle
 .zpak, SpikeSoft.ZS3Utilities.dll, SpikeSoft.ZS3Utilities.Tools.Packaging.UnpackSingle
 .idx, SpikeSoft.ZS3Utilities.dll, SpikeSoft.ZS3Utilities.Tools.Packaging.RepackSingle
