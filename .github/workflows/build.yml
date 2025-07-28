@@ -3,7 +3,7 @@ name: Build and Release SpikeSoft
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - '**.cs'
       - '**.resx'
