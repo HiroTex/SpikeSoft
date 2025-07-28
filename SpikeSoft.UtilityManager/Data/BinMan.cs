@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SpikeSoft.UtilityManager
 {
@@ -131,7 +128,6 @@ namespace SpikeSoft.UtilityManager
 
             var tmp = new byte[sLenght];
             Array.Copy(source, tmp, sLenght);
-            if (Properties.Settings.Default.WIIMODE) Array.Reverse(tmp);
             return Encoding.ASCII.GetString(tmp);
         }
     }
