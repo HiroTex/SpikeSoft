@@ -80,6 +80,7 @@
     <ProjectReference Include="..\SpikeSoft.UtilityManager\SpikeSoft.UtilityManager.csproj">
       <Project>{c131ee68-4c2b-45e5-922d-e85710df51da}</Project>
       <Name>SpikeSoft.UtilityManager</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

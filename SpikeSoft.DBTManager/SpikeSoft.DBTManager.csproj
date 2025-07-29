@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="SpikeSoft.UtilityManager">
       <HintPath>..\SpikeSoft\resources\lib\SpikeSoft.UtilityManager.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,6 +82,7 @@
     <ProjectReference Include="..\SpikeSoft.UiUtils\SpikeSoft.UiUtils.csproj">
       <Project>{6c54405e-c7b6-4386-96b2-ed76cac834ca}</Project>
       <Name>SpikeSoft.UiUtils</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
