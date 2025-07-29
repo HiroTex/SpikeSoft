@@ -36,7 +36,6 @@ jobs:
       run: |
         mkdir release
         xcopy /Y /E /I ".\SpikeSoft\bin\Release" ".\release"
-        del ".\release\SpikeSoft.exe.config"
 
     - name: Create or update 'latest' tag
       run: |
