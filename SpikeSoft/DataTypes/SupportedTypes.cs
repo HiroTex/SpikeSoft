@@ -111,11 +111,12 @@ namespace SpikeSoft.DataTypes
                         continue;
 
                     // Check for static 'FileNamePatterns' property/field
-                    var patternsField = pluginType.GetField("FileNamePatterns", BindingFlags.Public | BindingFlags.Static);
-                    if (patternsField == null)
+                    var prop = pluginType.GetProperty("FileNamePatterns", BindingFlags.Public | BindingFlags.Instance);
+                    if (prop == null)
                         continue;
 
-                    var patterns = (string[])patternsField.GetValue(null);
+                    var instance = Activator.CreateInstance(pluginType);
+                    var patterns = (string[])prop.GetValue(instance);
 
                     if (patterns != null && patterns.Any(pattern => fileName.Contains(pattern)))
                     {
