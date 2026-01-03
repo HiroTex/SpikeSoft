@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ToolHandler.cs" />
+    <Compile Include="Tools\Meteor\BinaryPatcher.cs" />
     <Compile Include="Tools\Meteor\CharacterSwap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\Compression\CompressAll.cs" />
