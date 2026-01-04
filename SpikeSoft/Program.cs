@@ -14,6 +14,21 @@ namespace SpikeSoft
         [STAThread]
         static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                File.WriteAllText("fatal.log",
+                    DateTime.Now + Environment.NewLine +
+                    e.ExceptionObject.ToString());
+            };
+
+            Application.ThreadException += (s, e) =>
+            {
+                File.WriteAllText("ui_exception.log",
+                    DateTime.Now + Environment.NewLine +
+                    e.Exception.ToString());
+            };
+
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             AppDomain.CurrentDomain.AssemblyResolve += MyHandler;
