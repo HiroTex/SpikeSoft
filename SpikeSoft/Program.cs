@@ -37,9 +37,19 @@ namespace SpikeSoft
         }
         private static Assembly MyHandler(object source, ResolveEventArgs e)
         {
-            string assemblypath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resources", "lib", e.Name.Split(",".ToCharArray(), 2)[0] + ".dll");
-            if (File.Exists(assemblypath)) return Assembly.LoadFile(assemblypath);
-            return null;
+            string fileName = e.Name.Split(',')[0] + ".dll";
+
+            string assemblyPath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "resources",
+                "lib",
+                fileName
+            );
+
+            if (!File.Exists(assemblyPath))
+                return null;
+
+            return Assembly.LoadFrom(assemblyPath);
         }
         private static void AppExit(object sender, EventArgs e)
         {
